@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receipt Details Extractor (PaddleOCR)</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 850px; margin: 2rem auto; padding: 0 1.5rem; }
+    .card { background: var(--card); border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    input[type="file"] { display: block; width: 100%; padding: 0.75rem; border: 2px dashed #475569; border-radius: 8px; background: #0f172a; color: var(--muted); cursor: pointer; box-sizing: border-box; }
+    input[type="file"]:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status { margin-top: 10px; font-weight: 600; color: var(--accent); }
+    pre { background: #020617; color: #38bdf8; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; border: 1px solid #1e293b; max-height: 550px; }
+    .metrics { display: flex; gap: 1rem; margin-top: 1rem; font-size: 0.85rem; color: var(--muted); }
+    .metric-badge { background: #020617; padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid #334155; }
+  </style>
+</head>
+<body>
+
+  <h2>Client-Side Receipt Parser</h2>
+  <p style="color: var(--muted);">PaddleOCR + Robust Bounding Box Normalizer & Line Item Extractor</p>
+
+  <div class="card">
+    <input type="file" id="receiptInput" accept="image/*" disabled />
+    <div id="status" class="status">Loading PaddleOCR weights from CDN...</div>
+    
+    <div class="metrics">
+      <div class="metric-badge">Inference Time: <span id="timeStatus">0 ms</span></div>
+      <div class="metric-badge">Total Text Blocks: <span id="itemCount">0</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Extracted Receipt Details (JSON)</h3>
+    <pre id="output">Initialize engine to proceed...</pre>
+  </div>
+
+  <script type="module">
+    import { PaddleOCR } from 'https://cdn.jsdelivr.net/npm/@paddleocr/paddleocr-js@0.4.2/+esm';
+
+    const statusElem = document.getElementById('status');
+    const outputElem = document.getElementById('output');
+    const inputElem = document.getElementById('receiptInput');
+    const timeElem = document.getElementById('timeStatus');
+    const countElem = document.getElementById('itemCount');
+
+    let ocrEngine;
+
+    // -------------------------------------------------------------
+    // STAGE 1: Initialize Engine
+    // -------------------------------------------------------------
+    async function initOcr() {
+      try {
+        ocrEngine = await PaddleOCR.create({
+          lang: 'en',
+          textDetectionModelName: 'PP-OCRv5_mobile_det',
+          textRecognitionModelName: 'PP-OCRv5_mobile_rec'
+        });
+
+        statusElem.textContent = 'Engine ready! Upload a receipt photo.';
+        statusElem.style.color = '#4ade80';
+        inputElem.disabled = false;
+      } catch (err) {
+        statusElem.textContent = `Engine initialization failed: ${err.message}`;
+        statusElem.style.color = '#f87171';
+      }
+    }
+
+    // -------------------------------------------------------------
+    // FIX: Normalize Bounding Box Coordinates (poly / points / box)
+    // -------------------------------------------------------------
+    function normalizeItem(item) {
+      const text = item.text || item.label || '';
+      const score = item.score || item.mean || item.confidence || 0;
+
+      let top = 0, left = 0, right = 0, bottom = 0;
+
+      // Handle direct box object if present
+      if (item.box && typeof item.box.top === 'number') {
+        top = item.box.top;
+        left = item.box.left;
+        right = item.box.right || (left + (item.box.width || 0));
+        bottom = item.box.bottom || (top + (item.box.height || 0));
+      } else {
+        // PaddleOCR usually returns poly: [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+        const pts = item.poly || item.points || item.box || item.bbox || [];
+        if (Array.isArray(pts) && pts.length > 0) {
+          if (Array.isArray(pts[0])) {
+            const xs = pts.map(p => p[0]);
+            const ys = pts.map(p => p[1]);
+            left = Math.min(...xs);
+            right = Math.max(...xs);
+            top = Math.min(...ys);
+            bottom = Math.max(...ys);
+          } else if (typeof pts[0] === 'number') {
+            left = pts[0];
+            top = pts[1];
+            right = pts[2];
+            bottom = pts[3];
+          }
+        }
+      }
+
+      return {
+        text: text.trim(),
+        score,
+        box: { top, left, right, bottom, width: right - left, height: bottom - top }
+      };
+    }
+
+    // -------------------------------------------------------------
+    // STAGE 2: Receipt Detail Extractor (Enterprise, Date, Time, Items, Total)
+    // -------------------------------------------------------------
+    function parseReceiptDetails(rawItems) {
+      if (!rawItems || rawItems.length === 0) return { error: 'No text items detected' };
+
+      // 1. Safe normalization
+      const items = rawItems.map(normalizeItem).filter(i => i.text.length > 0);
+      items.sort((a, b) => a.box.top - b.box.top);
+
+      // 2. Group into lines based on Y-coordinate proximity
+      const lines = [];
+      items.forEach(item => {
+        const lastLine = lines[lines.length - 1];
+        const tolerance = Math.max(10, item.box.height * 0.7);
+        if (lastLine && Math.abs(lastLine.y - item.box.top) < tolerance) {
+          lastLine.items.push(item);
+        } else {
+          lines.push({ y: item.box.top, items: [item] });
+        }
+      });
+
+      // Sort horizontally left-to-right on each line
+      lines.forEach(line => line.items.sort((a, b) => a.box.left - b.box.left));
+
+      const textLines = lines.map(l => l.items.map(i => i.text).join(' '));
+
+      // Regex patterns
+      const dateRegex = /\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{2,4})\b/i;
+      const timeRegex = /\b((?:2[0-3]|[01]?[0-9]):[0-5][0-9](?::[0-5][0-9])?\s*(?:AM|PM|am|pm)?)\b/;
+      const priceRegex = /(\d+[\.,]\d{2})/;
+      const qtyAtRegex = /(\d+)\s*(?:x|X|@)\s*(\d+[\.,]\d{2})/; // Matches "2 x 3.50" or "2@3.50"
+      const qtyPrefixRegex = /^(\d+)\s+([A-Za-z].*)/;             // Matches "2 Espresso"
+
+      let enterprise = null;
+      let date = null;
+      let time = null;
+      let total = null;
+      const lineItems = [];
+
+      // Extract Metadata (Enterprise, Date, Time, Total)
+      for (let i = 0; i < textLines.length; i++) {
+        const lineText = textLines[i];
+
+        // Enterprise: First line that isn't a date/time/phone
+        if (!enterprise && i < 3) {
+          if (!dateRegex.test(lineText) && !timeRegex.test(lineText) && !/tel|phone|tax|receipt|welcome/i.test(lineText)) {
+            enterprise = lineText;
+          }
+        }
+
+        // Date
+        if (!date) {
+          const dateMatch = lineText.match(dateRegex);
+          if (dateMatch) date = dateMatch[1];
+        }
+
+        // Time
+        if (!time) {
+          const timeMatch = lineText.match(timeRegex);
+          if (timeMatch) time = timeMatch[1];
+        }
+
+        // Total
+        if (/^\s*(?:grand\s+)?total\b|amount\s+due|balance\s+due/i.test(lineText)) {
+          const prices = lineText.match(new RegExp(priceRegex, 'g'));
+          if (prices) {
+            total = parseFloat(prices[prices.length - 1].replace(',', '.'));
+          }
+        }
+      }
+
+      if (!enterprise && textLines.length > 0) enterprise = textLines[0];
+
+      // Extract Line Items
+      lines.forEach(line => {
+        const lineText = line.items.map(i => i.text).join(' ');
+
+        // Skip metadata / total / payment lines
+        if (/total|subtotal|tax|vat|cash|change|card|visa|mastercard|balance|discount|thank/i.test(lineText)) {
+          return;
+        }
+
+        const prices = lineText.match(new RegExp(priceRegex, 'g'));
+        if (!prices || prices.length === 0) return;
+
+        const totalPrice = parseFloat(prices[prices.length - 1].replace(',', '.'));
+
+        let name = lineText;
+        let qty = 1;
+        let unitPrice = totalPrice;
+
+        // Pattern 1: "2 x 3.50 7.00"
+        const qtyAtMatch = lineText.match(qtyAtRegex);
+        if (qtyAtMatch) {
+          qty = parseInt(qtyAtMatch[1], 10);
+          unitPrice = parseFloat(qtyAtMatch[2].replace(',', '.'));
+          name = lineText.replace(qtyAtRegex, '').replace(priceRegex, '').trim();
+        } 
+        // Pattern 2: "2 Espresso 7.00"
+        else {
+          const qtyMatch = lineText.match(qtyPrefixRegex);
+          if (qtyMatch && parseInt(qtyMatch[1], 10) < 100) {
+            qty = parseInt(qtyMatch[1], 10);
+            name = qtyMatch[2].replace(priceRegex, '').trim();
+            if (qty > 1) {
+              unitPrice = parseFloat((totalPrice / qty).toFixed(2));
+            }
+          } else {
+            // Pattern 3: "Espresso 3.50"
+            name = lineText.replace(priceRegex, '').trim();
+          }
+        }
+
+        name = name.replace(/[\$€£₹@xX\-]+$/, '').trim();
+
+        if (name.length > 1 && !/^\d+$/.test(name)) {
+          lineItems.push({
+            name,
+            quantity: qty,
+            unit_price: unitPrice,
+            total_price: totalPrice
+          });
+        }
+      });
+
+      return {
+        enterprise: enterprise || 'Unknown Enterprise',
+        date: date || 'Not Found',
+        time: time || 'Not Found',
+        total: total !== null ? total : (lineItems.reduce((acc, item) => acc + item.total_price, 0) || null),
+        items: lineItems
+      };
+    }
+
+    // -------------------------------------------------------------
+    // FILE HANDLER
+    // -------------------------------------------------------------
+    inputElem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      outputElem.textContent = 'Running inference...';
+      const start = performance.now();
+
+      try {
+        const [ocrResults] = await ocrEngine.predict(file);
+        
+        // Safe access to detected items
+        const rawItems = ocrResults.items || ocrResults.words || [];
+        
+        // Stage 2 Parsing
+        const structuredDetails = parseReceiptDetails(rawItems);
+
+        const duration = (performance.now() - start).toFixed(0);
+        timeElem.textContent = `${duration} ms`;
+        countElem.textContent = rawItems.length;
+
+        outputElem.textContent = JSON.stringify(structuredDetails, null, 2);
+
+      } catch (err) {
+        outputElem.textContent = `Processing Error: ${err.message}\n${err.stack}`;
+      }
+    });
+
+    initOcr();
+  </script>
+</body>
+</html>
