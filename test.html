@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Universal POS Parser & Crash-Protected Audit Suite</title>
+  <title>Universal Global POS & Digital Cart Parser</title>
   <style>
     :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #4ade80; --error: #f87171; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1050px; margin: 2rem auto; padding: 0 1.5rem; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1080px; margin: 2rem auto; padding: 0 1.5rem; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
     h2, h3 { margin-top: 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-    @media (max-width: 750px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 780px) { .grid { grid-template-columns: 1fr; } }
     label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
     select, input[type="text"], input[type="file"] { width: 100%; padding: 0.65rem; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; color: var(--text); box-sizing: border-box; }
     input[type="file"] { border: 2px dashed var(--border); cursor: pointer; }
@@ -33,8 +33,8 @@
 </head>
 <body>
 
-  <h2>Universal POS Parser & Crash-Protected Audit Suite</h2>
-  <p style="color: var(--muted);">Powered by 5-Pass Spatial Line Clustering, Auto-Recovering WASM Workers, and Algebraic Reconciliation.</p>
+  <h2>Universal Global POS & Digital Cart Parser</h2>
+  <p style="color: var(--muted);">Handles Global Currencies (CHF/EUR/RM/INR/USD), Comma Decimals, Target Coupons, and Digital App Carts.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -44,7 +44,7 @@
       <div>
         <label for="engineSelect">Extraction Paradigm:</label>
         <select id="engineSelect">
-          <option value="spatial">Precision 5-Pass Spatial Parser Only [0 MB]</option>
+          <option value="spatial">Universal 5-Pass Global Parser Only [0 MB]</option>
           <option value="edge">Edge Prompt API (window.ai - Phi-mini) [0 MB]</option>
           <option value="hf-gen">HF Generative SLM (Transformers.js) [~90 MB]</option>
         </select>
@@ -72,7 +72,7 @@
 
       <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
         <input type="checkbox" id="autoFallbackCheck" checked />
-        <span><strong>Auto-Fallback to Spatial Parser</strong> if AI outputs malformed JSON</span>
+        <span><strong>Auto-Fallback to Universal Parser</strong> if AI outputs malformed JSON</span>
       </label>
     </div>
 
@@ -94,7 +94,7 @@
 
   <!-- INPUT & OUTPUT -->
   <div class="card">
-    <h3>2. Upload Receipt Photo</h3>
+    <h3>2. Upload Receipt Photo or Cart Screenshot</h3>
     <input type="file" id="receiptInput" accept="image/*" disabled />
     <div id="canvasContainer" style="display: none; margin-top: 1rem;">
       <label>OpenCV Perspective Warp Output:</label>
@@ -110,7 +110,7 @@
       <pre id="ocrOutput" style="color: #94a3b8;">Waiting for image upload...</pre>
     </div>
     <div class="card" style="margin-bottom: 0;">
-      <h3>Audited & Cleaned Receipt JSON</h3>
+      <h3>Audited & Reconciled JSON Output</h3>
       <pre id="jsonOutput">Waiting for extraction...</pre>
     </div>
   </div>
@@ -188,8 +188,7 @@
         ocrEngine = null;
       }
 
-      // CRITICAL: Force event loop yield to let WebAssembly SIMD threads physically detach
-      await new Promise(r => setTimeout(r, 250));
+      await new Promise(r => setTimeout(r, 250)); // Yield thread for WASM unbinding
 
       receiptInput.value = '';
       currentMode = null;
@@ -243,7 +242,7 @@
           hfPipeline = await pipeline('text-generation', repoId, { device: hfBackendSelect.value, dtype: 'q4' });
           activeEngineLabel.textContent = `HF Gen: ${repoId.split('/')[1]}`;
         } else {
-          activeEngineLabel.textContent = '5-Pass Spatial Parser';
+          activeEngineLabel.textContent = 'Universal 5-Pass Parser';
         }
 
         sessionStatusLabel.textContent = 'Active & Healthy';
@@ -260,7 +259,7 @@
     });
 
     // -------------------------------------------------------------
-    // 3. AUTO-RECOVERING PREDICTION WRAPPER (Prevents Session Hangs)
+    // 3. AUTO-RECOVERING PREDICTION WRAPPER
     // -------------------------------------------------------------
     async function safePredict(imageInput) {
       try {
@@ -268,23 +267,17 @@
       } catch (err) {
         console.warn("PaddleOCR inference exception caught:", err);
         const errStr = String(err.message || '');
-        
-        // If ONNX thread is locked or session crashed, auto-rebuild!
         if (errStr.includes('already started') || errStr.includes('Session') || errStr.includes('memory') || errStr.includes('wasm')) {
           console.warn("WASM thread deadlock detected. Forcing emergency session recovery...");
           statusElem.textContent = "Recovering hung WASM thread in background...";
           statusElem.style.color = '#38bdf8';
-          
           await resetSessionAndMemory(false);
-          
-          // Re-initialize engine cleanly
           ocrEngine = await PaddleOCR.create({
             lang: 'en',
             textDetectionModelName: 'PP-OCRv5_mobile_det',
             textRecognitionModelName: 'PP-OCRv5_mobile_rec',
             ortOptions: { numThreads: Math.min(4, navigator.hardwareConcurrency || 2) }
           });
-          
           statusElem.textContent = "Thread recovered! Re-running prediction...";
           return await ocrEngine.predict(imageInput);
         }
@@ -357,17 +350,35 @@
     }
 
     // -------------------------------------------------------------
-    // 5. THE 5-PASS SPATIAL RECEIPT PARSER & AUDITOR CLASS
+    // 5. THE UNIVERSAL 5-PASS GLOBAL RECEIPT PARSER CLASS
     // -------------------------------------------------------------
-    class SpatialReceiptParser {
+    class UniversalReceiptParser {
       constructor() {
-        this.priceRegex = /(\d+[\.,]\d{2})/g;
         this.dateRegex = /\b(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[\s,:\.-]+)?(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4}|\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{2,4})\b/i;
         this.timeRegex = /\b((?:2[0-3]|[01]?[0-9]|O|l)[:\.][0-5O][0-9O](?:[:\.][0-5O][0-9O])?(?:\s*[AP]M)?)\b/i;
 
-        this.headerBlacklist = /invoice|receipt|bill|take\s*away|dine\s*in|table|order|customer|guest|welcome|copy|tax\s*invoice|terminal|cashier|server|merchant|transaction|approval|swiped|chip|contactless|credit|debit|purchase|card|approved/i;
-        this.metadataBlacklist = /date|time|table|bill|cash|change|round|code|@|%\s*\d|qty|item\s*name|price|sub\s*total|grand\s*total|balance|due|paid|visa|mastercard|amex|discover|printed|come\s*again|thank|merchant|terminal|approval|swiped|tip|gratuity|tax|vat|gst|hst/i;
-        this.discountKeywords = /discount|promo|off|coupon|voucher|save|less|single|member/i;
+        this.headerBlacklist = /invoice|receipt|bill|take\s*away|dine\s*in|table|order|customer|guest|welcome|copy|tax\s*invoice|terminal|cashier|server|merchant|transaction|approval|swiped|chip|contactless|credit|debit|purchase|card|approved|branch|attach\s*file|comments|history|print|paid/i;
+        this.metadataBlacklist = /date|time|table|bill|cash|change|round|code|@|%\s*\d|qty|item\s*name|price|sub\s*total|grand\s*total|balance|due|paid|visa|mastercard|amex|discover|printed|come\s*again|thank|merchant|terminal|approval|swiped|tip|gratuity|tax|vat|gst|hst|cgst|sgst|igst|gstin|place\s*of\s*supply|terms|amount\s*in\s*words|rupee|only|cartwheel|saved|expires|loyalty|member|mrp|delivery|surge|coupon|proceed|checkout|remove/i;
+        this.discountKeywords = /discount|promo|off|coupon|voucher|save|less|single|member|cartwheel|loyalty/i;
+      }
+
+      // HELPER: UNIVERSAL CURRENCY & COMMA-DECIMAL NORMALIZER
+      parseUniversalFloat(str) {
+        if (!str) return null;
+        // Strip international currencies and OCR typos (CHF, EUR, RM, INR, USD, ₹, Rs, 天, <, ¥)
+        let clean = str.replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').trim();
+        // Handle European/Swiss comma decimals (e.g. "54,50" -> "54.50" or "1.000,50" -> "1000.50")
+        if (/^\d{1,3}(?:[.,]\d{3})*[.,]\d{2}$/.test(clean)) {
+          if (clean.indexOf(',') !== -1 && clean.lastIndexOf(',') > clean.lastIndexOf('.')) {
+            clean = clean.replace(/\./g, '').replace(',', '.');
+          } else {
+            clean = clean.replace(/,/g, '');
+          }
+        } else {
+          clean = clean.replace(/,/g, '');
+        }
+        const match = clean.match(/(-?\d+(?:\.\d+)?)/);
+        return match ? parseFloat(match[1]) : null;
       }
 
       // PASS 0: SPATIAL LINE CLUSTERING
@@ -414,21 +425,25 @@
         return lines;
       }
 
-      // PASS 1: CLASSIFICATION & METADATA ISOLATION
+      // PASS 1: GLOBAL CLASSIFICATION & METADATA ISOLATION
       classifyAndExtractMetadata(lines) {
         const meta = {
           type: "ITEMIZED_STANDARD",
           enterprise: "Unknown Enterprise",
           date: "Not Found",
-          time: "Not Found"
+          time: "Not Found",
+          taxId: null
         };
 
-        let chargeSlipSignals = 0;
+        let chargeSlipSignals = 0, digitalAppSignals = 0, gstSignals = 0;
         lines.forEach((line, idx) => {
           const text = line.text;
           if (/credit|swiped|approval\s*code|card\s*type|entry\s*mode|merchant\s*id/i.test(text)) chargeSlipSignals++;
+          if (/my\s*cart|checkout|mrp|delivery\s*charges|surge\s*charges|coupon\s*discount|proceed|add\s*a\s*tip/i.test(text)) digitalAppSignals++;
+          if (/gstin|cgst|sgst|igst|tax\s*invoice|place\s*of\s*supply/i.test(text)) gstSignals++;
 
-          if (meta.enterprise === "Unknown Enterprise" && idx < 5) {
+          // Enterprise Shield
+          if (meta.enterprise === "Unknown Enterprise" && idx < 6) {
             if (!this.metadataBlacklist.test(text) && !this.headerBlacklist.test(text) && !/\d/.test(text) && text.length > 2) {
               meta.enterprise = text;
             }
@@ -443,31 +458,68 @@
             if ((rawTime.match(/\./g) || []).length === 1 && rawTime.indexOf(':') !== -1) rawTime = rawTime.replace('.', ':');
             meta.time = rawTime;
           }
+
+          if (!meta.taxId && /GSTIN:?\s*([0-9A-Z]{15})/i.test(text)) {
+            meta.taxId = text.match(/GSTIN:?\s*([0-9A-Z]{15})/i)[1];
+          }
         });
 
-        if (chargeSlipSignals >= 2) meta.type = "CHARGE_SLIP";
+        if (digitalAppSignals >= 2) meta.type = "DIGITAL_APP_CART";
+        else if (chargeSlipSignals >= 2) meta.type = "CHARGE_SLIP";
+        else if (gstSignals >= 2) meta.type = "TAX_INVOICE_INDIA";
+
         return meta;
       }
 
-      // PASS 2 & 3: TABLE PARSING & LINE ITEM MICRO-PARSING
-      parseTableItems(lines) {
+      // PASS 2 & 3: SPECIALIZED DIGITAL APP CART & STANDARD TABLE PARSING
+      parseTableItems(lines, receiptType) {
         const items = [];
-        const totalsBlock = { subtotal: null, tax: 0.0, tip: 0.0, discount: 0.0, rounding: 0.0, grandTotal: null };
+        const totalsBlock = { subtotal: null, tax: 0.0, tip: 0.0, discount: 0.0, rounding: 0.0, delivery: 0.0, surge: 0.0, grandTotal: null };
 
+        // DIGITAL APP CART SPECIAL HANDLER (Blinkit / Zepto / Instacart)
+        if (receiptType === "DIGITAL_APP_CART") {
+          lines.forEach(line => {
+            const text = line.text;
+            const val = this.parseUniversalFloat(text);
+            if (val === null) return;
+
+            if (/mrp|item\s*total/i.test(text)) totalsBlock.subtotal = val;
+            else if (/product\s*discount|item\s*discount|coupon/i.test(text)) totalsBlock.discount += Math.abs(val);
+            else if (/delivery/i.test(text)) totalsBlock.delivery += (/free/i.test(text) ? 0.0 : val);
+            else if (/surge|handling|small\s*cart/i.test(text)) totalsBlock.surge += val;
+            else if (/bill\s*total|to\s*pay|total\s*amount/i.test(text)) totalsBlock.grandTotal = val;
+          });
+
+          if (totalsBlock.grandTotal === null && totalsBlock.subtotal !== null) {
+            totalsBlock.grandTotal = Number((totalsBlock.subtotal - totalsBlock.discount + totalsBlock.delivery + totalsBlock.surge).toFixed(2));
+          }
+          return { items: [], totalsBlock };
+        }
+
+        // STANDARD ITEMIZED / GST / GROCERY PARSER
         lines.forEach(line => {
           const text = line.text;
-          const prices = text.match(this.priceRegex);
-          const numPrices = prices ? prices.map(p => parseFloat(p.replace(',', '.'))) : [];
+          // Ignore secondary currency conversions (e.g., Swiss "Entspricht in Euro 36.33 EUR")
+          if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(text)) return;
+
+          // Find all potential numbers using Universal Decimal Normalizer
+          const rawTokens = text.split(/\s+/);
+          const numPrices = [];
+          rawTokens.forEach(tok => {
+            const val = this.parseUniversalFloat(tok);
+            if (val !== null && val !== 0 && !/\d{6,}/.test(tok)) numPrices.push(val);
+          });
           const lastPrice = numPrices.length > 0 ? numPrices[numPrices.length - 1] : null;
 
           if (/\b(?:tip|gratuity|srvc\s*chg)\b/i.test(text) && lastPrice !== null) { totalsBlock.tip += lastPrice; return; }
-          if (/\b(?:tax|vat|gst|hst)\b/i.test(text) && lastPrice !== null) { totalsBlock.tax += lastPrice; return; }
-          if (/\b(?:rounding|round\s*off)\b/i.test(text) && lastPrice !== null) { totalsBlock.rounding += (/-/.test(text) ? -lastPrice : lastPrice); return; }
-          if (/^sub\s*total|\bsubtotal\b/i.test(text) && lastPrice !== null) { totalsBlock.subtotal = lastPrice; return; }
-          if (/total|amount\s*due|balance\s*due/i.test(text) && !/sub/i.test(text) && lastPrice !== null) { totalsBlock.grandTotal = lastPrice; return; }
+          if (/\b(?:tax|vat|gst|hst|cgst|sgst|igst)\b/i.test(text) && lastPrice !== null) { totalsBlock.tax += lastPrice; return; }
+          if (/\b(?:rounding|round\s*off|adjustment)\b/i.test(text) && lastPrice !== null) { totalsBlock.rounding += (/-/.test(text) ? -lastPrice : lastPrice); return; }
+          if (/^sub\s*total|\bsubtotal\b|\bnet\s*amount\b/i.test(text) && lastPrice !== null) { totalsBlock.subtotal = lastPrice; return; }
+          if (/total|amount\s*due|balance\s*due|charge/i.test(text) && !/sub/i.test(text) && lastPrice !== null) { totalsBlock.grandTotal = lastPrice; return; }
 
-          if (this.metadataBlacklist.test(text)) {
-            if (this.discountKeywords.test(text) && lastPrice !== null) totalsBlock.discount += lastPrice;
+          // Suppress Target / Grocery discount modifier lines and pipe into Discount bucket
+          if (this.metadataBlacklist.test(text) || /saved\s+\d|cartwheel|loyalty|member\s*savings|\b\d+\s+ea\b|net\s+\$/i.test(text)) {
+            if (this.discountKeywords.test(text) && lastPrice !== null) totalsBlock.discount += Math.abs(lastPrice);
             return;
           }
 
@@ -475,12 +527,13 @@
 
           let qty = 1, unitPrice = lastPrice, totalPrice = lastPrice, rawName = text;
 
-          const inlineMatch = text.match(/(\d+)\s*(?:x|X|@)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/);
+          // Inline explicit quantity "2 @ 3.50" or "2 x 3.50 7.00"
+          const inlineMatch = text.match(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i);
           if (inlineMatch) {
             qty = parseInt(inlineMatch[1], 10);
-            unitPrice = parseFloat(inlineMatch[2].replace(',', '.'));
-            totalPrice = inlineMatch[3] ? parseFloat(inlineMatch[3].replace(',', '.')) : Number((qty * unitPrice).toFixed(2));
-            rawName = text.replace(/(\d+)\s*(?:x|X|@)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/, '');
+            unitPrice = this.parseUniversalFloat(inlineMatch[2]) || lastPrice;
+            totalPrice = inlineMatch[3] ? (this.parseUniversalFloat(inlineMatch[3]) || Number((qty * unitPrice).toFixed(2))) : Number((qty * unitPrice).toFixed(2));
+            rawName = text.replace(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i, '');
           } else {
             const leadQtyMatch = text.match(/^(\d+)\s+([A-Za-z].*)/);
             if (leadQtyMatch) {
@@ -489,7 +542,6 @@
                 qty = possibleQty;
                 rawName = leadQtyMatch[2];
                 const secondLast = numPrices.length > 1 ? numPrices[numPrices.length - 2] : null;
-
                 if (secondLast !== null && Math.abs((qty * secondLast) - lastPrice) <= 0.05) {
                   unitPrice = secondLast; totalPrice = lastPrice;
                 } else if (qty > 1) {
@@ -500,12 +552,13 @@
           }
 
           const cleanName = rawName
-            .replace(this.priceRegex, '')
-            .replace(/(?:USD\$|RM\$?|€|£|₹|\$)/ig, '')
+            .replace(/(?:\d+[\.,]\d{2})/g, '')
+            .replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '')
             .replace(/[\$€£₹@xX\-\.]+\s*$/, '')
             .trim();
 
-          if (cleanName.length > 1 && !/^\d+$/.test(cleanName)) {
+          // Suppress isolated unit descriptors ("pcs", "kgs", "nos")
+          if (cleanName.length > 1 && !/^\d+$/.test(cleanName) && !/^(?:pcs|kgs|nos|box|ml|gm)$/i.test(cleanName)) {
             items.push({ name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice });
           }
         });
@@ -517,7 +570,7 @@
           if (n1 && n2 && Math.abs((curr.total_price - n1.total_price) - n2.total_price) <= 0.05) {
             reconciledItems.push({ name: curr.name, quantity: curr.quantity, unit_price: curr.unit_price, total_price: curr.total_price });
             totalsBlock.discount += n1.total_price;
-            i += 2; // Skip modifier and discounted row
+            i += 2;
           } else {
             reconciledItems.push(curr);
           }
@@ -526,29 +579,29 @@
         return { items: reconciledItems, totalsBlock };
       }
 
-      // PASS 4: FINANCIAL MATH RECONCILER & AUDIT
+      // PASS 4: GLOBAL FINANCIAL RECONCILER & ACCOUNTING AUDIT
       process(rawOcrItems) {
         const lines = this.clusterSpatialLines(rawOcrItems);
         const metadata = this.classifyAndExtractMetadata(lines);
-        const { items, totalsBlock } = this.parseTableItems(lines);
+        const { items, totalsBlock } = this.parseTableItems(lines, metadata.type);
 
         let calculatedSubtotal = items.reduce((sum, item) => sum + item.total_price, 0);
         calculatedSubtotal = Number(calculatedSubtotal.toFixed(2));
 
-        if (items.length === 0 && metadata.type === "CHARGE_SLIP") {
+        if (items.length === 0 && (metadata.type === "CHARGE_SLIP" || metadata.type === "DIGITAL_APP_CART")) {
           calculatedSubtotal = totalsBlock.subtotal || totalsBlock.grandTotal || 0.0;
         }
 
         let grandTotal = totalsBlock.grandTotal;
         if (grandTotal === null) {
-          grandTotal = Number((calculatedSubtotal - totalsBlock.discount + totalsBlock.tax + totalsBlock.tip + totalsBlock.rounding).toFixed(2));
+          grandTotal = Number((calculatedSubtotal - totalsBlock.discount + totalsBlock.tax + totalsBlock.tip + totalsBlock.rounding + totalsBlock.delivery + totalsBlock.surge).toFixed(2));
         }
 
-        const expectedGrand = Number((calculatedSubtotal - totalsBlock.discount + totalsBlock.tax + totalsBlock.tip + totalsBlock.rounding).toFixed(2));
+        const expectedGrand = Number((calculatedSubtotal - totalsBlock.discount + totalsBlock.tax + totalsBlock.tip + totalsBlock.rounding + totalsBlock.delivery + totalsBlock.surge).toFixed(2));
         const discrepancy = Number((grandTotal - expectedGrand).toFixed(2));
         const isValid = Math.abs(discrepancy) <= 0.05;
 
-        return {
+        const output = {
           receipt_type: metadata.type,
           enterprise: metadata.enterprise,
           date: metadata.date,
@@ -566,13 +619,21 @@
           financial_audit: {
             is_mathematically_valid: isValid,
             discrepancy: discrepancy,
-            audit_notes: isValid ? ["✓ Accounting equation balanced perfectly."] : [`Equation mismatch: Expected $${expectedGrand}, read $${grandTotal}. Diff: $${discrepancy}`]
+            audit_notes: isValid ? ["✓ Accounting equation balanced perfectly."] : [`Equation mismatch: Expected Net $${expectedGrand}, read $${grandTotal}. Diff: $${discrepancy}`]
           }
         };
+
+        if (metadata.taxId) output.tax_id_gstin = metadata.taxId;
+        if (totalsBlock.delivery > 0 || totalsBlock.surge > 0) {
+          output.financials.delivery_charges = totalsBlock.delivery;
+          output.financials.surge_charges = totalsBlock.surge;
+        }
+
+        return output;
       }
     }
 
-    const spatialParser = new SpatialReceiptParser();
+    const spatialParser = new UniversalReceiptParser();
 
     // -------------------------------------------------------------
     // 6. PIPELINE EXECUTION WITH STRICT MUTEX LOCK
@@ -605,7 +666,6 @@
         const [ocrResults] = await safePredict(processedInput);
         const rawOcrItems = ocrResults.items || ocrResults.words || [];
         
-        // Print top-to-bottom sorted text for visualization
         const sortedLines = spatialParser.clusterSpatialLines(rawOcrItems);
         ocrTimeElem.textContent = `${(performance.now() - t0).toFixed(0)} ms`;
         ocrOutput.textContent = sortedLines.map(l => l.text).join('\n');
@@ -630,12 +690,10 @@
           } catch (err) { if (!autoFallbackCheck.checked) throw err; }
         }
 
-        // Execute 5-Pass Spatial Parser (either as primary mode or auto-fallback)
         if (!finalJson || currentMode === 'spatial') {
-          if (currentMode !== 'spatial') console.warn('AI Parsing failed syntax check. Executing 5-Pass Spatial Parser Auto-Fallback...');
+          if (currentMode !== 'spatial') console.warn('AI Parsing failed syntax check. Executing Universal Spatial Parser Auto-Fallback...');
           finalJson = spatialParser.process(rawOcrItems);
         } else if (!finalJson.financial_audit && !finalJson.audit) {
-          // If generated by LLM, audit its math using the spatial parser!
           const audit = spatialParser.process(rawOcrItems);
           finalJson.financials = audit.financials;
           finalJson.financial_audit = audit.financial_audit;
