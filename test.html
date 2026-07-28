@@ -269,105 +269,151 @@
     // -------------------------------------------------------------
     // 4. PERCENTAGE-AWARE TAX & MATH AUDIT ENGINE
     // -------------------------------------------------------------
-    function parseAndValidateReceipt(textLines) {
-      const priceRegex = /(\d+[\.,]\d{2})/g;
-      const taxLineRegex = /\b(?:tax|vat|gst|hst)\b/i;
-      const percentRegex = /(\d+(?:\.\d+)?)\s*%/;
-      const discountRegex = /\b(?:discount|savings|promo|coupon):?\s*-?\s*(\d+[\.,]\d{2})/i;
-      const tipRegex = /\b(?:tip|gratuity):?\s*(\d+[\.,]\d{2})/i;
-      const qtyAtRegex = /^(\d+)\s*(?:x|X|@)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/;
+    /**
+ * 2-Pass Smart Receipt Reconciler & Algebraic Validator
+ */
+function parseAndValidateReceipt(textLines) {
+  const priceRegex = /(\d+[\.,]\d{2})/g;
+  
+  // 1. SEMANTIC BLACKLISTS: Words that disqualify a line from being an item or enterprise name
+  const headerBlacklist = /invoice|receipt|bill|take\s*away|dine\s*in|table|order|customer|guest|welcome|copy/i;
+  const metadataBlacklist = /date|time|table|bill|cash|change|round|code|@|%\s*\d|qty|item\s*name|price|sub\s*total|grand\s*total|balance|due|paid|visa|mastercard|amex/i;
+  const discountKeywords = /discount|promo|off|coupon|voucher|save|less|single|member/i;
 
-      const result = {
-        enterprise: textLines[0] || "Unknown Enterprise",
-        date: "Not Found",
-        time: "Not Found",
-        items: [],
-        financials: { calculated_subtotal: 0.0, extracted_subtotal: null, tax: 0.0, tax_rate: null, discount: 0.0, tip: 0.0, grand_total: null },
-        financial_audit: { is_mathematically_valid: false, discrepancy: 0.0, item_errors: [], audit_notes: [] }
-      };
+  const result = {
+    enterprise: "Unknown Enterprise",
+    date: "Not Found",
+    time: "Not Found",
+    items: [],
+    financials: { calculated_subtotal: 0.0, extracted_subtotal: null, tax: 0.0, discount: 0.0, tip: 0.0, grand_total: null },
+    financial_audit: { is_mathematically_valid: false, discrepancy: 0.0, item_errors: [], audit_notes: [] }
+  };
 
-      textLines.forEach((line, idx) => {
-        const clean = line.trim();
-        if (!result.date && /\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4})\b/.test(clean)) result.date = clean.match(/\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4})\b/)[1];
-        if (!result.time && /\b((?:2[0-3]|[01]?[0-9]):[0-5][0-9])\b/.test(clean)) result.time = clean.match(/\b((?:2[0-3]|[01]?[0-9]):[0-5][0-9])\b/)[1];
+  const itemCandidates = [];
 
-        // --- TAX PROXIMITY & PERCENTAGE PARSING ---
-        if (taxLineRegex.test(clean)) {
-          const percentMatch = clean.match(percentRegex);
-          const prices = clean.match(priceRegex);
-          if (percentMatch) result.financials.tax_rate = `${percentMatch[1]}%`;
+  // --- PASS 1: METADATA EXTRACTION & SEMANTIC FILTERING ---
+  textLines.forEach((line, idx) => {
+    const clean = line.trim();
+    if (!clean) return;
 
-          if (prices && prices.length > 0) {
-            // Far-right price is the monetary dollar tax
-            result.financials.tax += parseFloat(prices[prices.length - 1].replace(',', '.'));
-          } else if (percentMatch && result.financials.calculated_subtotal > 0) {
-            // Dynamic fallback: calculate tax amount from OCR percentage rate
-            const rate = parseFloat(percentMatch[1]);
-            const calcTax = Number((result.financials.calculated_subtotal * (rate / 100)).toFixed(2));
-            result.financials.tax += calcTax;
-            result.financial_audit.audit_notes.push(`Tax dollar value ($${calcTax}) dynamically calculated from ${rate}% OCR rate.`);
-          }
-          return;
-        }
+    // A. Smart Enterprise Name Detection (Skip generic headers like "INVOICE")
+    if (result.enterprise === "Unknown Enterprise" && idx < 5) {
+      if (!headerBlacklist.test(clean) && !/\d{3,}/.test(clean) && clean.length > 2) {
+        result.enterprise = clean;
+      }
+    }
 
-        if (discountRegex.test(clean)) { result.financials.discount += parseFloat(clean.match(discountRegex)[1].replace(',', '.')); return; }
-        if (tipRegex.test(clean)) { result.financials.tip += parseFloat(clean.match(tipRegex)[1].replace(',', '.')); return; }
-        if (/^subtotal/i.test(clean) && priceRegex.test(clean)) {
-          const m = clean.match(priceRegex);
-          result.financials.extracted_subtotal = parseFloat(m[m.length - 1].replace(',', '.'));
-          return;
-        }
-        if (/total|amount due|balance/i.test(clean) && !/subtotal/i.test(clean)) {
-          const m = clean.match(priceRegex);
-          if (m) result.financials.grand_total = parseFloat(m[m.length - 1].replace(',', '.'));
-          return;
-        }
+    // B. Date & Time Extraction
+    if (!result.date && /\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4})\b/.test(clean)) {
+      result.date = clean.match(/\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4})\b/)[1];
+    }
+    // Handles noisy time formats like "14:05.51" or "14:05:51"
+    if (!result.time && /\b((?:2[0-3]|[01]?[0-9])[:\.][0-5][0-9](?:[:\.][0-5][0-9])?)\b/.test(clean)) {
+      result.time = clean.match(/\b((?:2[0-3]|[01]?[0-9])[:\.][0-5][0-9](?:[:\.][0-5][0-9])?)\b/)[1];
+    }
 
-        // --- LINE ITEM EXTRACTION & INDIVIDUAL MATH AUDIT ---
-        const prices = clean.match(priceRegex);
-        if (prices && idx > 0 && !/cash|change|card|visa|mastercard|subtotal|total|tax/i.test(clean)) {
-          let qty = 1, unit = 0.0, total = parseFloat(prices[prices.length - 1].replace(',', '.')), name = clean;
-          const qm = clean.match(qtyAtRegex);
-          if (qm) {
-            qty = parseInt(qm[1], 10);
-            unit = parseFloat(qm[2].replace(',', '.'));
-            total = qm[3] ? parseFloat(qm[3].replace(',', '.')) : qty * unit;
-            name = clean.replace(qtyAtRegex, '').trim();
-          } else {
-            unit = total;
-            name = clean.replace(/(\d+[\.,]\d{2})/g, '').trim();
-          }
-          name = name.replace(/[\$€£₹@xX\-]+$/, '').trim();
-          if (name.length > 1 && !/^\d+$/.test(name)) {
-            const expectedItemTotal = Number((qty * unit).toFixed(2));
-            if (Math.abs(expectedItemTotal - total) > 0.02) {
-              result.financial_audit.item_errors.push(`Math mismatch on "${name}": ${qty} @ ${unit} = ${expectedItemTotal}, OCR read ${total}`);
-            }
-            result.items.push({ name, quantity: qty, unit_price: unit, total_price: total });
-            result.financials.calculated_subtotal += total;
-          }
-        }
+    // C. Extract Explicit Totals & Taxes
+    if (/^sub\s*total/i.test(clean)) {
+      const m = clean.match(priceRegex);
+      if (m) result.financials.extracted_subtotal = parseFloat(m[m.length - 1].replace(',', '.'));
+      return;
+    }
+    if (/total|amount due|balance/i.test(clean) && !/sub/i.test(clean)) {
+      const m = clean.match(priceRegex);
+      if (m) result.financials.grand_total = parseFloat(m[m.length - 1].replace(',', '.'));
+      return;
+    }
+
+    // D. Filter out known non-item lines using Semantic Blacklist
+    if (metadataBlacklist.test(clean)) {
+      // If it's explicitly a discount line, grab the dollar value and add to discount bucket
+      if (discountKeywords.test(clean)) {
+        const m = clean.match(priceRegex);
+        if (m) result.financials.discount += parseFloat(m[m.length - 1].replace(',', '.'));
+      }
+      return; 
+    }
+
+    // E. Store remaining lines with prices as Item Candidates
+    const prices = clean.match(priceRegex);
+    if (prices) {
+      const val = parseFloat(prices[prices.length - 1].replace(',', '.'));
+      itemCandidates.push({ rawText: clean, value: val, isProcessed: false });
+    }
+  });
+
+  // --- PASS 2: ALGEBRAIC RECONCILIATION ($A - B = C$) ---
+  // Audits consecutive candidates to see if one is a discount or subtotal in disguise
+  for (let i = 0; i < itemCandidates.length; i++) {
+    const current = itemCandidates[i];
+    if (current.isProcessed) continue;
+
+    const next1 = itemCandidates[i + 1];
+    const next2 = itemCandidates[i + 2];
+
+    // Check algebraic relationship: Item (15.00) - Modifier (3.00) = Result (12.00)
+    if (next1 && next2 && Math.abs((current.value - next1.value) - next2.value) <= 0.05) {
+      // We found a fragmented discount!
+      const name = current.rawText.replace(priceRegex, '').replace(/\d+$/, '').trim();
+      
+      result.items.push({
+        name: name || "Item",
+        quantity: 1,
+        unit_price: current.value,
+        total_price: next2.value // The true discounted price!
       });
 
-      result.financials.calculated_subtotal = Number(result.financials.calculated_subtotal.toFixed(2));
-      result.financials.tax = Number(result.financials.tax.toFixed(2));
-
-      // Estimate grand total if OCR missed the bottom line
-      if (result.financials.grand_total === null) {
-        result.financials.grand_total = Number((result.financials.calculated_subtotal + result.financials.tax + result.financials.tip - result.financials.discount).toFixed(2));
-        result.financial_audit.audit_notes.push("Grand total estimated from item subtotal, tax, and tip.");
-      }
-
-      const expectedGrand = Number((result.financials.calculated_subtotal + result.financials.tax + result.financials.tip - result.financials.discount).toFixed(2));
-      const diff = Number((result.financials.grand_total - expectedGrand).toFixed(2));
-      result.financial_audit.discrepancy = diff;
-      result.financial_audit.is_mathematically_valid = (Math.abs(diff) <= 0.05);
-
-      if (!result.financial_audit.is_mathematically_valid) {
-        result.financial_audit.audit_notes.push(`Equation Fails! Subtotal(${result.financials.calculated_subtotal}) + Tax(${result.financials.tax}) - Discount(${result.financials.discount}) = Expected ${expectedGrand}, but Grand Total reads ${result.financials.grand_total}.`);
-      }
-      return result;
+      result.financials.discount += next1.value;
+      result.financials.calculated_subtotal += next2.value;
+      
+      current.isProcessed = true;
+      next1.isProcessed = true;
+      next2.isProcessed = true;
+      result.financial_audit.audit_notes.push(`Reconciled discount: ${current.value} - ${next1.value} = ${next2.value}`);
+      continue;
     }
+
+    // Check if line is a leftover modifier (e.g., "SINGLE 3.00")
+    if (discountKeywords.test(current.rawText)) {
+      result.financials.discount += current.value;
+      current.isProcessed = true;
+      continue;
+    }
+
+    // Standard Line Item Processing
+    let name = current.rawText.replace(priceRegex, '').replace(/[\$€£₹@xX\-\.]+\s*$/, '').trim();
+    if (name.length > 1 && !/^\d+$/.test(name)) {
+      result.items.push({
+        name: name,
+        quantity: 1,
+        unit_price: current.value,
+        total_price: current.value
+      });
+      result.financials.calculated_subtotal += current.value;
+      current.isProcessed = true;
+    }
+  }
+
+  // --- PASS 3: FINAL FINANCIAL AUDIT ---
+  result.financials.calculated_subtotal = Number(result.financials.calculated_subtotal.toFixed(2));
+  result.financials.discount = Number(result.financials.discount.toFixed(2));
+
+  // If grand total wasn't explicitly found, reconcile from cash/subtotal
+  if (result.financials.grand_total === null) {
+    result.financials.grand_total = result.financials.extracted_subtotal || result.financials.calculated_subtotal;
+  }
+
+  const expectedGrand = Number((result.financials.calculated_subtotal + result.financials.tax + result.financials.tip).toFixed(2));
+  const diff = Number((result.financials.grand_total - expectedGrand).toFixed(2));
+  result.financial_audit.discrepancy = diff;
+  result.financial_audit.is_mathematically_valid = (Math.abs(diff) <= 0.05);
+
+  if (!result.financial_audit.is_mathematically_valid) {
+    result.financial_audit.audit_notes.push(`Math mismatch: Items(${result.financials.calculated_subtotal}) != Grand Total(${result.financials.grand_total}). Difference: $${diff}`);
+  }
+
+  return result;
+}
 
     // -------------------------------------------------------------
     // 5. HELPER: CLEAN JSON EXTRACTOR & SANITIZER
