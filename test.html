@@ -34,7 +34,7 @@
 <body>
 
   <h2>Universal Global POS & Digital Cart Parser</h2>
-  <p style="color: var(--muted);">Handles Global Currencies (CHF/EUR/RM/INR/USD), Comma Decimals, Target Coupons, and Digital App Carts.</p>
+  <p style="color: var(--muted);">Engineered for Global Currencies (CHF/EUR/RM/INR/USD), Comma Decimals, Target Coupons, and Digital Carts.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -188,7 +188,7 @@
         ocrEngine = null;
       }
 
-      await new Promise(r => setTimeout(r, 250)); // Yield thread for WASM unbinding
+      await new Promise(r => setTimeout(r, 250));
 
       receiptInput.value = '';
       currentMode = null;
@@ -358,16 +358,16 @@
         this.timeRegex = /\b((?:2[0-3]|[01]?[0-9]|O|l)[:\.][0-5O][0-9O](?:[:\.][0-5O][0-9O])?(?:\s*[AP]M)?)\b/i;
 
         this.headerBlacklist = /invoice|receipt|bill|take\s*away|dine\s*in|table|order|customer|guest|welcome|copy|tax\s*invoice|terminal|cashier|server|merchant|transaction|approval|swiped|chip|contactless|credit|debit|purchase|card|approved|branch|attach\s*file|comments|history|print|paid/i;
-        this.metadataBlacklist = /date|time|table|bill|cash|change|round|code|@|%\s*\d|qty|item\s*name|price|sub\s*total|grand\s*total|balance|due|paid|visa|mastercard|amex|discover|printed|come\s*again|thank|merchant|terminal|approval|swiped|tip|gratuity|tax|vat|gst|hst|cgst|sgst|igst|gstin|place\s*of\s*supply|terms|amount\s*in\s*words|rupee|only|cartwheel|saved|expires|loyalty|member|mrp|delivery|surge|coupon|proceed|checkout|remove/i;
+        this.metadataBlacklist = /date|time|table|bill|cash|change|round|code|@|%\s*\d|qty|item\s*name|price|sub\s*total|grand\s*total|balance|due|paid|visa|mastercard|amex|discover|printed|come\s*again|thank|merchant|terminal|approval|swiped|tip|gratuity|tax|vat|gst|hst|cgst|sgst|igst|gstin|place\s*of\s*supply|terms|amount\s*in\s*words|rupee|only|cartwheel|saved|expires|loyalty|member|mrp|delivery|surge|coupon|proceed|checkout|remove|payment\s*details|bank\s*(?:code|name|acc)|contact\s*us|www\.|http|email|fax|tel|phone/i;
         this.discountKeywords = /discount|promo|off|coupon|voucher|save|less|single|member|cartwheel|loyalty/i;
+        this.contactAndIdShield = /(?:\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b|\+\d{1,3}[-.\s]\d+|\b(?:fax|tel|phone|ph|mob|cell|pin|zip|po|p\.o\.|box|nr\.|no\.|id|table|tisch|st|ave|rd|dr|blvd|lane|colony|nagar)\b.?\s*\d+|\b\d{4,6}\b\s*(?:Grindelwald|Any\s*City|Tamil|India|NY|CA|MA|ST|TX|FL|WA|UK|USA|CHF|EUR)?)/i;
       }
 
-      // HELPER: UNIVERSAL CURRENCY & COMMA-DECIMAL NORMALIZER
-      parseUniversalFloat(str) {
+      parseUniversalFloat(str, textLine = '') {
         if (!str) return null;
-        // Strip international currencies and OCR typos (CHF, EUR, RM, INR, USD, ₹, Rs, 天, <, ¥)
+        if (this.contactAndIdShield.test(textLine) && !/(?:subtotal|total|amount|price|cost|rate|amt|usd|rm|chf|eur|₹|\$)/i.test(textLine)) return null;
+
         let clean = str.replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').trim();
-        // Handle European/Swiss comma decimals (e.g. "54,50" -> "54.50" or "1.000,50" -> "1000.50")
         if (/^\d{1,3}(?:[.,]\d{3})*[.,]\d{2}$/.test(clean)) {
           if (clean.indexOf(',') !== -1 && clean.lastIndexOf(',') > clean.lastIndexOf('.')) {
             clean = clean.replace(/\./g, '').replace(',', '.');
@@ -377,11 +377,17 @@
         } else {
           clean = clean.replace(/,/g, '');
         }
+
         const match = clean.match(/(-?\d+(?:\.\d+)?)/);
-        return match ? parseFloat(match[1]) : null;
+        if (!match) return null;
+        const val = parseFloat(match[1]);
+        
+        if (Number.isInteger(val) && Math.abs(val) >= 100) {
+          if (!/(?:\$|£|€|₹|RM|CHF|EUR|USD|00$|,00$|\.00$)/i.test(str) && !/(?:total|subtotal|amount|price)/i.test(textLine)) return null;
+        }
+        return val;
       }
 
-      // PASS 0: SPATIAL LINE CLUSTERING
       clusterSpatialLines(rawOcrItems) {
         const items = rawOcrItems.map(item => {
           let top = 0, left = 0, right = 0, bottom = 0;
@@ -425,7 +431,6 @@
         return lines;
       }
 
-      // PASS 1: GLOBAL CLASSIFICATION & METADATA ISOLATION
       classifyAndExtractMetadata(lines) {
         const meta = {
           type: "ITEMIZED_STANDARD",
@@ -442,7 +447,6 @@
           if (/my\s*cart|checkout|mrp|delivery\s*charges|surge\s*charges|coupon\s*discount|proceed|add\s*a\s*tip/i.test(text)) digitalAppSignals++;
           if (/gstin|cgst|sgst|igst|tax\s*invoice|place\s*of\s*supply/i.test(text)) gstSignals++;
 
-          // Enterprise Shield
           if (meta.enterprise === "Unknown Enterprise" && idx < 6) {
             if (!this.metadataBlacklist.test(text) && !this.headerBlacklist.test(text) && !/\d/.test(text) && text.length > 2) {
               meta.enterprise = text;
@@ -471,42 +475,48 @@
         return meta;
       }
 
-      // PASS 2 & 3: SPECIALIZED DIGITAL APP CART & STANDARD TABLE PARSING
       parseTableItems(lines, receiptType) {
         const items = [];
         const totalsBlock = { subtotal: null, tax: 0.0, tip: 0.0, discount: 0.0, rounding: 0.0, delivery: 0.0, surge: 0.0, grandTotal: null };
 
-        // DIGITAL APP CART SPECIAL HANDLER (Blinkit / Zepto / Instacart)
         if (receiptType === "DIGITAL_APP_CART") {
           lines.forEach(line => {
             const text = line.text;
-            const val = this.parseUniversalFloat(text);
+            const val = this.parseUniversalFloat(text, text);
             if (val === null) return;
-
             if (/mrp|item\s*total/i.test(text)) totalsBlock.subtotal = val;
             else if (/product\s*discount|item\s*discount|coupon/i.test(text)) totalsBlock.discount += Math.abs(val);
             else if (/delivery/i.test(text)) totalsBlock.delivery += (/free/i.test(text) ? 0.0 : val);
             else if (/surge|handling|small\s*cart/i.test(text)) totalsBlock.surge += val;
             else if (/bill\s*total|to\s*pay|total\s*amount/i.test(text)) totalsBlock.grandTotal = val;
           });
-
           if (totalsBlock.grandTotal === null && totalsBlock.subtotal !== null) {
             totalsBlock.grandTotal = Number((totalsBlock.subtotal - totalsBlock.discount + totalsBlock.delivery + totalsBlock.surge).toFixed(2));
           }
           return { items: [], totalsBlock };
         }
 
-        // STANDARD ITEMIZED / GST / GROCERY PARSER
+        let tableTopY = 0;
+        let tableBottomY = Number.MAX_SAFE_VALUE;
+
         lines.forEach(line => {
           const text = line.text;
-          // Ignore secondary currency conversions (e.g., Swiss "Entspricht in Euro 36.33 EUR")
+          if (/(?:item|description|qty|quantity)\b.*\b(?:rate|price|amount|cost|subtotal|amt)\b/i.test(text)) {
+            tableTopY = line.y;
+          }
+          if (tableBottomY === Number.MAX_SAFE_VALUE && /^(?:sub\s*total|\bsubtotal\b|total\s*:|payment\s*details|bank\s*code|total\s*in\s*words|thanks\s*for)/i.test(text)) {
+            if (line.y > tableTopY + 20) tableBottomY = line.y;
+          }
+        });
+
+        lines.forEach(line => {
+          const text = line.text;
           if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(text)) return;
 
-          // Find all potential numbers using Universal Decimal Normalizer
           const rawTokens = text.split(/\s+/);
           const numPrices = [];
           rawTokens.forEach(tok => {
-            const val = this.parseUniversalFloat(tok);
+            const val = this.parseUniversalFloat(tok, text);
             if (val !== null && val !== 0 && !/\d{6,}/.test(tok)) numPrices.push(val);
           });
           const lastPrice = numPrices.length > 0 ? numPrices[numPrices.length - 1] : null;
@@ -517,22 +527,21 @@
           if (/^sub\s*total|\bsubtotal\b|\bnet\s*amount\b/i.test(text) && lastPrice !== null) { totalsBlock.subtotal = lastPrice; return; }
           if (/total|amount\s*due|balance\s*due|charge/i.test(text) && !/sub/i.test(text) && lastPrice !== null) { totalsBlock.grandTotal = lastPrice; return; }
 
-          // Suppress Target / Grocery discount modifier lines and pipe into Discount bucket
           if (this.metadataBlacklist.test(text) || /saved\s+\d|cartwheel|loyalty|member\s*savings|\b\d+\s+ea\b|net\s+\$/i.test(text)) {
             if (this.discountKeywords.test(text) && lastPrice !== null) totalsBlock.discount += Math.abs(lastPrice);
             return;
           }
 
-          if (numPrices.length === 0 || /\b\d{6,}\b/.test(text)) return; // Skip barcodes
+          if (line.y <= tableTopY || line.y >= tableBottomY) return;
+          if (numPrices.length === 0 || /\b\d{6,}\b/.test(text)) return;
 
           let qty = 1, unitPrice = lastPrice, totalPrice = lastPrice, rawName = text;
 
-          // Inline explicit quantity "2 @ 3.50" or "2 x 3.50 7.00"
           const inlineMatch = text.match(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i);
           if (inlineMatch) {
             qty = parseInt(inlineMatch[1], 10);
-            unitPrice = this.parseUniversalFloat(inlineMatch[2]) || lastPrice;
-            totalPrice = inlineMatch[3] ? (this.parseUniversalFloat(inlineMatch[3]) || Number((qty * unitPrice).toFixed(2))) : Number((qty * unitPrice).toFixed(2));
+            unitPrice = this.parseUniversalFloat(inlineMatch[2], text) || lastPrice;
+            totalPrice = inlineMatch[3] ? (this.parseUniversalFloat(inlineMatch[3], text) || Number((qty * unitPrice).toFixed(2))) : Number((qty * unitPrice).toFixed(2));
             rawName = text.replace(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i, '');
           } else {
             const leadQtyMatch = text.match(/^(\d+)\s+([A-Za-z].*)/);
@@ -557,13 +566,11 @@
             .replace(/[\$€£₹@xX\-\.]+\s*$/, '')
             .trim();
 
-          // Suppress isolated unit descriptors ("pcs", "kgs", "nos")
           if (cleanName.length > 1 && !/^\d+$/.test(cleanName) && !/^(?:pcs|kgs|nos|box|ml|gm)$/i.test(cleanName)) {
             items.push({ name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice });
           }
         });
 
-        // Algebraic Discount Reconciler ($A - B = C$) without Double-Dipping
         const reconciledItems = [];
         for (let i = 0; i < items.length; i++) {
           const curr = items[i], n1 = items[i + 1], n2 = items[i + 2];
@@ -579,7 +586,6 @@
         return { items: reconciledItems, totalsBlock };
       }
 
-      // PASS 4: GLOBAL FINANCIAL RECONCILER & ACCOUNTING AUDIT
       process(rawOcrItems) {
         const lines = this.clusterSpatialLines(rawOcrItems);
         const metadata = this.classifyAndExtractMetadata(lines);
