@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mobile Donut Parser & Math Auditor Suite</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #4ade80; --error: #f87171; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 950px; margin: 1.5rem auto; padding: 0 1rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
+    h2, h3 { margin-top: 0; font-size: 1.2rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 750px) { .grid { grid-template-columns: 1fr; } }
+    label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
+    select, input[type="file"] { width: 100%; padding: 0.65rem; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; color: var(--text); box-sizing: border-box; }
+    input[type="file"] { border: 2px dashed var(--border); cursor: pointer; }
+    input[type="file"]:disabled, button:disabled, select:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-group { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1rem; }
+    .btn { flex: 1; min-width: 150px; padding: 0.75rem 1rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; text-align: center; }
+    .btn-primary { background: #0284c7; color: white; }
+    .btn-primary:hover { background: #0369a1; }
+    .btn-danger { background: #dc2626; color: white; }
+    .btn-danger:hover { background: #b91c1c; }
+    .status { margin-top: 10px; font-weight: 600; font-size: 0.85rem; color: var(--accent); }
+    pre { background: #020617; color: #38bdf8; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; border: 1px solid var(--border); max-height: 420px; }
+    .metrics { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; font-size: 0.75rem; color: var(--muted); }
+    .metric-badge { background: #020617; padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid var(--border); }
+    .audit-panel { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem; font-weight: 600; display: none; }
+    .audit-pass { background: rgba(74, 222, 128, 0.1); border: 1px solid var(--success); color: var(--success); }
+    .audit-fail { background: rgba(248, 113, 113, 0.1); border: 1px solid var(--error); color: var(--error); }
+    canvas { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 0.5rem; display: none; }
+  </style>
+</head>
+<body>
+
+  <h2>Mobile Donut Parser & Math Auditor Suite</h2>
+  <p style="color: var(--muted); font-size: 0.9rem;">Runs Quantized Donut end-to-end (~180 MB) with OpenCV perspective correction and automated accounting math verification.</p>
+
+  <!-- CONTROL PANEL -->
+  <div class="card">
+    <h3>1. Mobile Engine Configuration</h3>
+    
+    <div class="grid">
+      <div>
+        <label for="backendSelect">Transformers.js Execution Backend:</label>
+        <select id="backendSelect">
+          <option value="webgpu">WebGPU (Fastest Mobile GPU)</option>
+          <option value="wasm">WASM SIMD (Universal Mobile CPU Fallback)</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="quantSelect">Donut Quantization Payload:</label>
+        <select id="quantSelect">
+          <option value="q8">INT8 Quantized (~180 MB - Balanced)</option>
+          <option value="q4">INT4 Quantized (~110 MB - Smallest RAM)</option>
+          <option value="fp32">FP32 Unquantized (~800 MB - Desktop Only)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top: 0.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap;">
+      <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+        <input type="checkbox" id="autoCropCheck" checked />
+        <span><strong>Enable OpenCV Mobile Crop</strong> (Straightens camera angles)</span>
+      </label>
+
+      <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+        <input type="checkbox" id="mathAuditCheck" checked />
+        <span><strong>Enforce Math Audit</strong> (Audits Donut line items against Grand Total)</span>
+      </label>
+    </div>
+
+    <div class="btn-group">
+      <button id="initBtn" class="btn btn-primary">Load Quantized Donut</button>
+      <button id="freeMemBtn" class="btn btn-danger" title="Purges mobile RAM and forcibly unbinds WASM threads">Nuke Memory & Reset Session</button>
+    </div>
+    
+    <div id="status" class="status">Loading OpenCV.js in background...</div>
+
+    <div class="metrics">
+      <div class="metric-badge">Engine: <span id="activeEngineLabel">None</span></div>
+      <div class="metric-badge">RAM Status: <span id="memStatusLabel">Clean</span></div>
+      <div class="metric-badge">Crop Speed: <span id="cropTime">0 ms</span></div>
+      <div class="metric-badge">Donut Speed: <span id="parseTime">0 ms</span></div>
+    </div>
+  </div>
+
+  <!-- INPUT & OUTPUT -->
+  <div class="card">
+    <h3>2. Capture / Upload Receipt Photo</h3>
+    <input type="file" id="receiptInput" accept="image/*" capture="environment" disabled />
+    <canvas id="cropCanvas"></canvas>
+  </div>
+
+  <div id="auditPanel" class="audit-panel"></div>
+
+  <div class="grid">
+    <div class="card" style="margin-bottom: 0;">
+      <h3>Raw Donut XML Tokens</h3>
+      <pre id="rawOutput" style="color: #94a3b8;">Waiting for image upload...</pre>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+      <h3>Audited & Reconciled JSON Output</h3>
+      <pre id="jsonOutput">Waiting for Donut inference...</pre>
+    </div>
+  </div>
+
+  <!-- DYNAMIC CDN IMPORTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@techstark/opencv-js@4.10.0-release.1/dist/opencv.js" async></script>
+
+  <script type="module">
+    import { pipeline, RawImage, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
+
+    if (env.backends?.onnx?.wasm) {
+      env.backends.onnx.wasm.numThreads = Math.min(4, navigator.hardwareConcurrency || 2);
+    }
+
+    const backendSelect = document.getElementById('backendSelect');
+    const quantSelect = document.getElementById('quantSelect');
+    const autoCropCheck = document.getElementById('autoCropCheck');
+    const mathAuditCheck = document.getElementById('mathAuditCheck');
+    const initBtn = document.getElementById('initBtn');
+    const freeMemBtn = document.getElementById('freeMemBtn');
+    const statusElem = document.getElementById('status');
+    const receiptInput = document.getElementById('receiptInput');
+    const activeEngineLabel = document.getElementById('activeEngineLabel');
+    const memStatusLabel = document.getElementById('memStatusLabel');
+    const cropTimeElem = document.getElementById('cropTime');
+    const parseTimeElem = document.getElementById('parseTime');
+    const rawOutput = document.getElementById('rawOutput');
+    const jsonOutput = document.getElementById('jsonOutput');
+    const auditPanel = document.getElementById('auditPanel');
+    const cropCanvas = document.getElementById('cropCanvas');
+
+    let donutPipe = null;
+    let cvReady = false;
+    let isProcessing = false;
+
+    // Monitor OpenCV initialization
+    const checkCv = setInterval(() => {
+      if (typeof cv !== 'undefined' && cv.Mat) {
+        clearInterval(checkCv);
+        cvReady = true;
+        if (!donutPipe) statusElem.textContent = 'OpenCV Ready! Select backend and click Load Quantized Donut...';
+      }
+    }, 200);
+
+    // -------------------------------------------------------------
+    // 1. MOBILE MEMORY NUKE ENGINE
+    // -------------------------------------------------------------
+    async function resetSessionAndMemory() {
+      statusElem.textContent = 'Purging mobile VRAM and unbinding worker threads...';
+      isProcessing = false;
+      receiptInput.disabled = true;
+      
+      if (donutPipe) {
+        try { if (typeof donutPipe.dispose === 'function') await donutPipe.dispose(); } catch (_) {}
+        donutPipe = null;
+      }
+
+      await new Promise(r => setTimeout(r, 250)); // Yield thread for mobile OS cleanup
+
+      receiptInput.value = '';
+      activeEngineLabel.textContent = 'None';
+      memStatusLabel.textContent = 'VRAM Purged';
+      memStatusLabel.style.color = '#4ade80';
+      cropCanvas.style.display = 'none';
+      statusElem.textContent = 'Mobile RAM cleaned successfully! Ready to initialize.';
+      statusElem.style.color = '#4ade80';
+    }
+
+    freeMemBtn.addEventListener('click', () => resetSessionAndMemory());
+
+    window.addEventListener('unhandledrejection', async (event) => {
+      const errStr = String(event.reason || '');
+      if (errStr.includes('WebGPU') || errStr.includes('ComputePipeline') || errStr.includes('Invalid buffer') || errStr.includes('wasm') || errStr.includes('already started')) {
+        console.error("Intercepted mobile worker crash:", event.reason);
+        event.preventDefault();
+        await resetSessionAndMemory();
+        statusElem.textContent = "CRITICAL MOBILE MEMORY LIMIT / CRASH: VRAM purged. Try selecting WASM or INT4 (q4) before loading again.";
+        statusElem.style.color = '#f87171';
+      }
+    });
+
+    // -------------------------------------------------------------
+    // 2. LOAD DONUT MODEL
+    // -------------------------------------------------------------
+    initBtn.addEventListener('click', async () => {
+      initBtn.disabled = true;
+      receiptInput.disabled = true;
+      await resetSessionAndMemory();
+
+      const backend = backendSelect.value;
+      const dtype = quantSelect.value;
+
+      try {
+        statusElem.textContent = `Downloading Donut CORD [${dtype.toUpperCase()}] into mobile [${backend.toUpperCase()}] runtime...`;
+        
+        donutPipe = await pipeline('image-to-text', 'Xenova/donut-base-finetuned-cord-v2', {
+        // donutPipe = await pipeline('image-to-text', 'mychen76/invoice-and-receipts_donut_v1', {
+          device: backend,
+          dtype: dtype
+        });
+
+        activeEngineLabel.textContent = `Donut CORD (${dtype})`;
+        memStatusLabel.textContent = `${backend.toUpperCase()} Active`;
+        memStatusLabel.style.color = '#4ade80';
+        statusElem.textContent = 'Donut Loaded! Capture or select a receipt photo below.';
+        statusElem.style.color = '#4ade80';
+        receiptInput.disabled = false;
+        initBtn.disabled = false;
+      } catch (err) {
+        statusElem.textContent = `Initialization Error: ${err.message}. If on a low-end phone, switch to INT4 (q4) or WASM.`;
+        statusElem.style.color = '#f87171';
+        initBtn.disabled = false;
+      }
+    });
+
+    // -------------------------------------------------------------
+    // 3. OPENCV PERSPECTIVE WARP AUTO-CROP ENGINE
+    // -------------------------------------------------------------
+    async function applyOpenCvAutoCrop(imageElement) {
+      if (!cvReady || !autoCropCheck.checked) {
+        cropCanvas.style.display = 'none';
+        return imageElement;
+      }
+
+      const t0 = performance.now();
+      let src = cv.imread(imageElement);
+      let dst = new cv.Mat(), gray = new cv.Mat(), blurred = new cv.Mat(), edges = new cv.Mat();
+      let contours = new cv.MatVector(), hierarchy = new cv.Mat();
+
+      try {
+        cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+        cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
+        cv.Canny(blurred, edges, 75, 200);
+        cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+        let maxArea = 0, maxIdx = -1, imgArea = src.cols * src.rows;
+        for (let i = 0; i < contours.size(); ++i) {
+          const cnt = contours.get(i), area = cv.contourArea(cnt);
+          if (area > maxArea && area > imgArea * 0.1) {
+            let peri = cv.arcLength(cnt, true), approx = new cv.Mat();
+            cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+            if (approx.rows === 4) { maxArea = area; maxIdx = i; }
+            approx.delete();
+          }
+        }
+
+        if (maxIdx !== -1) {
+          const cnt = contours.get(maxIdx);
+          let peri = cv.arcLength(cnt, true), approx = new cv.Mat();
+          cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+
+          let pts = [];
+          for (let i = 0; i < 4; i++) pts.push({ x: approx.data32S[i * 2], y: approx.data32S[i * 2 + 1] });
+          approx.delete();
+
+          pts.sort((a, b) => a.y - b.y);
+          let top = pts.slice(0, 2).sort((a, b) => a.x - b.x), bottom = pts.slice(2, 4).sort((a, b) => a.x - b.x);
+          let tl = top[0], tr = top[1], bl = bottom[0], br = bottom[1];
+
+          let maxW = Math.max(Math.hypot(br.x - bl.x, br.y - bl.y), Math.hypot(tr.x - tl.x, tr.y - tl.y));
+          let maxH = Math.max(Math.hypot(tr.x - br.x, tr.y - br.y), Math.hypot(tl.x - bl.x, tl.y - bl.y));
+
+          let srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, [tl.x, tl.y, tr.x, tr.y, br.x, br.y, bl.x, bl.y]);
+          let dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, maxW, 0, maxW, maxH, 0, maxH]);
+
+          let M = cv.getPerspectiveTransform(srcTri, dstTri);
+          cv.warpPerspective(src, dst, M, new cv.Size(maxW, maxH), cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+
+          srcTri.delete(); dstTri.delete(); M.delete();
+          cv.imshow('cropCanvas', dst);
+          cropCanvas.style.display = 'block';
+          cropTimeElem.textContent = `${(performance.now() - t0).toFixed(0)} ms`;
+
+          src.delete(); dst.delete(); gray.delete(); blurred.delete(); edges.delete(); contours.delete(); hierarchy.delete();
+          return cropCanvas;
+        }
+      } catch (err) { console.warn("OpenCV Auto-Crop bypassed on mobile:", err); }
+
+      try { src.delete(); dst.delete(); gray.delete(); blurred.delete(); edges.delete(); contours.delete(); hierarchy.delete(); } catch (_) {}
+      cropCanvas.style.display = 'none';
+      cropTimeElem.textContent = '0 ms (Bypassed)';
+      return imageElement;
+    }
+
+    // -------------------------------------------------------------
+    // 4. DONUT XML TO STRUCTURED JSON CONVERTER
+    // -------------------------------------------------------------
+    function donutXmlToJson(xmlString) {
+      const cleanXml = xmlString.replace(/<\/?s_cord-v2>/g, '').trim();
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(`<root>${cleanXml}</root>`, 'text/xml');
+
+      function parseNode(node) {
+        if (!node.children.length) return node.textContent.trim();
+        const result = {};
+        for (const child of node.children) {
+          const key = child.tagName.replace(/^s_/, '');
+          const value = parseNode(child);
+          if (result[key]) {
+            if (!Array.isArray(result[key])) result[key] = [result[key]];
+            result[key].push(value);
+          } else { result[key] = value; }
+        }
+        return result;
+      }
+      return parseNode(xmlDoc.documentElement);
+    }
+
+    // -------------------------------------------------------------
+    // 5. DETERMINISTIC FINANCIAL MATH AUDITOR (Audits Donut Output)
+    // -------------------------------------------------------------
+    function auditDonutFinancials(donutJson) {
+      const audit = {
+        is_mathematically_valid: false,
+        discrepancy: 0.0,
+        item_errors: [],
+        audit_notes: []
+      };
+
+      if (!mathAuditCheck.checked) {
+        audit.audit_notes.push("Math audit manually disabled.");
+        return { auditedJson: donutJson, audit };
+      }
+
+      let calculatedSubtotal = 0.0;
+      const items = [];
+      const rawMenu = donutJson.menu ? (Array.isArray(donutJson.menu) ? donutJson.menu : [donutJson.menu]) : [];
+
+      // Extract items and verify individual price math
+      rawMenu.forEach((item) => {
+        const name = item.nm || item.name || "Item";
+        const priceStr = String(item.price || item.unitprice || '0').replace(/[^0-9\.-]+/g, '');
+        const qtyStr = String(item.cnt || item.qty || '1').replace(/[^0-9]+/g, '');
+        
+        const price = parseFloat(priceStr) || 0.0;
+        const qty = parseInt(qtyStr, 10) || 1;
+        const total = price; // In Donut CORD, 'price' is usually line total
+        const unitPrice = Number((total / qty).toFixed(2));
+
+        items.push({ name, quantity: qty, unit_price: unitPrice, total_price: total });
+        calculatedSubtotal += total;
+      });
+
+      calculatedSubtotal = Number(calculatedSubtotal.toFixed(2));
+
+      // Extract explicit totals & taxes generated by Donut
+      const totalStr = String(donutJson.total && (donutJson.total.total_price || donutJson.total.total || donutJson.total) || '0').replace(/[^0-9\.-]+/g, '');
+      const taxStr = String(donutJson.sub_total && (donutJson.sub_total.tax_price || donutJson.sub_total.tax) || '0').replace(/[^0-9\.-]+/g, '');
+      const discStr = String(donutJson.sub_total && (donutJson.sub_total.discount_price || donutJson.sub_total.discount) || '0').replace(/[^0-9\.-]+/g, '');
+
+      let grandTotal = parseFloat(totalStr) || null;
+      const tax = parseFloat(taxStr) || 0.0;
+      const discount = parseFloat(discStr) || 0.0;
+
+      if (grandTotal === null || grandTotal === 0) {
+        grandTotal = Number((calculatedSubtotal + tax - discount).toFixed(2));
+        audit.audit_notes.push("Donut missed Grand Total; estimated from items and tax.");
+      }
+
+      // Check accounting equation ($A + B - C = D$)
+      const expectedGrand = Number((calculatedSubtotal + tax - discount).toFixed(2));
+      const diff = Number((grandTotal - expectedGrand).toFixed(2));
+      
+      audit.discrepancy = diff;
+      audit.is_mathematically_valid = (Math.abs(diff) <= 0.05);
+
+      if (!audit.is_mathematically_valid) {
+        audit.audit_notes.push(`⚠️ Donut Hallucination Detected: Items(${calculatedSubtotal}) + Tax(${tax}) - Disc(${discount}) = Expected $${expectedGrand}, but Donut read Grand Total as $${grandTotal}. Diff: $${diff}`);
+      } else if (items.length > 0) {
+        audit.audit_notes.push("✓ Donut visual tokens verified: Financial math balances perfectly.");
+      }
+
+      // Construct clean, standardized mobile output format
+      const auditedJson = {
+        enterprise: donutJson.store && (donutJson.store.name || donutJson.store) || "Unknown Store",
+        date: donutJson.date || "Not Found",
+        time: donutJson.time || "Not Found",
+        items: items,
+        financials: {
+          calculated_subtotal: calculatedSubtotal,
+          tax: tax,
+          discount: discount,
+          grand_total: grandTotal
+        },
+        raw_donut_data: donutJson
+      };
+
+      return { auditedJson, audit };
+    }
+
+    // -------------------------------------------------------------
+    // 6. PIPELINE EXECUTION
+    // -------------------------------------------------------------
+    receiptInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file || !donutPipe) return;
+
+      if (isProcessing) {
+        statusElem.textContent = 'Please wait, active mobile inference running...';
+        return;
+      }
+
+      isProcessing = true;
+      receiptInput.disabled = true;
+      auditPanel.style.display = 'none';
+      jsonOutput.textContent = 'Running Stage 1: OpenCV Mobile Crop...';
+      rawOutput.textContent = 'Processing pixels...';
+      memStatusLabel.textContent = 'Inference Active (VRAM Locked)';
+      memStatusLabel.style.color = '#38bdf8';
+
+      try {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        await new Promise(res => img.onload = res);
+
+        // Stage 1: Auto-crop
+        const processedInput = await applyOpenCvAutoCrop(img);
+
+        jsonOutput.textContent = 'Running Stage 2: Donut Visual Generation...';
+        const t0 = performance.now();
+
+        // Convert HTML Image/Canvas to Transformers.js RawImage
+        const rawImage = await RawImage.fromURL(processedInput instanceof HTMLCanvasElement ? processedInput.toDataURL() : img.src);
+
+        // Stage 2: Execute Donut Vision-to-Text inference
+        const output = await donutPipe(rawImage, {
+          max_new_tokens: 512,
+          do_sample: false
+        });
+
+        const parseDuration = (performance.now() - t0).toFixed(0);
+        parseTimeElem.textContent = `${parseDuration} ms`;
+
+        const rawXml = output[0].generated_text;
+        rawOutput.textContent = rawXml;
+
+        // Stage 3: Parse XML to JSON and run Deterministic Math Auditor
+        const rawJson = donutXmlToJson(rawXml);
+        const { auditedJson, audit } = auditDonutFinancials(rawJson);
+        auditedJson.financial_audit = audit;
+
+        jsonOutput.textContent = JSON.stringify(auditedJson, null, 2);
+
+        // Render Math Audit Banner
+        auditPanel.style.display = 'block';
+        if (audit.is_mathematically_valid) {
+          auditPanel.className = 'audit-panel audit-pass';
+          auditPanel.innerHTML = `✓ DONUT MATH AUDIT PASSED: Generated item totals balance perfectly to Grand Total.`;
+        } else {
+          auditPanel.className = 'audit-panel audit-fail';
+          auditPanel.innerHTML = `⚠️ DONUT MATH HALLUCINATION DETECTED: Discrepancy of $${audit.discrepancy || '0.00'}. See audit notes in JSON for details.`;
+        }
+
+      } catch (err) {
+        jsonOutput.textContent = `Mobile Pipeline Error: ${err.message}\n${err.stack}`;
+        console.error("Mobile Donut error caught, resetting VRAM...", err);
+        if (String(err.message).includes('already started') || String(err.message).includes('Session') || String(err.message).includes('memory')) {
+          await resetSessionAndMemory();
+        }
+      } finally {
+        isProcessing = false;
+        receiptInput.disabled = false;
+        receiptInput.value = ''; // Clean input so same photo can be selected again
+        if (donutPipe) memStatusLabel.textContent = 'Active & Healthy';
+      }
+    });
+  </script>
+</body>
+</html>
