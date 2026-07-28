@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid Receipt Parser (PaddleOCR + SLM Fix)</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 850px; margin: 2rem auto; padding: 0 1.5rem; }
+    .card { background: var(--card); border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    input[type="file"] { display: block; width: 100%; padding: 0.75rem; border: 2px dashed #475569; border-radius: 8px; background: #0f172a; color: var(--muted); cursor: pointer; box-sizing: border-box; }
+    input[type="file"]:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status { margin-top: 10px; font-weight: 600; color: var(--accent); }
+    pre { background: #020617; color: #38bdf8; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; border: 1px solid #1e293b; max-height: 500px; }
+    .metrics { display: flex; gap: 1rem; margin-top: 1rem; font-size: 0.85rem; color: var(--muted); }
+    .metric-badge { background: #020617; padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid #334155; }
+  </style>
+</head>
+<body>
+
+  <h2>Hybrid Receipt Parser</h2>
+  <p style="color: var(--muted);">Stage 1: PaddleOCR | Stage 2: SmolLM-135M (WASM SIMD Engine)</p>
+
+  <div class="card">
+    <input type="file" id="receiptInput" accept="image/*" disabled />
+    <div id="status" class="status">Initializing models...</div>
+    
+    <div class="metrics">
+      <div class="metric-badge">OCR Time: <span id="ocrTime">0 ms</span></div>
+      <div class="metric-badge">SLM Time: <span id="slmTime">0 ms</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Extracted Receipt JSON</h3>
+    <pre id="output">Initialize models to proceed...</pre>
+  </div>
+
+  <script type="module">
+    import { PaddleOCR } from 'https://cdn.jsdelivr.net/npm/@paddleocr/paddleocr-js@0.4.2/+esm';
+    import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
+
+    // Optimize WASM threading for Transformers.js
+    if (env.backends?.onnx?.wasm) {
+    env.backends.onnx.wasm.numThreads = Math.min(4, navigator.hardwareConcurrency || 2);
+    }
+    const statusElem = document.getElementById('status');
+    const outputElem = document.getElementById('output');
+    const inputElem = document.getElementById('receiptInput');
+    const ocrTimeElem = document.getElementById('ocrTime');
+    const slmTimeElem = document.getElementById('slmTime');
+
+    let ocrEngine;
+    let slmPipeline;
+
+    // -------------------------------------------------------------
+    // INITIALIZATION: Load OCR + SLM (WASM Engine)
+    // -------------------------------------------------------------
+    async function initPipeline() {
+      try {
+        statusElem.textContent = '1/2: Loading PaddleOCR vision engine...';
+        ocrEngine = await PaddleOCR.create({
+          lang: 'en',
+          textDetectionModelName: 'PP-OCRv5_mobile_det',
+          textRecognitionModelName: 'PP-OCRv5_mobile_rec'
+        });
+
+        statusElem.textContent = '2/2: Loading SmolLM-135M into WASM engine...';
+        
+        // Use 'wasm' device to prevent WebGPU WGSL shader compilation errors
+        slmPipeline = await pipeline(
+          'text-generation',
+          'onnx-community/SmolLM2-135M-Instruct-ONNX-MHA',
+          {
+            device: 'wasm',
+            dtype: 'q4'
+          }
+        );
+
+        statusElem.textContent = 'Pipeline ready! Select a receipt image.';
+        statusElem.style.color = '#4ade80';
+        inputElem.disabled = false;
+      } catch (err) {
+        statusElem.textContent = `Initialization failed: ${err.message}`;
+        statusElem.style.color = '#f87171';
+      }
+    }
+
+    // -------------------------------------------------------------
+    // HELPER: Sort OCR Bounding Boxes into Natural Lines
+    // -------------------------------------------------------------
+    function extractSortedText(rawItems) {
+      const items = rawItems.map(item => {
+        let top = 0, left = 0;
+        const pts = item.poly || item.points || item.box || [];
+        if (Array.isArray(pts) && pts.length > 0) {
+          top = Array.isArray(pts[0]) ? Math.min(...pts.map(p => p[1])) : pts[1];
+          left = Array.isArray(pts[0]) ? Math.min(...pts.map(p => p[0])) : pts[0];
+        }
+        return { text: (item.text || '').trim(), top, left };
+      }).filter(i => i.text.length > 0);
+
+      items.sort((a, b) => a.top - b.top);
+
+      const lines = [];
+      items.forEach(item => {
+        const lastLine = lines[lines.length - 1];
+        if (lastLine && Math.abs(lastLine.y - item.top) < 12) {
+          lastLine.items.push(item);
+        } else {
+          lines.push({ y: item.top, items: [item] });
+        }
+      });
+
+      lines.forEach(line => line.items.sort((a, b) => a.left - b.left));
+      return lines.map(l => l.items.map(i => i.text).join(' ')).join('\n');
+    }
+
+    // -------------------------------------------------------------
+    // EXECUTION
+    // -------------------------------------------------------------
+    inputElem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      outputElem.textContent = 'Stage 1: Running PaddleOCR...';
+      
+      try {
+        // Stage 1: OCR
+        const t0 = performance.now();
+        const [ocrResults] = await ocrEngine.predict(file);
+        const rawItems = ocrResults.items || ocrResults.words || [];
+        const cleanText = extractSortedText(rawItems);
+        const t1 = performance.now();
+        ocrTimeElem.textContent = `${(t1 - t0).toFixed(0)} ms`;
+
+        outputElem.textContent = 'Stage 2: SmolLM generating structured JSON...';
+
+        // Stage 2: SLM ChatML Prompting
+        const systemPrompt = `You are a strict JSON receipt parser. Output ONLY valid JSON matching this schema:
+{
+  "enterprise": "string",
+  "date": "string",
+  "time": "string",
+  "items": [
+    {"name": "string", "quantity": 1, "unit_price": 0.0, "total_price": 0.0}
+  ],
+  "total": 0.0
+}`;
+
+        const prompt = `<|im_start|>system\n${systemPrompt}<|im_end|>\n<|im_start|>user\nExtract receipt details from this OCR text:\n${cleanText}<|im_end|>\n<|im_start|>assistant\n`;
+
+        const slmStart = performance.now();
+        const output = await slmPipeline(prompt, {
+          max_new_tokens: 300,
+          temperature: 0.1,
+          do_sample: false,
+          return_full_text: false
+        });
+        const slmEnd = performance.now();
+        slmTimeElem.textContent = `${(slmEnd - slmStart).toFixed(0)} ms`;
+
+        const rawGenerated = output[0].generated_text.trim();
+        
+        // Extract valid JSON block
+        const jsonMatch = rawGenerated.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            const parsed = JSON.parse(jsonMatch[0]);
+            outputElem.textContent = JSON.stringify(parsed, null, 2);
+          } catch {
+            outputElem.textContent = rawGenerated;
+          }
+        } else {
+          outputElem.textContent = rawGenerated;
+        }
+
+      } catch (err) {
+        outputElem.textContent = `Pipeline Error: ${err.message}\n${err.stack}`;
+      }
+    });
+
+    initPipeline();
+  </script>
+</body>
+</html>
