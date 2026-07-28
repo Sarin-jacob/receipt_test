@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Definitive Universal POS & Digital Cart Consensus Engine</title>
+  <title>Definitive 7-Trial Consensus POS & Digital Cart Engine</title>
   <style>
     :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #4ade80; --error: #f87171; --warning: #facc15; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1300px; margin: 2rem auto; padding: 0 1.5rem; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
     h2, h3 { margin-top: 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 950px) { .grid { grid-template-columns: 1fr; } }
     label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
     select, input[type="text"], input[type="file"] { width: 100%; padding: 0.65rem; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; color: var(--text); box-sizing: border-box; }
     input[type="file"] { border: 2px dashed var(--border); cursor: pointer; }
@@ -42,8 +42,8 @@
     ⚡ HARD REFRESH REQUIRED: Press <strong>Ctrl + F5</strong> (Windows) or <strong>Cmd + Shift + R</strong> (Mac) to ensure your browser isn't executing older cached JavaScript!
   </div>
 
-  <h2>Definitive Universal POS & Digital Cart Consensus Engine</h2>
-  <p style="color: var(--muted);">Powered by Item Density Gravity, Cross-Hypothesis Validation, Levenshtein Lexicons, and 2D Spatial Token Graphs.</p>
+  <h2>Definitive 7-Trial Consensus POS & Digital Cart Engine</h2>
+  <p style="color: var(--muted);">Powered by Global Attribute Consensus Voting, Algorithmic Missing Decimal Recovery, and Unmasked Baselines.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -53,7 +53,7 @@
       <div>
         <label for="engineSelect">Extraction Paradigm:</label>
         <select id="engineSelect">
-          <option value="consensus">6-Trial Cross-Validating Consensus Matrix [0 MB]</option>
+          <option value="consensus">7-Trial Attribute Consensus & Decimal Recovery Matrix [0 MB]</option>
           <option value="edge">Edge Prompt API (window.ai - Phi-mini) [0 MB]</option>
           <option value="hf-gen">HF Generative SLM (Transformers.js) [~90 MB]</option>
         </select>
@@ -100,6 +100,8 @@
     <div class="metrics">
       <div class="metric-badge">Active Engine: <span id="activeEngineLabel">None</span></div>
       <div class="metric-badge">Winning Trial: <span id="winnerLabel">None</span></div>
+      <div class="metric-badge">Global Mode Items: <span id="modeItemsLabel">0</span></div>
+      <div class="metric-badge">Global Mode Total: <span id="modeTotalLabel">$0.00</span></div>
       <div class="metric-badge">Session Status: <span id="sessionStatusLabel">Clean</span></div>
       <div class="metric-badge">Crop Speed: <span id="cropTime">0 ms</span></div>
       <div class="metric-badge">OCR Speed: <span id="ocrTime">0 ms</span></div>
@@ -121,7 +123,7 @@
 
   <!-- EXPERIMENTAL LEADERBOARD TABLE -->
   <div class="card" id="leaderboardCard" style="display: none;">
-    <h3>3. 6-Trial Cross-Validating Hypothesis Leaderboard</h3>
+    <h3>3. 7-Trial Attribute Consensus & Decimal Recovery Leaderboard</h3>
     <table class="leaderboard-table">
       <thead>
         <tr>
@@ -175,6 +177,8 @@
     const receiptInput = document.getElementById('receiptInput');
     const activeEngineLabel = document.getElementById('activeEngineLabel');
     const winnerLabel = document.getElementById('winnerLabel');
+    const modeItemsLabel = document.getElementById('modeItemsLabel');
+    const modeTotalLabel = document.getElementById('modeTotalLabel');
     const sessionStatusLabel = document.getElementById('sessionStatusLabel');
     const cropTimeElem = document.getElementById('cropTime');
     const ocrTimeElem = document.getElementById('ocrTime');
@@ -233,6 +237,8 @@
       currentMode = null;
       activeEngineLabel.textContent = 'None';
       winnerLabel.textContent = 'None';
+      modeItemsLabel.textContent = '0';
+      modeTotalLabel.textContent = '$0.00';
       sessionStatusLabel.textContent = keepOcr ? 'OCR Active (SLMs Purged)' : 'Full System Reset';
       sessionStatusLabel.style.color = '#4ade80';
       statusElem.textContent = 'Session reset cleanly! Ready for initialization.';
@@ -282,7 +288,7 @@
           hfPipeline = await pipeline('text-generation', repoId, { device: hfBackendSelect.value, dtype: 'q4' });
           activeEngineLabel.textContent = `HF Gen: ${repoId.split('/')[1]}`;
         } else {
-          activeEngineLabel.textContent = '6-Trial Consensus Matrix';
+          activeEngineLabel.textContent = '7-Trial Consensus Matrix';
         }
 
         sessionStatusLabel.textContent = 'Active & Healthy';
@@ -389,7 +395,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. THE DEFINITIVE 6-TRIAL CONSENSUS MATRIX & LEVENSHTEIN ENGINE
+    // 5. THE DEFINITIVE 7-TRIAL CONSENSUS MATRIX & LEVENSHTEIN ENGINE
     // -------------------------------------------------------------
     class FuzzyLexiconNormalizer {
       static levenshtein(a, b) {
@@ -502,7 +508,7 @@
         return lines;
       }
 
-      // EXECUTE 6 CONCURRENT PARALLEL TRIALS WITH ITEM GRAVITY & CROSS-VALIDATION
+      // EXECUTE 7 CONCURRENT PARALLEL TRIALS WITH ATTRIBUTE CONSENSUS & MISSING DECIMAL RECOVERY
       runConsensus(rawOcrItems) {
         const docWidth = Math.max(...rawOcrItems.map(i => {
           const pts = i.poly || i.points || i.box || [];
@@ -510,6 +516,7 @@
         }), 1000);
 
         const trials = [
+          this.executeTrial(rawOcrItems, "Trial 0: Raw Unmasked Baseline (No Pruning)", (lines) => this.strategyTableWindow(lines)),
           this.executeTrial(rawOcrItems, "Trial 1: Table Y-Bounded Quarantine", (lines) => this.strategyTableWindow(lines)),
           this.executeTrial(rawOcrItems, "Trial 2: X-Axis Right-Margin Projection", (lines) => this.strategyRightMargin(lines, docWidth)),
           this.executeTrial(rawOcrItems, "Trial 3: Aggressive Upstream Noise Deletion", (lines) => this.strategyTableWindow(lines), (item) => !/\b\d{6,}\b|tel|fax|pin|zip|gstin|strn|ntn/i.test(item.text)),
@@ -518,42 +525,59 @@
           this.executeTrial(rawOcrItems, "Trial 6: Permissive Algebraic Reconciler", (lines) => this.strategyPermissiveMath(lines))
         ];
 
-        // THE DEFINITIVE GRAVITY & CROSS-VALIDATION SCORING MODEL
+        // STEP 1: CALCULATE GLOBAL CONSENSUS MODES ACROSS ALL 7 TRIALS
+        const itemCountMap = {}, grandTotalMap = {}, subTotalMap = {};
+        trials.forEach(t => {
+          if (t.items.length > 0) itemCountMap[t.items.length] = (itemCountMap[t.items.length] || 0) + 1;
+          if (t.financials.grand_total !== null) grandTotalMap[t.financials.grand_total] = (grandTotalMap[t.financials.grand_total] || 0) + 1;
+          if (t.financials.calculated_subtotal !== null) subTotalMap[t.financials.calculated_subtotal] = (subTotalMap[t.financials.calculated_subtotal] || 0) + 1;
+        });
+
+        const getMode = (map) => {
+          let maxCnt = 0, modeVal = null;
+          Object.entries(map).forEach(([k, cnt]) => { if (cnt > maxCnt) { maxCnt = cnt; modeVal = Number(k); } });
+          return modeVal;
+        };
+
+        const modeItemCount = getMode(itemCountMap) || 0;
+        const modeGrandTotal = getMode(grandTotalMap) || 0.0;
+        const modeSubtotal = getMode(subTotalMap) || 0.0;
+
+        modeItemsLabel.textContent = modeItemCount;
+        modeTotalLabel.textContent = `$${modeGrandTotal.toFixed(2)}`;
+
+        // STEP 2: THE DEFINITIVE GLOBAL ATTRIBUTE CONSENSUS SCORING MODEL
         let bestTrial = trials[0];
         let maxScore = -999999;
 
         trials.forEach(t => {
           let score = 0;
 
-          // 1. ITEM DENSITY GRAVITY (+60 pts per item, -2500 if 0 items on standard receipt!)
+          // 1. MATHEMATICAL BALANCE (+1500 pts for perfect accounting math)
+          if (t.audit.is_mathematically_valid) {
+            score += 1500;
+          } else {
+            score -= Math.min(1000, Math.abs(t.audit.discrepancy) * 15);
+          }
+
+          // 2. ITEM DENSITY GRAVITY & ANTI-ZERO GUARDRAIL (+60 pts/item, -3000 if 0 items on bill!)
           if (t.items.length > 0) {
             score += Math.min(1800, t.items.length * 60);
           } else if (!["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
-            score -= 2500; // Nuclear penalty for extracting 0 items on an itemized bill
+            score -= 3000; // Nuclear penalty for extracting 0 items on an itemized bill
           }
 
-          // 2. MATHEMATICAL BALANCE (+1200 pts for perfect accounting math)
-          if (t.audit.is_mathematically_valid) {
-            score += 1200;
-          } else {
-            score -= Math.min(800, Math.abs(t.audit.discrepancy) * 12);
+          // 3. GLOBAL ATTRIBUTE CONSENSUS VOTING (+500 pts for matching Global Mode Total!)
+          if (t.financials.grand_total === modeGrandTotal && modeGrandTotal !== 0) score += 500;
+          if (t.financials.calculated_subtotal === modeSubtotal && modeSubtotal !== 0) score += 300;
+          
+          // Item count mode match (+400 pts if within ±1 of global mode item count!)
+          if (modeItemCount > 0 && Math.abs(t.items.length - modeItemCount) <= 1) {
+            score += 400;
           }
 
-          // 3. GRAND TOTAL PRESENCE BONUS
-          if (t.financials.grand_total !== null && t.financials.grand_total !== 0) {
-            score += 200;
-          } else {
-            score -= 500;
-          }
-
-          // 4. CROSS-HYPOTHESIS CONSENSUS BONUS (+250 pts per agreeing trial!)
-          let totalAgreements = 0;
-          trials.forEach(other => {
-            if (other !== t && other.financials.grand_total === t.financials.grand_total && t.financials.grand_total !== null) {
-              totalAgreements++;
-            }
-          });
-          score += totalAgreements * 250;
+          // 4. MISSING DECIMAL RECOVERY BONUS (+300 pts if algorithmic recovery balanced equation!)
+          if (t.was_decimal_recovered) score += 300;
 
           t.convergence_score = Math.round(score);
           if (t.convergence_score > maxScore) { maxScore = t.convergence_score; bestTrial = t; }
@@ -753,7 +777,35 @@
         return { name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice };
       }
 
+      // ALGORITHMIC MISSING DECIMAL RECOVERY ENGINE (v / 100)
+      recoverMissingDecimals(items, totals) {
+        let wasRecovered = false;
+        let calcSub = items.reduce((sum, item) => sum + item.total_price, 0);
+
+        // Check if Grand Total float missed its decimal point (e.g., read as 1401100 instead of 14011.00)
+        if (totals.grandTotal !== null && totals.grandTotal >= 1000 && Math.abs(calcSub - (totals.grandTotal / 100.0)) <= 0.50) {
+          console.warn(`Algorithmic Decimal Recovery triggered! Grand Total $${totals.grandTotal} divided by 100 -> $${totals.grandTotal / 100.0}`);
+          totals.grandTotal = Number((totals.grandTotal / 100.0).toFixed(2));
+          wasRecovered = true;
+        }
+
+        // Check if an individual line item missed its decimal point (e.g., read as 598 instead of 5.98)
+        if (totals.grandTotal !== null && calcSub > totals.grandTotal + 10.0) {
+          items.forEach(item => {
+            if (item.total_price >= 100 && Math.abs((calcSub - item.total_price + (item.total_price / 100.0)) - totals.grandTotal) <= 0.50) {
+              console.warn(`Algorithmic Decimal Recovery triggered on item "${item.name}"! Price $${item.total_price} divided by 100 -> $${item.total_price / 100.0}`);
+              item.unit_price = Number((item.unit_price / 100.0).toFixed(2));
+              item.total_price = Number((item.total_price / 100.0).toFixed(2));
+              wasRecovered = true;
+            }
+          });
+        }
+        return wasRecovered;
+      }
+
       finalizeTrial(res) {
+        const wasRecovered = this.recoverMissingDecimals(res.items, res.totals);
+
         let calcSub = res.items.reduce((sum, item) => sum + item.total_price, 0);
         calcSub = Number(calcSub.toFixed(2));
         if (res.items.length === 0 && (res.type === "CHARGE_SLIP" || res.type === "DIGITAL_APP_CART")) {
@@ -776,6 +828,7 @@
           date: res.date,
           time: res.time,
           items: res.items,
+          was_decimal_recovered: wasRecovered,
           financials: { calculated_subtotal: calcSub, extracted_subtotal: res.totals.subtotal, tax: res.totals.tax, discount: res.totals.discount, tip: res.totals.tip, rounding: res.totals.rounding, delivery_charges: res.totals.delivery, surge_charges: res.totals.surge, grand_total: grand },
           audit: { is_mathematically_valid: isValid, discrepancy: diff, audit_notes: isValid ? ["✓ Accounting equation balanced within OCR rounding slack."] : [`Equation mismatch: Expected $${expected}, read $${grand}. Diff: $${diff}`] }
         };
@@ -840,7 +893,7 @@
         }
 
         if (!finalJson || currentMode === 'consensus') {
-          if (currentMode !== 'consensus') console.warn('AI Parsing failed syntax check. Executing 6-Trial Consensus Matrix Auto-Fallback...');
+          if (currentMode !== 'consensus') console.warn('AI Parsing failed syntax check. Executing 7-Trial Consensus Matrix Auto-Fallback...');
           const consensusResult = consensusEngine.runConsensus(rawOcrItems);
           finalJson = consensusResult.winner;
           winnerLabel.textContent = finalJson.hypothesis_name.split(':')[0];
