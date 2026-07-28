@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hybrid Receipt Parser (PaddleOCR + SLM Fix)</title>
+  <title>Hybrid Receipt Parser (With Backend Selector & Warmup)</title>
   <style>
     :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; }
     body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 850px; margin: 2rem auto; padding: 0 1.5rem; }
     .card { background: var(--card); border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    input[type="file"] { display: block; width: 100%; padding: 0.75rem; border: 2px dashed #475569; border-radius: 8px; background: #0f172a; color: var(--muted); cursor: pointer; box-sizing: border-box; }
-    input[type="file"]:disabled { opacity: 0.5; cursor: not-allowed; }
+    .controls { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+    select, input[type="file"] { padding: 0.6rem; border: 1px solid #475569; border-radius: 6px; background: #0f172a; color: var(--text); }
+    input[type="file"] { flex-grow: 1; border: 2px dashed #475569; cursor: pointer; }
+    input[type="file"]:disabled, button:disabled { opacity: 0.5; cursor: not-allowed; }
     .status { margin-top: 10px; font-weight: 600; color: var(--accent); }
     pre { background: #020617; color: #38bdf8; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; border: 1px solid #1e293b; max-height: 500px; }
     .metrics { display: flex; gap: 1rem; margin-top: 1rem; font-size: 0.85rem; color: var(--muted); }
@@ -18,12 +20,25 @@
 </head>
 <body>
 
-  <h2>Hybrid Receipt Parser</h2>
-  <p style="color: var(--muted);">Stage 1: PaddleOCR | Stage 2: SmolLM-135M (WASM SIMD Engine)</p>
+  <h2>Production-Ready Hybrid Receipt Parser</h2>
+  <p style="color: var(--muted);">PaddleOCR + Qwen2.5-0.5B (With Explicit Warmup & Schema Enforcement)</p>
 
   <div class="card">
+    <div class="controls">
+      <label for="backendSelect"><strong>SLM Backend:</strong></label>
+      <select id="backendSelect">
+        <option value="webgpu">WebGPU (Fastest)</option>
+        <option value="wasm">WASM CPU (Fallback)</option>
+        <option value="webnn">WebNN (NPU)</option>
+      </select>
+      
+      <button id="initBtn" style="padding: 0.6rem 1.2rem; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">
+        Initialize Pipeline
+      </button>
+    </div>
+
     <input type="file" id="receiptInput" accept="image/*" disabled />
-    <div id="status" class="status">Initializing models...</div>
+    <div id="status" class="status">Select backend and click Initialize Pipeline to begin...</div>
     
     <div class="metrics">
       <div class="metric-badge">OCR Time: <span id="ocrTime">0 ms</span></div>
@@ -32,7 +47,7 @@
   </div>
 
   <div class="card">
-    <h3>Extracted Receipt JSON</h3>
+    <h3>Extracted Structured JSON</h3>
     <pre id="output">Initialize models to proceed...</pre>
   </div>
 
@@ -40,13 +55,16 @@
     import { PaddleOCR } from 'https://cdn.jsdelivr.net/npm/@paddleocr/paddleocr-js@0.4.2/+esm';
     import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
 
-    // Optimize WASM threading for Transformers.js
+    // Configure WASM threads safely
     if (env.backends?.onnx?.wasm) {
-    env.backends.onnx.wasm.numThreads = Math.min(4, navigator.hardwareConcurrency || 2);
+      env.backends.onnx.wasm.numThreads = Math.min(4, navigator.hardwareConcurrency || 2);
     }
+
     const statusElem = document.getElementById('status');
     const outputElem = document.getElementById('output');
     const inputElem = document.getElementById('receiptInput');
+    const initBtn = document.getElementById('initBtn');
+    const backendSelect = document.getElementById('backendSelect');
     const ocrTimeElem = document.getElementById('ocrTime');
     const slmTimeElem = document.getElementById('slmTime');
 
@@ -54,37 +72,56 @@
     let slmPipeline;
 
     // -------------------------------------------------------------
-    // INITIALIZATION: Load OCR + SLM (WASM Engine)
+    // INITIALIZATION & WARMUP
     // -------------------------------------------------------------
-    async function initPipeline() {
-      try {
-        statusElem.textContent = '1/2: Loading PaddleOCR vision engine...';
-        ocrEngine = await PaddleOCR.create({
-          lang: 'en',
-          textDetectionModelName: 'PP-OCRv5_mobile_det',
-          textRecognitionModelName: 'PP-OCRv5_mobile_rec'
-        });
+    initBtn.addEventListener('click', async () => {
+      initBtn.disabled = true;
+      backendSelect.disabled = true;
+      const chosenBackend = backendSelect.value;
 
-        statusElem.textContent = '2/2: Loading SmolLM-135M into WASM engine...';
-        
-        // Use 'wasm' device to prevent WebGPU WGSL shader compilation errors
+      try {
+        // Step 1: Initialize PaddleOCR
+        statusElem.textContent = '1/3: Loading PaddleOCR vision engine...';
+        if (!ocrEngine) {
+          ocrEngine = await PaddleOCR.create({
+            lang: 'en',
+            textDetectionModelName: 'PP-OCRv5_mobile_det',
+            textRecognitionModelName: 'PP-OCRv5_mobile_rec'
+          });
+        }
+
+        // Step 2: Initialize SLM (Qwen2.5-0.5B-Instruct for high JSON accuracy)
+        statusElem.textContent = `2/3: Loading Qwen2.5-0.5B into [${chosenBackend.toUpperCase()}] backend...`;
         slmPipeline = await pipeline(
           'text-generation',
-          'onnx-community/SmolLM2-135M-Instruct-ONNX-MHA',
+          'onnx-community/Qwen2.5-0.5B-Instruct',
           {
-            device: 'wasm',
+            device: chosenBackend,
             dtype: 'q4'
           }
         );
 
-        statusElem.textContent = 'Pipeline ready! Select a receipt image.';
+        // Step 3: WARMUP RUN (Pre-allocates buffers & compiles GPU shaders)
+        statusElem.textContent = '3/3: Performing SLM Warmup Run (Compiling Shaders)...';
+        const warmupStart = performance.now();
+        
+        await slmPipeline('<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\nHi<|im_end|>\n<|im_start|>assistant\n', {
+          max_new_tokens: 1,
+          do_sample: false
+        });
+        
+        const warmupDuration = (performance.now() - warmupStart).toFixed(0);
+        statusElem.textContent = `Pipeline Ready! (Warmup took ${warmupDuration} ms). Upload a receipt below.`;
         statusElem.style.color = '#4ade80';
         inputElem.disabled = false;
+
       } catch (err) {
-        statusElem.textContent = `Initialization failed: ${err.message}`;
+        statusElem.textContent = `Initialization failed on ${chosenBackend}: ${err.message}. Try switching backend to WASM.`;
         statusElem.style.color = '#f87171';
+        initBtn.disabled = false;
+        backendSelect.disabled = false;
       }
-    }
+    });
 
     // -------------------------------------------------------------
     // HELPER: Sort OCR Bounding Boxes into Natural Lines
@@ -117,7 +154,7 @@
     }
 
     // -------------------------------------------------------------
-    // EXECUTION
+    // EXECUTION & FEW-SHOT JSON PROMPTING
     // -------------------------------------------------------------
     inputElem.addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -134,26 +171,27 @@
         const t1 = performance.now();
         ocrTimeElem.textContent = `${(t1 - t0).toFixed(0)} ms`;
 
-        outputElem.textContent = 'Stage 2: SmolLM generating structured JSON...';
+        outputElem.textContent = 'Stage 2: SLM generating structured JSON...';
 
-        // Stage 2: SLM ChatML Prompting
-        const systemPrompt = `You are a strict JSON receipt parser. Output ONLY valid JSON matching this schema:
-{
-  "enterprise": "string",
-  "date": "string",
-  "time": "string",
-  "items": [
-    {"name": "string", "quantity": 1, "unit_price": 0.0, "total_price": 0.0}
-  ],
-  "total": 0.0
-}`;
+        // Stage 2: Few-Shot ChatML Prompting for Strict JSON
+        const systemPrompt = `You are a strict JSON converter. Convert raw OCR text into valid JSON matching this schema:
+{"enterprise":"string","date":"string","time":"string","items":[{"name":"string","quantity":1,"unit_price":0.0,"total_price":0.0}],"total":0.0}
 
-        const prompt = `<|im_start|>system\n${systemPrompt}<|im_end|>\n<|im_start|>user\nExtract receipt details from this OCR text:\n${cleanText}<|im_end|>\n<|im_start|>assistant\n`;
+Example Input:
+COFFEE SHOP
+10/05/2026 14:30
+1 Espresso 3.50
+TOTAL 3.50
+
+Example Output:
+{"enterprise":"COFFEE SHOP","date":"10/05/2026","time":"14:30","items":[{"name":"Espresso","quantity":1,"unit_price":3.50,"total_price":3.50}],"total":3.50}`;
+
+        const prompt = `<|im_start|>system\n${systemPrompt}<|im_end|>\n<|im_start|>user\nConvert this OCR text to JSON:\n${cleanText}<|im_end|>\n<|im_start|>assistant\n`;
 
         const slmStart = performance.now();
         const output = await slmPipeline(prompt, {
-          max_new_tokens: 300,
-          temperature: 0.1,
+          max_new_tokens: 350,
+          temperature: 0.0, // Zero temperature forces deterministic JSON generation
           do_sample: false,
           return_full_text: false
         });
@@ -162,15 +200,14 @@
 
         const rawGenerated = output[0].generated_text.trim();
         
-        // Extract valid JSON block
-        const jsonMatch = rawGenerated.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          try {
-            const parsed = JSON.parse(jsonMatch[0]);
-            outputElem.textContent = JSON.stringify(parsed, null, 2);
-          } catch {
-            outputElem.textContent = rawGenerated;
-          }
+        // Strict JSON extraction
+        const startIdx = rawGenerated.indexOf('{');
+        const endIdx = rawGenerated.lastIndexOf('}');
+        
+        if (startIdx !== -1 && endIdx !== -1) {
+          const jsonStr = rawGenerated.substring(startIdx, endIdx + 1);
+          const parsed = JSON.parse(jsonStr);
+          outputElem.textContent = JSON.stringify(parsed, null, 2);
         } else {
           outputElem.textContent = rawGenerated;
         }
@@ -179,8 +216,6 @@
         outputElem.textContent = `Pipeline Error: ${err.message}\n${err.stack}`;
       }
     });
-
-    initPipeline();
   </script>
 </body>
 </html>

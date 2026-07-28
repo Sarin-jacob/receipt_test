@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Receipt Parser Playground (Edge AI / HF / Regex)</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    h2, h3 { margin-top: 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+    label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
+    select, input[type="text"], input[type="file"] { width: 100%; padding: 0.65rem; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; color: var(--text); box-sizing: border-box; }
+    input[type="file"] { border: 2px dashed var(--border); cursor: pointer; }
+    input[type="file"]:disabled, button:disabled, select:disabled, input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn { display: inline-block; padding: 0.7rem 1.4rem; background: #0284c7; color: white; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #0369a1; }
+    .status { margin-top: 10px; font-weight: 600; font-size: 0.9rem; color: var(--accent); }
+    pre { background: #020617; color: #38bdf8; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; border: 1px solid var(--border); max-height: 450px; }
+    .metrics { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
+    .metric-badge { background: #020617; padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
+    .engine-section { padding: 1rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1rem; background: #162032; }
+  </style>
+</head>
+<body>
+
+  <h2>Ultimate Receipt Parser Playground</h2>
+  <p style="color: var(--muted);">Compare Microsoft Edge Native AI (Phi-mini), Custom Hugging Face SLMs, and Deterministic Regex.</p>
+
+  <!-- CONTROL PANEL -->
+  <div class="card">
+    <h3>1. Select & Initialize Engine</h3>
+    
+    <div class="grid">
+      <div>
+        <label for="engineSelect">Parsing Engine Mode:</label>
+        <select id="engineSelect">
+          <option value="edge">Edge Prompt API (window.ai - Phi-mini) [0 MB]</option>
+          <option value="hf">Hugging Face SLM (Transformers.js) [~90 MB]</option>
+          <option value="regex">Deterministic Regex & Spatial Layout [0 MB]</option>
+        </select>
+      </div>
+
+      <div id="hfRepoContainer" style="display: none;">
+        <label for="hfRepoInput">HF Model Repo (< 100MB target):</label>
+        <input type="text" id="hfRepoInput" value="onnx-community/SmolLM2-135M-Instruct-ONNX-MHA" />
+      </div>
+
+      <div id="hfBackendContainer" style="display: none;">
+        <label for="hfBackendSelect">Transformers.js Backend:</label>
+        <select id="hfBackendSelect">
+          <option value="webgpu">WebGPU (Fastest GPU)</option>
+          <option value="wasm">WASM SIMD (Most Stable CPU)</option>
+          <option value="webnn">WebNN (NPU)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <label>
+        <input type="checkbox" id="autoFallbackCheck" checked />
+        <strong>Auto-Fallback to Regex</strong> if AI model hallucinates or fails JSON syntax.
+      </label>
+    </div>
+
+    <button id="initBtn" class="btn">Initialize Selected Pipeline</button>
+    <div id="status" class="status">Select an engine mode and click Initialize...</div>
+
+    <div class="metrics">
+      <div class="metric-badge">Active Engine: <span id="activeEngineLabel">None</span></div>
+      <div class="metric-badge">OCR Time: <span id="ocrTime">0 ms</span></div>
+      <div class="metric-badge">Parsing Time: <span id="parseTime">0 ms</span></div>
+    </div>
+  </div>
+
+  <!-- INPUT & OUTPUT -->
+  <div class="card">
+    <h3>2. Upload Receipt Image</h3>
+    <input type="file" id="receiptInput" accept="image/*" disabled />
+  </div>
+
+  <div class="grid">
+    <div class="card" style="margin-bottom: 0;">
+      <h3>Raw OCR Text Lines</h3>
+      <pre id="ocrOutput" style="color: #94a3b8;">No OCR data yet...</pre>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+      <h3>Structured JSON Output</h3>
+      <pre id="jsonOutput">No parsed data yet...</pre>
+    </div>
+  </div>
+
+  <!-- CDN IMPORTS & LOGIC -->
+  <script type="module">
+    import { PaddleOCR } from 'https://cdn.jsdelivr.net/npm/@paddleocr/paddleocr-js@0.4.2/+esm';
+    import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
+
+    // Safely configure WASM threads
+    if (env.backends?.onnx?.wasm) {
+      env.backends.onnx.wasm.numThreads = Math.min(4, navigator.hardwareConcurrency || 2);
+    }
+
+    // UI Elements
+    const engineSelect = document.getElementById('engineSelect');
+    const hfRepoContainer = document.getElementById('hfRepoContainer');
+    const hfBackendContainer = document.getElementById('hfBackendContainer');
+    const hfRepoInput = document.getElementById('hfRepoInput');
+    const hfBackendSelect = document.getElementById('hfBackendSelect');
+    const autoFallbackCheck = document.getElementById('autoFallbackCheck');
+    const initBtn = document.getElementById('initBtn');
+    const statusElem = document.getElementById('status');
+    const receiptInput = document.getElementById('receiptInput');
+    const activeEngineLabel = document.getElementById('activeEngineLabel');
+    const ocrTimeElem = document.getElementById('ocrTime');
+    const parseTimeElem = document.getElementById('parseTime');
+    const ocrOutput = document.getElementById('ocrOutput');
+    const jsonOutput = document.getElementById('jsonOutput');
+
+    let ocrEngine = null;
+    let edgeAiSession = null;
+    let hfPipeline = null;
+    let currentMode = null;
+
+    // Toggle HF configuration input visibility
+    engineSelect.addEventListener('change', () => {
+      const isHf = engineSelect.value === 'hf';
+      hfRepoContainer.style.display = isHf ? 'block' : 'none';
+      hfBackendContainer.style.display = isHf ? 'block' : 'none';
+    });
+
+    // -------------------------------------------------------------
+    // 1. INITIALIZE PIPELINE
+    // -------------------------------------------------------------
+    initBtn.addEventListener('click', async () => {
+      initBtn.disabled = true;
+      receiptInput.disabled = true;
+      currentMode = engineSelect.value;
+
+      try {
+        // Step A: Initialize PaddleOCR (~11 MB) if not loaded
+        if (!ocrEngine) {
+          statusElem.textContent = 'Loading PaddleOCR vision weights (~11 MB)...';
+          ocrEngine = await PaddleOCR.create({
+            lang: 'en',
+            textDetectionModelName: 'PP-OCRv5_mobile_det',
+            textRecognitionModelName: 'PP-OCRv5_mobile_rec'
+          });
+        }
+
+        // Step B: Initialize Selected Engine
+        if (currentMode === 'edge') {
+          statusElem.textContent = 'Connecting to Microsoft Edge Prompt API (Phi-mini)...';
+          const aiFactory = window.ai?.languageModel || globalThis.ai?.languageModel;
+          
+          if (!aiFactory) {
+            throw new Error('Edge Prompt API not found. Please ensure #prompt-api-for-gemini-nano is enabled in edge://flags.');
+          }
+
+          const cap = await aiFactory.capabilities();
+          if (cap.available === 'no') {
+            throw new Error('On-device AI is currently unavailable on this system.');
+          }
+
+          edgeAiSession = await aiFactory.create({
+            systemPrompt: 'You are a strict JSON receipt parser. Output ONLY valid JSON without Markdown formatting or markdown fences.'
+          });
+          activeEngineLabel.textContent = 'Edge Native (Phi-mini)';
+
+        } else if (currentMode === 'hf') {
+          const repoId = hfRepoInput.value.trim();
+          const backend = hfBackendSelect.value;
+          statusElem.textContent = `Loading ${repoId} into [${backend.toUpperCase()}] (~85-95 MB)...`;
+          
+          hfPipeline = await pipeline('text-generation', repoId, {
+            device: backend,
+            dtype: 'q4'
+          });
+          activeEngineLabel.textContent = `HF: ${repoId.split('/')[1]} (${backend})`;
+
+        } else {
+          activeEngineLabel.textContent = 'Deterministic Regex';
+        }
+
+        statusElem.textContent = 'Pipeline Ready! Upload a receipt image below.';
+        statusElem.style.color = '#4ade80';
+        receiptInput.disabled = false;
+        initBtn.disabled = false;
+
+      } catch (err) {
+        statusElem.textContent = `Initialization Error: ${err.message}`;
+        statusElem.style.color = '#f87171';
+        initBtn.disabled = false;
+      }
+    });
+
+    // -------------------------------------------------------------
+    // 2. OCR SPATIAL SORTING HELPER
+    // -------------------------------------------------------------
+    function extractSortedLines(rawItems) {
+      const items = rawItems.map(item => {
+        let top = 0, left = 0;
+        const pts = item.poly || item.points || item.box || [];
+        if (Array.isArray(pts) && pts.length > 0) {
+          top = Array.isArray(pts[0]) ? Math.min(...pts.map(p => p[1])) : pts[1];
+          left = Array.isArray(pts[0]) ? Math.min(...pts.map(p => p[0])) : pts[0];
+        }
+        return { text: (item.text || '').trim(), top, left, box: item.box || { top, left, height: 15 } };
+      }).filter(i => i.text.length > 0);
+
+      items.sort((a, b) => a.top - b.top);
+
+      const lines = [];
+      items.forEach(item => {
+        const lastLine = lines[lines.length - 1];
+        if (lastLine && Math.abs(lastLine.y - item.top) < 12) {
+          lastLine.items.push(item);
+        } else {
+          lines.push({ y: item.top, items: [item] });
+        }
+      });
+
+      lines.forEach(line => line.items.sort((a, b) => a.left - b.left));
+      return lines.map(l => l.items.map(i => i.text).join(' '));
+    }
+
+    // -------------------------------------------------------------
+    // 3. DETERMINISTIC REGEX ENGINE (SAFETY NET)
+    // -------------------------------------------------------------
+    function runRegexFallback(textLines) {
+      const priceRegex = /(\d+[\.,]\d{2})/;
+      const dateRegex = /\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4})\b/;
+      const timeRegex = /\b((?:2[0-3]|[01]?[0-9]):[0-5][0-9])\b/;
+
+      const result = {
+        enterprise: textLines[0] || "Unknown Enterprise",
+        date: "Not Found",
+        time: "Not Found",
+        items: [],
+        total: 0.0
+      };
+
+      textLines.forEach((line, idx) => {
+        if (!result.date && dateRegex.test(line)) result.date = line.match(dateRegex)[1];
+        if (!result.time && timeRegex.test(line)) result.time = line.match(timeRegex)[1];
+
+        if (/total|amount due|balance/i.test(line)) {
+          const match = line.match(priceRegex);
+          if (match) result.total = parseFloat(match[1].replace(',', '.'));
+        } else if (idx > 0 && priceRegex.test(line)) {
+          const prices = line.match(new RegExp(priceRegex, 'g'));
+          if (prices) {
+            const price = parseFloat(prices[prices.length - 1].replace(',', '.'));
+            const name = line.replace(new RegExp(priceRegex, 'g'), '').trim();
+            if (name.length > 1 && !/total|tax|change|cash/i.test(name)) {
+              result.items.push({ name, quantity: 1, unit_price: price, total_price: price });
+            }
+          }
+        }
+      });
+
+      if (result.total === 0.0 && result.items.length > 0) {
+        result.total = result.items.reduce((sum, item) => sum + item.total_price, 0);
+      }
+      return result;
+    }
+
+    // -------------------------------------------------------------
+    // 4. EXECUTE PARSING PIPELINE
+    // -------------------------------------------------------------
+    receiptInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file || !ocrEngine) return;
+
+      jsonOutput.textContent = 'Running Stage 1: Vision OCR...';
+      ocrOutput.textContent = 'Extracting coordinates...';
+
+      try {
+        // --- STAGE 1: OCR ---
+        const t0 = performance.now();
+        const [ocrResults] = await ocrEngine.predict(file);
+        const textLines = extractSortedLines(ocrResults.items || ocrResults.words || []);
+        const cleanText = textLines.join('\n');
+        ocrTimeElem.textContent = `${(performance.now() - t0).toFixed(0)} ms`;
+        ocrOutput.textContent = cleanText;
+
+        jsonOutput.textContent = `Running Stage 2: ${activeEngineLabel.textContent}...`;
+        const t1 = performance.now();
+        let finalJson = null;
+
+        // --- STAGE 2A: EDGE PROMPT API ---
+        if (currentMode === 'edge') {
+          const prompt = `Convert this OCR receipt text into structured JSON with keys: "enterprise", "date", "time", "items" (array of objects with name, quantity, unit_price, total_price), and "total":\n\n${cleanText}`;
+          const rawResp = await edgeAiSession.prompt(prompt);
+          
+          try {
+            const jsonStr = rawResp.substring(rawResp.indexOf('{'), rawResp.lastIndexOf('}') + 1);
+            finalJson = JSON.parse(jsonStr);
+          } catch {
+            if (!autoFallbackCheck.checked) throw new Error(`Edge AI returned invalid JSON:\n${rawResp}`);
+          }
+        }
+
+        // --- STAGE 2B: HUGGING FACE SLM ---
+        else if (currentMode === 'hf') {
+          const schemaPrompt = `You are a strict JSON converter. Convert OCR text to JSON matching: {"enterprise":"string","date":"string","time":"string","items":[{"name":"string","quantity":1,"unit_price":0.0,"total_price":0.0}],"total":0.0}`;
+          const prompt = `<|im_start|>system\n${schemaPrompt}<|im_end|>\n<|im_start|>user\n${cleanText}<|im_end|>\n<|im_start|>assistant\n`;
+          
+          const output = await hfPipeline(prompt, { max_new_tokens: 350, temperature: 0.0, do_sample: false, return_full_text: false });
+          console.log (output);
+          const rawResp = output[0].generated_text.trim();
+
+          try {
+            const jsonStr = rawResp.substring(rawResp.indexOf('{'), rawResp.lastIndexOf('}') + 1);
+            finalJson = JSON.parse(jsonStr);
+          } catch {
+            if (!autoFallbackCheck.checked) throw new Error(`HF Model returned invalid JSON:\n${rawResp}`);
+          }
+        }
+
+        // --- STAGE 2C: REGEX FALLBACK EXECUTION ---
+        if (!finalJson || currentMode === 'regex') {
+          if (currentMode !== 'regex') {
+            console.warn('AI Model failed strict JSON parsing. Auto-falling back to Regex engine...');
+          }
+          finalJson = runRegexFallback(textLines);
+          if (currentMode !== 'regex') finalJson._note = "Parsed via Regex Auto-Fallback due to AI syntax deviation.";
+        }
+
+        parseTimeElem.textContent = `${(performance.now() - t1).toFixed(0)} ms`;
+        jsonOutput.textContent = JSON.stringify(finalJson, null, 2);
+
+      } catch (err) {
+        jsonOutput.textContent = `Execution Error: ${err.message}\n${err.stack}`;
+      }
+    });
+  </script>
+</body>
+</html>
