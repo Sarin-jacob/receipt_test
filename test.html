@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10-Trial High-Recall POS & Digital Cart Engine</title>
+  <title>11-Trial Candidate Synthesis & Continuous Consensus POS Engine</title>
   <style>
     :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #4ade80; --error: #f87171; --warning: #facc15; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1350px; margin: 2rem auto; padding: 0 1.5rem; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1380px; margin: 2rem auto; padding: 0 1.5rem; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
     h2, h3 { margin-top: 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
@@ -31,7 +31,7 @@
     .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.82rem; }
     .leaderboard-table th, .leaderboard-table td { padding: 0.55rem; border: 1px solid var(--border); text-align: left; }
     .leaderboard-table th { background: #020617; color: var(--accent); }
-    .winner-row { background: rgba(56, 189, 248, 0.18); font-weight: bold; border: 2px solid var(--accent); }
+    .winner-row { background: rgba(56, 189, 248, 0.22); font-weight: bold; border: 2px solid var(--accent); }
     canvas { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 0.5rem; }
     .cache-banner { background: rgba(250, 204, 21, 0.15); border: 1px solid var(--warning); color: var(--warning); padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.85rem; font-weight: 600; }
   </style>
@@ -42,8 +42,8 @@
     ⚡ HARD REFRESH REQUIRED: Press <strong>Ctrl + F5</strong> (Windows) or <strong>Cmd + Shift + R</strong> (Mac) to ensure your browser isn't executing older cached JavaScript!
   </div>
 
-  <h2>10-Trial High-Recall POS & Digital Cart Consensus Engine</h2>
-  <p style="color: var(--muted);">Uses Upstream Anchor Estimation, Quadratic Item Penalties, and 10 Concurrent Extraction Hypotheses.</p>
+  <h2>11-Trial Candidate Synthesis & Continuous Consensus POS Engine</h2>
+  <p style="color: var(--muted);">Powered by Cross-Branch Candidate Pooling, Unmasked Baseline Re-Validation, and Continuous Discrepancy Scoring.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -53,7 +53,7 @@
       <div>
         <label for="engineSelect">Extraction Paradigm:</label>
         <select id="engineSelect">
-          <option value="consensus">10-Trial High-Recall Consensus Matrix [0 MB]</option>
+          <option value="consensus">11-Trial Candidate Synthesis & Continuous Matrix [0 MB]</option>
           <option value="edge">Edge Prompt API (window.ai - Phi-mini) [0 MB]</option>
           <option value="hf-gen">HF Generative SLM (Transformers.js) [~90 MB]</option>
         </select>
@@ -123,7 +123,7 @@
 
   <!-- LEADERBOARD TABLE -->
   <div class="card" id="leaderboardCard" style="display: none;">
-    <h3>3. 10-Trial Experimental Hypothesis Leaderboard</h3>
+    <h3>3. 11-Trial Candidate Synthesis & Continuous Leaderboard</h3>
     <table class="leaderboard-table">
       <thead>
         <tr>
@@ -134,7 +134,7 @@
           <th>Tax & Fees ($)</th>
           <th>Grand Total ($)</th>
           <th>Discrepancy</th>
-          <th>Recall Score</th>
+          <th>Continuous Gravity Score</th>
         </tr>
       </thead>
       <tbody id="leaderboardBody"></tbody>
@@ -288,7 +288,7 @@
           hfPipeline = await pipeline('text-generation', repoId, { device: hfBackendSelect.value, dtype: 'q4' });
           activeEngineLabel.textContent = `HF Gen: ${repoId.split('/')[1]}`;
         } else {
-          activeEngineLabel.textContent = '10-Trial Consensus Matrix';
+          activeEngineLabel.textContent = '11-Trial Consensus Matrix';
         }
 
         sessionStatusLabel.textContent = 'Active & Healthy';
@@ -395,7 +395,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. 10-TRIAL HIGH-RECALL CONSENSUS MATRIX
+    // 5. 11-TRIAL SYNTHESIS & CONTINUOUS CONSENSUS MATRIX
     // -------------------------------------------------------------
     class FuzzyLexiconNormalizer {
       static levenshtein(a, b) {
@@ -438,7 +438,7 @@
       }
     }
 
-    class HighRecallConsensusEngine {
+    class ContinuousConsensusEngine {
       constructor() {
         this.dateRegex = /\b(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[\s,:\.-]+)?(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4}|\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{2,4})\b/i;
         this.timeRegex = /\b((?:2[0-3]|[01]?[0-9]|O|l)[:\.][0-5O][0-9O](?:[:\.][0-5O][0-9O])?(?:\s*[AP]M)?)\b/i;
@@ -507,28 +507,20 @@
         return lines;
       }
 
-      // ESTIMATE GROUND TRUTH ANCHORS UPSTREAM
       estimateUpstreamAnchors(lines, rawOcrItems) {
         let explicitAnchor = null;
-        
-        // 1. Search printed count footers (e.g. "3 items", "TOTAL QTY: 4", "ITEMS SOLD: 18")
         lines.forEach(l => {
           const match = l.text.match(/(?:items?\s*·?\s*|qty\s*:?\s*|items?\s*sold\s*=?\s*|total\s*items?\s*:?\s*)(\d+)/i);
-          if (match && parseInt(match[1], 10) > 0 && parseInt(match[1], 10) < 100) {
-            explicitAnchor = parseInt(match[1], 10);
-          }
+          if (match && parseInt(match[1], 10) > 0 && parseInt(match[1], 10) < 100) explicitAnchor = parseInt(match[1], 10);
         });
 
-        // 2. Search right-column price density
         const docWidth = Math.max(...lines.map(l => l.right), 1000);
         let rightColumnPriceCount = 0;
         lines.forEach(l => {
           const rightTokens = l.items.filter(i => i.box.left >= docWidth * 0.50);
           const rightText = rightTokens.map(i => i.text).join(' ');
           const val = this.parseUniversalFloat(rightText, l.text);
-          if (val !== null && val > 0 && !/total|subtotal|tax|cash|change|due/i.test(l.text)) {
-            rightColumnPriceCount++;
-          }
+          if (val !== null && val > 0 && !/total|subtotal|tax|cash|change|due/i.test(l.text)) rightColumnPriceCount++;
         });
 
         return {
@@ -537,7 +529,7 @@
         };
       }
 
-      // EXECUTE 10 CONCURRENT EXTRACTION TRIALS
+      // EXECUTE 11 CONCURRENT EXTRACTION TRIALS WITH CONTINUOUS DISCREPANCY SCORING
       runConsensus(rawOcrItems) {
         const docWidth = Math.max(...rawOcrItems.map(i => {
           const pts = i.poly || i.points || i.box || [];
@@ -561,7 +553,10 @@
           this.executeTrial(rawOcrItems, "Trial 9: Sub-Token Price Column Alignment", (l) => this.strategySubTokenColumn(l, docWidth))
         ];
 
-        // CALCULATE GLOBAL CONSENSUS MODES
+        // TRIAL 10: CROSS-BRANCH CANDIDATE SYNTHESIS & UNMASKED RE-VALIDATION
+        const synthesizedTrial = this.executeTrial(rawOcrItems, "Trial 10: Cross-Branch Pooled Consensus", () => this.strategySynthesizedPool(trials, lines));
+        trials.push(synthesizedTrial);
+
         const grandTotalMap = {};
         trials.forEach(t => {
           if (t.financials.grand_total !== null && t.financials.grand_total > 0) {
@@ -575,34 +570,38 @@
         });
         modeTotalLabel.textContent = `$${modeGrandTotal.toFixed(2)}`;
 
-        // QUADRATIC RECALL SCORING MODEL
+        // THE DEFINITIVE CONTINUOUS DISCREPANCY & ITEM GRAVITY SCORING MODEL
         let bestTrial = trials[0];
         let maxScore = -999999;
 
         trials.forEach(t => {
           let score = 0;
 
-          // 1. QUADRATIC ITEM RECALL PENALTY & GRAVITY
+          // 1. ITEM DENSITY GRAVITY (+100 pts per valid item extracted!)
+          if (t.items.length > 0) {
+            score += Math.min(3500, t.items.length * 100);
+          } else if (!["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
+            score -= 4000; // Nuclear penalty for extracting 0 items on an itemized bill
+          }
+
+          // 2. CONTINUOUS FINANCIAL DISCREPANCY PENALTY (Replaces binary math dominance!)
+          const diff = Math.abs(t.audit.discrepancy);
+          if (t.audit.is_mathematically_valid) {
+            score += 400; // Modest verification bonus for perfect math
+          } else if (diff <= 1.00) {
+            score -= diff * 150; // Smooth continuous penalty for minor OCR rounding drift
+          } else {
+            score -= 400 + (diff * 30); // Scaling penalty for major accounting mismatch
+          }
+
+          // 3. UPSTREAM ANCHOR DEVIATION PENALTY (-80 pts per missing item!)
           const countDiff = anchorItemCount - t.items.length;
           if (countDiff > 0 && !["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
-            score -= Math.pow(countDiff, 2) * 80; // Heavy quadratic penalty for missing items!
-          } else {
-            score += Math.min(2000, t.items.length * 80);
+            score -= countDiff * 80;
           }
 
-          if (t.items.length === 0 && !["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
-            score -= 4000; // Nuclear penalty for zero items on itemized bills
-          }
-
-          // 2. MATHEMATICAL BALANCE (+1500 pts)
-          if (t.audit.is_mathematically_valid) score += 1500;
-          else score -= Math.min(1200, Math.abs(t.audit.discrepancy) * 15);
-
-          // 3. GLOBAL TOTAL CONSENSUS VOTING (+600 pts)
-          if (t.financials.grand_total === modeGrandTotal && modeGrandTotal !== 0) score += 600;
-
-          // 4. DECIMAL RECOVERY BONUS
-          if (t.was_decimal_recovered) score += 300;
+          // 4. GLOBAL TOTAL CONSENSUS VOTING (+500 pts for matching global mode Total!)
+          if (t.financials.grand_total === modeGrandTotal && modeGrandTotal !== 0) score += 500;
 
           t.convergence_score = Math.round(score);
           if (t.convergence_score > maxScore) { maxScore = t.convergence_score; bestTrial = t; }
@@ -798,11 +797,53 @@
       }
 
       strategyNearestNeighbor(lines) {
-        return this.strategyPermissiveMath(lines); // Spatial proximity fallback
+        return this.strategyPermissiveMath(lines);
       }
 
       strategySubTokenColumn(lines, docWidth) {
-        return this.strategyRightMargin(lines, docWidth); // Sub-token spatial fallback
+        return this.strategyRightMargin(lines, docWidth);
+      }
+
+      // STRATEGY 10: CROSS-BRANCH CANDIDATE SYNTHESIS & BASELINE RE-VALIDATION
+      strategySynthesizedPool(existingTrials, baselineLines) {
+        const pooledItems = [];
+        const seenKeys = new Set();
+        const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
+
+        // Harvest unique items from Trials 0 through 9
+        existingTrials.forEach(t => {
+          if (t.financials.grand_total !== null && totals.grandTotal === null) totals.grandTotal = t.financials.grand_total;
+          if (t.financials.extracted_subtotal !== null && totals.subtotal === null) totals.subtotal = t.financials.extracted_subtotal;
+          if (t.financials.discount > totals.discount) totals.discount = t.financials.discount;
+
+          t.items.forEach(i => {
+            const key = `${Math.round(i.total_price * 100)}_${i.name.substring(0, 4).toLowerCase()}`;
+            if (!seenKeys.has(key)) {
+              seenKeys.add(key);
+              pooledItems.push({ ...i });
+            }
+          });
+        });
+
+        // Re-validate pooled candidates against Original Unmasked Baseline (Trial 0)
+        const validatedItems = [];
+        pooledItems.forEach(item => {
+          if (item.total_price <= 0 || /total|subtotal|tax|discount|cash|change/i.test(item.name)) return;
+          if (this.contactAndIdShield.test(item.name) && item.total_price >= 100) return;
+
+          // If aggressive masking chopped off the name, restore full text from Baseline!
+          if (item.name.length <= 3) {
+            baselineLines.forEach(l => {
+              if (l.text.includes(String(item.total_price))) {
+                const fullText = l.text.replace(/(?:\d+[\.,]\d{2})/g, '').replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').trim();
+                if (fullText.length > item.name.length) item.name = fullText;
+              }
+            });
+          }
+          validatedItems.push(item);
+        });
+
+        return { items: validatedItems, totals, type: "SYNTHESIZED_MASTER_POOL" };
       }
 
       extractTotals(text, totalsBlock) {
@@ -894,7 +935,7 @@
       }
     }
 
-    const consensusEngine = new HighRecallConsensusEngine();
+    const consensusEngine = new ContinuousConsensusEngine();
 
     // -------------------------------------------------------------
     // 6. PIPELINE EXECUTION WITH STRICT MUTEX LOCK
@@ -952,7 +993,7 @@
         }
 
         if (!finalJson || currentMode === 'consensus') {
-          if (currentMode !== 'consensus') console.warn('AI Parsing failed syntax check. Executing 10-Trial Consensus Matrix Auto-Fallback...');
+          if (currentMode !== 'consensus') console.warn('AI Parsing failed syntax check. Executing 11-Trial Consensus Matrix Auto-Fallback...');
           const consensusResult = consensusEngine.runConsensus(rawOcrItems);
           finalJson = consensusResult.winner;
           winnerLabel.textContent = finalJson.hypothesis_name.split(':')[0];
