@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Universal Layout-Aware POS & Digital Cart Engine</title>
+  <title>Universal 6-Trial Consensus POS & Digital Cart Engine</title>
   <style>
     :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #4ade80; --error: #f87171; --warning: #facc15; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1250px; margin: 2rem auto; padding: 0 1.5rem; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
     h2, h3 { margin-top: 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-    @media (max-width: 850px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
     label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
     select, input[type="text"], input[type="file"] { width: 100%; padding: 0.65rem; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; color: var(--text); box-sizing: border-box; }
     input[type="file"] { border: 2px dashed var(--border); cursor: pointer; }
@@ -28,13 +28,17 @@
     .audit-panel { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600; display: none; }
     .audit-pass { background: rgba(74, 222, 128, 0.1); border: 1px solid var(--success); color: var(--success); }
     .audit-fail { background: rgba(248, 113, 113, 0.1); border: 1px solid var(--error); color: var(--error); }
+    .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+    .leaderboard-table th, .leaderboard-table td { padding: 0.65rem; border: 1px solid var(--border); text-align: left; }
+    .leaderboard-table th { background: #020617; color: var(--accent); }
+    .winner-row { background: rgba(56, 189, 248, 0.15); font-weight: bold; border: 2px solid var(--accent); }
     canvas { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 0.5rem; }
   </style>
 </head>
 <body>
 
-  <h2>Universal Layout-Aware POS & Digital Cart Engine</h2>
-  <p style="color: var(--muted);">Powered by In-Place Barcode Stripping, Multi-Line Stacking, Multi-Column Table Math, and Produce Blacklists.</p>
+  <h2>Universal 6-Trial Consensus POS & Digital Cart Engine</h2>
+  <p style="color: var(--muted);">Executes 6 parallel spatial extraction trials with noise masking, Levenshtein typo lexicons, and combinatorial math evaluation.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -44,7 +48,7 @@
       <div>
         <label for="engineSelect">Extraction Paradigm:</label>
         <select id="engineSelect">
-          <option value="spatial">Universal Layout-Aware Spatial Engine [0 MB]</option>
+          <option value="consensus">6-Trial Spatial Consensus Matrix Only [0 MB]</option>
           <option value="edge">Edge Prompt API (window.ai - Phi-mini) [0 MB]</option>
           <option value="hf-gen">HF Generative SLM (Transformers.js) [~90 MB]</option>
         </select>
@@ -72,12 +76,12 @@
 
       <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
         <input type="checkbox" id="fuzzyCheck" checked />
-        <span><strong>Enable Levenshtein Lexicons</strong> (Algorithmic typo matching without mutating item names)</span>
+        <span><strong>Enable Levenshtein Typo Lexicons</strong> (Normalizes OCR typos: tree→free, USO→USD, 10tal→total)</span>
       </label>
 
       <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
         <input type="checkbox" id="autoFallbackCheck" checked />
-        <span><strong>Auto-Fallback to Spatial Engine</strong> if AI outputs malformed JSON</span>
+        <span><strong>Auto-Fallback to Consensus Matrix</strong> if AI outputs malformed JSON</span>
       </label>
     </div>
 
@@ -90,11 +94,11 @@
 
     <div class="metrics">
       <div class="metric-badge">Active Engine: <span id="activeEngineLabel">None</span></div>
-      <div class="metric-badge">Detected Archetype: <span id="archetypeLabel">None</span></div>
+      <div class="metric-badge">Winning Trial: <span id="winnerLabel">None</span></div>
       <div class="metric-badge">Session Status: <span id="sessionStatusLabel">Clean</span></div>
       <div class="metric-badge">Crop Speed: <span id="cropTime">0 ms</span></div>
       <div class="metric-badge">OCR Speed: <span id="ocrTime">0 ms</span></div>
-      <div class="metric-badge">Parse Speed: <span id="parseTime">0 ms</span></div>
+      <div class="metric-badge">Consensus Speed: <span id="parseTime">0 ms</span></div>
     </div>
   </div>
 
@@ -110,13 +114,33 @@
 
   <div id="auditPanel" class="audit-panel"></div>
 
+  <!-- EXPERIMENTAL LEADERBOARD TABLE -->
+  <div class="card" id="leaderboardCard" style="display: none;">
+    <h3>3. 6-Trial Experimental Hypothesis Leaderboard</h3>
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>Trial ID & Architectural Strategy</th>
+          <th>Items Found</th>
+          <th>Subtotal ($)</th>
+          <th>Discounts ($)</th>
+          <th>Tax & Fees ($)</th>
+          <th>Grand Total ($)</th>
+          <th>Discrepancy</th>
+          <th>Convergence Score</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+
   <div class="grid">
     <div class="card" style="margin-bottom: 0;">
       <h3>Raw OCR Spatial Output (Top-to-Bottom Sorted)</h3>
       <pre id="ocrOutput" style="color: #94a3b8;">Waiting for image upload...</pre>
     </div>
     <div class="card" style="margin-bottom: 0;">
-      <h3>Audited & Reconciled JSON Output</h3>
+      <h3>Winning Consensus JSON Output</h3>
       <pre id="jsonOutput">Waiting for extraction...</pre>
     </div>
   </div>
@@ -145,7 +169,7 @@
     const statusElem = document.getElementById('status');
     const receiptInput = document.getElementById('receiptInput');
     const activeEngineLabel = document.getElementById('activeEngineLabel');
-    const archetypeLabel = document.getElementById('archetypeLabel');
+    const winnerLabel = document.getElementById('winnerLabel');
     const sessionStatusLabel = document.getElementById('sessionStatusLabel');
     const cropTimeElem = document.getElementById('cropTime');
     const ocrTimeElem = document.getElementById('ocrTime');
@@ -155,6 +179,8 @@
     const auditPanel = document.getElementById('auditPanel');
     const cropCanvas = document.getElementById('cropCanvas');
     const canvasContainer = document.getElementById('canvasContainer');
+    const leaderboardCard = document.getElementById('leaderboardCard');
+    const leaderboardBody = document.getElementById('leaderboardBody');
 
     let ocrEngine = null;
     let edgeAiSession = null;
@@ -201,7 +227,7 @@
       receiptInput.value = '';
       currentMode = null;
       activeEngineLabel.textContent = 'None';
-      archetypeLabel.textContent = 'None';
+      winnerLabel.textContent = 'None';
       sessionStatusLabel.textContent = keepOcr ? 'OCR Active (SLMs Purged)' : 'Full System Reset';
       sessionStatusLabel.style.color = '#4ade80';
       statusElem.textContent = 'Session reset cleanly! Ready for initialization.';
@@ -251,7 +277,7 @@
           hfPipeline = await pipeline('text-generation', repoId, { device: hfBackendSelect.value, dtype: 'q4' });
           activeEngineLabel.textContent = `HF Gen: ${repoId.split('/')[1]}`;
         } else {
-          activeEngineLabel.textContent = 'Universal Layout-Aware Engine';
+          activeEngineLabel.textContent = '6-Trial Consensus Matrix';
         }
 
         sessionStatusLabel.textContent = 'Active & Healthy';
@@ -358,9 +384,9 @@
     }
 
     // -------------------------------------------------------------
-    // 5. THE UNIVERSAL LAYOUT-AWARE SPATIAL RECEIPT ENGINE
+    // 5. THE 6-TRIAL SPATIAL CONSENSUS MATRIX & LEVENSHTEIN ENGINE
     // -------------------------------------------------------------
-    class FuzzyLexiconEngine {
+    class FuzzyLexiconNormalizer {
       static levenshtein(a, b) {
         const m = [];
         for (let i = 0; i <= b.length; i++) m[i] = [i];
@@ -374,130 +400,53 @@
         return m[b.length][a.length];
       }
 
-      static similarity(word, target) {
-        if (!word || !target) return 0.0;
-        const maxLen = Math.max(word.length, target.length);
-        if (maxLen === 0) return 1.0;
-        const dist = this.levenshtein(word.toLowerCase(), target.toLowerCase());
-        return (maxLen - dist) / maxLen;
-      }
+      static normalizeLine(textLine) {
+        if (!fuzzyCheck.checked) return textLine;
+        const tokens = textLine.split(/\s+/);
+        const dict = {
+          'free': ['tree', 'tred', 'fr33', 'waived'],
+          'total': ['tota1', '10tal', 't0tal', 'toal'],
+          'subtotal': ['subtota1', 'sub10tal', 'subtoal'],
+          'discount': ['discont', 'd1scount', 'discunt', 'coupon'],
+          'tax': ['1ax', 'taxe', 'mwst', 'gst', 'vat'],
+          'usd': ['uso', 'u$d', 'us0'],
+          'receipt': ['recep1', 'receit', 'rcpt', 'recept'],
+          'invoice': ['1nvoice', 'invc', 'invoic'],
+          'cash': ['ca$h', 'c4sh', 'cahs']
+        };
 
-      static matchLexicon(textLine, lexiconArray, threshold = 0.80) {
-        if (!fuzzyCheck.checked) {
-          const lower = textLine.toLowerCase();
-          return lexiconArray.some(w => lower.includes(w.toLowerCase()));
-        }
-        const tokens = textLine.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
-        for (const tok of tokens) {
-          if (tok.length < 3) continue;
-          for (const target of lexiconArray) {
-            const thresh = target.length <= 4 ? 0.85 : threshold;
-            if (this.similarity(tok, target) >= thresh || tok.includes(target)) return true;
+        return tokens.map(tok => {
+          const cleanTok = tok.replace(/[^a-zA-Z0-9]/g, '');
+          if (cleanTok.length < 3) return tok;
+          for (const [correct, typos] of Object.entries(dict)) {
+            if (typos.includes(cleanTok.toLowerCase()) || this.levenshtein(cleanTok.toLowerCase(), correct) === 1) {
+              return tok.replace(cleanTok, correct.toUpperCase());
+            }
           }
-        }
-        return false;
+          return tok;
+        }).join(' ');
       }
     }
 
-    class UniversalLayoutEngine {
+    class UniversalConsensusEngine {
       constructor() {
         this.dateRegex = /\b(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[\s,:\.-]+)?(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4}|\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{2,4})\b/i;
         this.timeRegex = /\b((?:2[0-3]|[01]?[0-9]|O|l)[:\.][0-5O][0-9O](?:[:\.][0-5O][0-9O])?(?:\s*[AP]M)?)\b/i;
         this.contactAndIdShield = /(?:\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b|\+\d{1,3}[-.\s]\d+|\b(?:fax|tel|phone|ph|mob|cell|pin|zip|po|p\.o\.|box|nr\.|no\.|id|table|tisch|st|ave|rd|dr|blvd|lane|colony|nagar)\b.?\s*\d+|\b\d{4,6}\b\s*(?:Grindelwald|Any\s*City|Tamil|India|NY|CA|MA|ST|TX|FL|WA|UK|USA|CHF|EUR)?)/i;
-
-        this.lexicons = {
-          SUBTOTAL: ['subtotal', 'subtota1', 'subtoal', 'net amount', 'item total', 'mrp', 'gross total', 'total amount'],
-          TOTAL: ['total', 'tota1', '10tal', 't0tal', 'toal', 'amount due', 'balance due', 'bill total', 'to pay', 'grand total'],
-          TAX: ['tax', 'taxe', '1ax', 'vat', 'gst', 'hst', 'cgst', 'sgst', 'igst', 'mwst'],
-          DISCOUNT: ['discount', 'discont', 'd1scount', 'promo', 'coupon', 'voucher', 'saved', 'cartwheel', 'loyalty', 'special offer'],
-          FEE: ['delivery', 'shipping', 'packaging', 'handling', 'surge', 'service charge', 'srvc chg', 'gratuity', 'tip', 'bag'],
-          FREE: ['free', 'tree', 'tred', 'fr33', 'waived', 'incl', 'included'],
-          HEADER: ['description', 'item', 'qty', 'quantity', 'rate', 'price', 'amount', 'cost', 'subtotal', 'amt']
-        };
       }
 
-      // STAGE 1: SPATIAL AGGLOMERATIVE LINE CLUSTERING
-      clusterSpatialLines(rawOcrItems) {
-        const items = rawOcrItems.map(item => {
-          let top = 0, left = 0, right = 0, bottom = 0;
-          const pts = item.poly || item.points || item.box || [];
-
-          if (Array.isArray(pts) && pts.length > 0) {
-            if (Array.isArray(pts[0])) {
-              const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
-              left = Math.min(...xs); right = Math.max(...xs);
-              top = Math.min(...ys); bottom = Math.max(...ys);
-            } else if (typeof pts[0] === 'number') { left = pts[0]; top = pts[1]; right = pts[2]; bottom = pts[3]; }
-          }
-
-          return {
-            text: (item.text || item.label || '').trim(),
-            box: { top, left, right, bottom, width: right - left, height: bottom - top, cx: (left + right) / 2, cy: (top + bottom) / 2 }
-          };
-        }).filter(i => i.text.length > 0);
-
-        items.sort((a, b) => a.box.top - b.box.top);
-        const lines = [];
-        items.forEach(item => {
-          const lastLine = lines[lines.length - 1];
-          const overlapThreshold = Math.max(8, item.box.height * 0.55);
-
-          if (lastLine && Math.abs(lastLine.y - item.box.top) < overlapThreshold) {
-            lastLine.items.push(item);
-            lastLine.maxHeight = Math.max(lastLine.maxHeight, item.box.height);
-            lastLine.right = Math.max(lastLine.right, item.box.right);
-          } else {
-            lines.push({ y: item.box.top, maxHeight: item.box.height, right: item.box.right, items: [item] });
-          }
-        });
-
-        lines.forEach(line => {
-          line.items.sort((a, b) => a.box.left - b.box.left);
-          line.text = line.items.map(i => i.text).join(' ');
-        });
-
-        return lines;
-      }
-
-      // STAGE 3: VERTICAL X-AXIS PRICE COLUMN PROJECTION
-      projectPriceColumn(lines, docWidth) {
-        const rightEdges = [];
-        lines.forEach(l => {
-          l.items.forEach(i => {
-            if (/\d+[\.,]\d{2}/.test(i.text)) rightEdges.push(i.box.right);
-          });
-        });
-
-        if (rightEdges.length === 0) return { minX: docWidth * 0.5, maxX: docWidth };
-
-        rightEdges.sort((a, b) => a - b);
-        let bestCluster = [], currentCluster = [rightEdges[0]];
-        const tolerance = docWidth * 0.08;
-
-        for (let i = 1; i < rightEdges.length; i++) {
-          if (rightEdges[i] - rightEdges[i - 1] <= tolerance) {
-            currentCluster.push(rightEdges[i]);
-          } else {
-            if (currentCluster.length > bestCluster.length) bestCluster = currentCluster;
-            currentCluster = [rightEdges[i]];
-          }
-        }
-        if (currentCluster.length > bestCluster.length) bestCluster = currentCluster;
-
-        const avgRight = bestCluster.reduce((a, b) => a + b, 0) / bestCluster.length;
-        return { minX: Math.max(0, avgRight - docWidth * 0.25), maxX: docWidth };
-      }
-
-      // STAGE 5: UNIVERSAL FLOAT NORMALIZER & INTEGER SHIELD
       parseUniversalFloat(str, textLine = '') {
         if (!str) return null;
         if (this.contactAndIdShield.test(textLine) && !/(?:subtotal|total|amount|price|cost|rate|amt|usd|rm|chf|eur|₹|\$)/i.test(textLine)) return null;
 
-        if (FuzzyLexiconEngine.matchLexicon(textLine, this.lexicons.FREE) && FuzzyLexiconEngine.matchLexicon(textLine, this.lexicons.FEE)) {
+        // STRIKETHROUGH / FREE OVERRIDE: If line says "free" or "waived", zero out delivery fee!
+        if (/free|waived|incl\.|included|strikethrough/i.test(textLine) && /(?:delivery|shipping|packaging|charge|fee|bag)/i.test(textLine)) {
           return 0.00;
         }
 
         let clean = str.replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').trim();
+        clean = clean.replace(/^([0-9]+)[O|o]([0-9]{2})$/, '$10$2').replace(/^[l|I|i|\|]([0-9]+[\.,][0-9]{2})$/, '1$1');
+
         if (/^\d{1,3}(?:[.,]\d{3})*[.,]\d{2}$/.test(clean)) {
           if (clean.indexOf(',') !== -1 && clean.lastIndexOf(',') > clean.lastIndexOf('.')) {
             clean = clean.replace(/\./g, '').replace(',', '.');
@@ -509,40 +458,101 @@
         const val = parseFloat(match[1]);
         
         if (Number.isInteger(val) && Math.abs(val) >= 100) {
-          const isSummary = FuzzyLexiconEngine.matchLexicon(textLine, this.lexicons.TOTAL) || FuzzyLexiconEngine.matchLexicon(textLine, this.lexicons.SUBTOTAL);
-          if (!/(?:\$|£|€|₹|RM|CHF|EUR|USD|00$|,00$|\.00$)/i.test(str) && !isSummary) return null;
+          if (!/(?:\$|£|€|₹|RM|CHF|EUR|USD|00$|,00$|\.00$)/i.test(str) && !/(?:total|subtotal|amount|price)/i.test(textLine)) return null;
         }
         return val;
       }
 
-      // STAGE 4: DYNAMIC LAYOUT ARCHETYPE CLASSIFICATION
-      classifyArchetype(lines) {
-        let scores = { DIGITAL_APP_CART: 0, TABULAR_INVOICE_B2B_GST: 0, CHARGE_SLIP: 0, RETAIL_MULTI_LINE_STACKED: 0, RETAIL_POS_LINE_BY_LINE: 1 };
+      clusterSpatialLines(rawOcrItems, filterFn = null) {
+        let items = rawOcrItems.map(item => {
+          let top = 0, left = 0, right = 0, bottom = 0;
+          const pts = item.poly || item.points || item.box || [];
+          if (Array.isArray(pts) && pts.length > 0) {
+            if (Array.isArray(pts[0])) {
+              const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+              left = Math.min(...xs); right = Math.max(...xs);
+              top = Math.min(...ys); bottom = Math.max(...ys);
+            } else if (typeof pts[0] === 'number') { left = pts[0]; top = pts[1]; right = pts[2]; bottom = pts[3]; }
+          }
+          const text = FuzzyLexiconNormalizer.normalizeLine((item.text || item.label || '').trim());
+          return { text, box: { top, left, right, bottom, width: right - left, height: bottom - top } };
+        }).filter(i => i.text.length > 0);
 
-        lines.forEach(l => {
-          const t = l.text.toLowerCase();
-          if (/my\s*cart|checkout|mrp|delivery\s*charges|surge\s*charges|coupon\s*discount|proceed|add\s*a\s*tip|blinkit|zepto|instacart/i.test(t)) scores.DIGITAL_APP_CART += 3;
-          if (/gstin|cgst|sgst|igst|tax\s*invoice|place\s*of\s*supply|hsn|sac|fbr\s*pos|strn|ntn/i.test(t)) scores.TABULAR_INVOICE_B2B_GST += 3;
-          if (FuzzyLexiconEngine.matchLexicon(t, this.lexicons.HEADER)) scores.TABULAR_INVOICE_B2B_GST += 2;
-          if (/merchant\s*id|terminal\s*id|swiped|chip|auth\s*code|approval\s*code|discover|entry\s*mode|card\s*type/i.test(t)) scores.CHARGE_SLIP += 3;
-          if (/cartwheel|loyalty|saved\s+.*\s+off|mfrcpn|weight|lb|kg|ea\b/i.test(t)) scores.RETAIL_MULTI_LINE_STACKED += 2;
+        if (filterFn) items = items.filter(filterFn);
+
+        items.sort((a, b) => a.box.top - b.box.top);
+        const lines = [];
+        items.forEach(item => {
+          const lastLine = lines[lines.length - 1];
+          const overlapThreshold = Math.max(8, item.box.height * 0.55);
+          if (lastLine && Math.abs(lastLine.y - item.box.top) < overlapThreshold) {
+            lastLine.items.push(item);
+            lastLine.maxHeight = Math.max(lastLine.maxHeight, item.box.height);
+            lastLine.right = Math.max(lastLine.right, item.box.right);
+          } else { lines.push({ y: item.box.top, maxHeight: item.box.height, right: item.box.right, items: [item] }); }
         });
 
-        let bestType = "RETAIL_POS_LINE_BY_LINE", maxScore = 1;
-        Object.keys(scores).forEach(type => {
-          if (scores[type] > maxScore) { maxScore = scores[type]; bestType = type; }
+        lines.forEach(line => {
+          line.items.sort((a, b) => a.box.left - b.box.left);
+          line.text = line.items.map(i => i.text).join(' ');
         });
-        return bestType;
+        return lines;
       }
 
-      // STAGE 4 ROUTING & STAGE 6 FINANCIAL RECONCILIATION
-      process(rawOcrItems) {
-        const lines = this.clusterSpatialLines(rawOcrItems);
-        const docWidth = Math.max(...lines.map(l => l.right), 1000);
-        const priceCol = this.projectPriceColumn(lines, docWidth);
-        const archetype = this.classifyArchetype(lines);
-        archetypeLabel.textContent = archetype;
+      // EXECUTE 6 CONCURRENT EXPERIMENTAL TRIALS
+      runConsensus(rawOcrItems) {
+        const docWidth = Math.max(...rawOcrItems.map(i => {
+          const pts = i.poly || i.points || i.box || [];
+          return Array.isArray(pts[0]) ? Math.max(...pts.map(p => p[0])) : (pts[2] || 1000);
+        }), 1000);
 
+        const trials = [
+          this.executeTrial(rawOcrItems, "Trial 1: Table Y-Bounded Quarantine", (lines) => this.strategyTableWindow(lines)),
+          this.executeTrial(rawOcrItems, "Trial 2: X-Axis Right-Margin Projection", (lines) => this.strategyRightMargin(lines, docWidth)),
+          this.executeTrial(rawOcrItems, "Trial 3: Aggressive Noise-Box Masking", (lines) => this.strategyTableWindow(lines), (item) => !/\b\d{6,}\b|tel|fax|pin|zip|gstin|strn|ntn/i.test(item.text)),
+          this.executeTrial(rawOcrItems, "Trial 4: Stacked Line & Multi-Column Reconciler", (lines) => this.strategyStackedMultiColumn(lines)),
+          this.executeTrial(rawOcrItems, "Trial 5: Digital App Cart Combinatorial Scanner", (lines) => this.strategyDigitalCart(lines)),
+          this.executeTrial(rawOcrItems, "Trial 6: Permissive Algebraic Reconciler", (lines) => this.strategyPermissiveMath(lines))
+        ];
+
+        // Evaluate and score experimental trials
+        let bestTrial = trials[0];
+        let maxScore = -999999;
+
+        trials.forEach(t => {
+          let score = 0;
+          // Math Convergence Score (+1000 points for balanced accounting equation!)
+          if (t.audit.is_mathematically_valid) score += 1000;
+          else score -= Math.min(800, Math.abs(t.audit.discrepancy) * 10);
+
+          // Comprehensive item count bonus (+20 per item up to 30 items)
+          if (t.items.length > 0 && t.items.length <= 30) score += Math.min(300, t.items.length * 20);
+          else if (t.items.length === 0 && t.receipt_type !== "DIGITAL_APP_CART" && t.receipt_type !== "CHARGE_SLIP") score -= 500;
+
+          // Grand total presence bonus
+          if (t.financials.grand_total !== null && t.financials.grand_total !== 0) score += 150;
+
+          t.convergence_score = Math.round(score);
+          if (t.convergence_score > maxScore) { maxScore = t.convergence_score; bestTrial = t; }
+        });
+
+        bestTrial.is_consensus_winner = true;
+        return { winner: bestTrial, all_trials: trials };
+      }
+
+      executeTrial(rawOcrItems, name, strategyFn, filterFn = null) {
+        const lines = this.clusterSpatialLines(rawOcrItems, filterFn);
+        const meta = this.extractMetadata(lines);
+        const result = strategyFn(lines);
+        result.hypothesis_name = name;
+        result.enterprise = meta.enterprise;
+        result.date = meta.date;
+        result.time = meta.time;
+        if (meta.taxId) result.tax_id_gstin = meta.taxId;
+        return this.finalizeTrial(result);
+      }
+
+      extractMetadata(lines) {
         const meta = { enterprise: "Unknown Enterprise", date: "Not Found", time: "Not Found", taxId: null };
         lines.forEach((l, idx) => {
           if (meta.enterprise === "Unknown Enterprise" && idx < 6) {
@@ -556,172 +566,205 @@
           }
           if (!meta.taxId && /GSTIN:?\s*([0-9A-Z]{15})/i.test(l.text)) meta.taxId = l.text.match(/GSTIN:?\s*([0-9A-Z]{15})/i)[1];
         });
+        return meta;
+      }
 
-        const totalsBlock = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
-        let items = [];
+      // TRIAL 1: TABLE WINDOW QUARANTINE
+      strategyTableWindow(lines) {
+        const items = [];
+        const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
+        let topY = 0, bottomY = Number.MAX_SAFE_VALUE;
 
-        // ROUTE 1: DIGITAL APP CART
-        if (archetype === "DIGITAL_APP_CART") {
-          const candidates = [];
-          lines.forEach(l => {
-            const val = this.parseUniversalFloat(l.text, l.text);
-            if (val === null) return;
-            if (/mrp|item\s*total/i.test(l.text)) totalsBlock.subtotal = val;
-            else if (/bill\s*total|to\s*pay|total\s*amount/i.test(l.text) || (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.TOTAL) && !/item|sub/i.test(l.text))) totalsBlock.grandTotal = val;
-            else if (/delivery/i.test(l.text)) totalsBlock.delivery += val;
-            else if (/surge|handling|small\s*cart/i.test(l.text)) totalsBlock.surge += val;
-            else if (/discount|coupon|saved/i.test(l.text)) candidates.push({ val: Math.abs(val), line: l.text });
-          });
-
-          if (totalsBlock.grandTotal !== null && totalsBlock.subtotal !== null) {
-            const target = Number((totalsBlock.subtotal + totalsBlock.delivery + totalsBlock.surge - totalsBlock.grandTotal).toFixed(2));
-            let bestDisc = 0;
-            candidates.forEach(c => { if (Math.abs(c.val - target) <= 0.50) bestDisc = c.val; });
-            totalsBlock.discount = bestDisc || (candidates.length > 0 ? candidates[0].val : 0);
-          } else { totalsBlock.discount = candidates.reduce((s, c) => s + c.val, 0); }
-        }
-
-        // ROUTE 2: TABULAR INVOICE OR RETAIL POS
-        else {
-          let topY = 0, bottomY = Number.MAX_SAFE_VALUE;
-          lines.forEach(l => {
-            if (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.HEADER)) topY = l.y;
-            if (bottomY === Number.MAX_SAFE_VALUE && (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.SUBTOTAL) || (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.TOTAL) && !/item/i.test(l.text)) || /payment\s*details|bank\s*code|thank/i.test(l.text))) {
-              if (l.y > topY + 20) bottomY = l.y;
-            }
-          });
-
-          // STACKED LINE MEMORY (Resolves Sapphire split two-line items!)
-          let lastUnpricedLine = null;
-
-          lines.forEach(l => {
-            if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
-
-            // IN-PLACE BARCODE STRIPPING (Resolves Target 9-digit DPCI bugs!)
-            let cleanLineText = l.text.replace(/\b\d{6,}\b/g, '').trim();
-            const val = this.parseUniversalFloat(cleanLineText, cleanLineText);
-
-            if (val !== null) {
-              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.FEE) && !/free/i.test(cleanLineText)) { totalsBlock.tip += val; return; }
-              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.TAX)) { totalsBlock.tax += val; return; }
-              if (/rounding|round\s*off|adjustment/i.test(cleanLineText)) { totalsBlock.rounding += (/-/.test(cleanLineText) ? -val : val); return; }
-              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.SUBTOTAL)) { totalsBlock.subtotal = val; return; }
-              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.TOTAL) && !/sub|item/i.test(cleanLineText)) { totalsBlock.grandTotal = val; return; }
-              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.DISCOUNT) || /loyalty|cartwheel|saved/i.test(cleanLineText)) { totalsBlock.discount += Math.abs(val); return; }
-            }
-
-            // PRODUCE & MODIFIER BLACKLIST (Resolves WEO Produce weight lines!)
-            if (/(?:\/\s*(?:kg|lb|gm|oz|l|ml)|net\s*wt|@\s*\$?\d|\bea\b|saved\s+\$?\d|mfrcpn|loyalty)/i.test(cleanLineText)) {
-              if (/loyalty|saved|discount|off|coupon/i.test(cleanLineText) && val !== null) {
-                totalsBlock.discount += Math.abs(val);
-              }
-              return;
-            }
-
-            if (l.y <= topY || l.y >= bottomY) return;
-            if (val === null) {
-              if (cleanLineText.length > 2 && !/total|subtotal|tax|discount|cash|change/i.test(cleanLineText)) {
-                lastUnpricedLine = cleanLineText;
-              }
-              return;
-            }
-
-            const rightTokens = l.items.filter(i => i.box.right >= priceCol.minX);
-            if (rightTokens.length === 0 && archetype === "TABULAR_INVOICE_B2B_GST") return;
-
-            let qty = 1, unitPrice = val, totalPrice = val, rawName = cleanLineText;
-
-            // STRIP LEADING TABLE ROW NUMBERS (Resolves SS Supermarket indexing!)
-            rawName = rawName.replace(/^\d+\s+/, '').trim();
-
-            const inlineMatch = cleanLineText.match(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i);
-            const attachedLead = cleanLineText.match(/^(\d+)\s*[xX\*@à]\s*([A-Za-z0-9\s\-_.,]+)/);
-            const leadQty = cleanLineText.match(/^(\d+)\s+([A-Za-z].*)/);
-
-            if (inlineMatch) {
-              qty = parseInt(inlineMatch[1], 10);
-              unitPrice = this.parseUniversalFloat(inlineMatch[2], cleanLineText) || val;
-              totalPrice = inlineMatch[3] ? (this.parseUniversalFloat(inlineMatch[3], cleanLineText) || Number((qty * unitPrice).toFixed(2))) : Number((qty * unitPrice).toFixed(2));
-              rawName = cleanLineText.replace(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i, '');
-            } else if (attachedLead && parseInt(attachedLead[1], 10) < 100) {
-              qty = parseInt(attachedLead[1], 10); rawName = attachedLead[2];
-              if (qty > 1) { totalPrice = val; unitPrice = Number((val / qty).toFixed(2)); }
-            } else {
-              const numPrices = [];
-              cleanLineText.split(/\s+/).forEach(tok => { const v = this.parseUniversalFloat(tok, cleanLineText); if (v !== null) numPrices.push(v); });
-              
-              if (numPrices.length > 1) {
-                // MULTI-FLOAT TABLE ROW OR STACKED ROW
-                const lastF = numPrices[numPrices.length - 1];
-                const firstF = numPrices[0];
-                const secondF = numPrices[1];
-                
-                if (firstF < 100 && secondF > 0 && Math.abs((firstF * secondF) - lastF) <= (lastF * 0.25)) {
-                  qty = Math.round(firstF); unitPrice = secondF; totalPrice = lastF;
-                } else if (lastUnpricedLine) {
-                  rawName = lastUnpricedLine; unitPrice = firstF; totalPrice = lastF;
-                }
-              } else if (leadQty && parseInt(leadQty[1], 10) < 100) {
-                qty = parseInt(leadQty[1], 10); rawName = leadQty[2];
-                if (qty > 1) { totalPrice = val; unitPrice = Number((val / qty).toFixed(2)); }
-              }
-            }
-
-            const cleanName = rawName.replace(/(?:\d+[\.,]\d{2})/g, '').replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').replace(/[\$€£₹@xX\-\.]+\s*$/, '').trim();
-            if (cleanName.length > 1 && !/^\d+$/.test(cleanName) && !/^(?:pcs|kgs|nos|box|ml|gm)$/i.test(cleanName)) {
-              items.push({ name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice });
-              lastUnpricedLine = null; // Clear unpriced memory once matched!
-            }
-          });
-
-          const reconciled = [];
-          for (let i = 0; i < items.length; i++) {
-            const curr = items[i], n1 = items[i + 1], n2 = items[i + 2];
-            if (n1 && n2 && Math.abs((curr.total_price - n1.total_price) - n2.total_price) <= 0.05) {
-              reconciled.push({ name: curr.name, quantity: curr.quantity, unit_price: curr.unit_price, total_price: curr.total_price });
-              totalsBlock.discount += n1.total_price; i += 2;
-            } else { reconciled.push(curr); }
+        lines.forEach(l => {
+          if (/(?:item|description|qty|quantity)\b.*\b(?:rate|price|amount|cost|subtotal|amt)\b/i.test(l.text)) topY = l.y;
+          if (bottomY === Number.MAX_SAFE_VALUE && /^(?:sub\s*total|\bsubtotal\b|total\s*:|payment\s*details|bank\s*code|total\s*in\s*words|thanks\s*for)/i.test(l.text)) {
+            if (l.y > topY + 20) bottomY = l.y;
           }
-          items = reconciled;
+        });
+
+        lines.forEach(l => {
+          if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
+          this.extractTotals(l.text, totals);
+          if (l.y <= topY || l.y >= bottomY) return;
+          const parsed = this.parseLineItem(l.text);
+          if (parsed) items.push(parsed);
+        });
+
+        return { items, totals, type: "ITEMIZED_STANDARD" };
+      }
+
+      // TRIAL 2: RIGHT MARGIN PRICE ISOLATION
+      strategyRightMargin(lines, docWidth) {
+        const items = [];
+        const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
+        const splitX = docWidth * 0.58;
+
+        lines.forEach(l => {
+          if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
+          this.extractTotals(l.text, totals);
+          const rightTokens = l.items.filter(i => i.box.left >= splitX).map(i => i.text).join(' ');
+          const leftTokens = l.items.filter(i => i.box.left < splitX).map(i => i.text).join(' ');
+          const price = this.parseUniversalFloat(rightTokens, l.text);
+          
+          if (price !== null && leftTokens.length > 2 && !/total|subtotal|tax|discount|cash|change/i.test(leftTokens)) {
+            items.push({ name: leftTokens.replace(/\d+$/, '').trim(), quantity: 1, unit_price: price, total_price: price });
+          }
+        });
+
+        return { items, totals, type: "RIGHT_MARGIN_ISOLATED" };
+      }
+
+      // TRIAL 4: STACKED LINE & MULTI-COLUMN RECONCILER (Sapphire & Indian GST)
+      strategyStackedMultiColumn(lines) {
+        const items = [];
+        const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
+        let lastUnpricedLine = null;
+
+        lines.forEach(l => {
+          if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
+          let cleanText = l.text.replace(/\b\d{6,}\b/g, '').trim(); // Strip Target barcodes!
+          const val = this.parseUniversalFloat(cleanText, cleanText);
+
+          this.extractTotals(cleanText, totals);
+          if (/(?:\/\s*(?:kg|lb|gm|oz|l|ml)|net\s*wt|@\s*\$?\d|\bea\b|saved\s+\$?\d|mfrcpn|loyalty)/i.test(cleanText)) return;
+
+          if (val === null) {
+            if (cleanText.length > 2 && !/total|subtotal|tax|discount|cash|change/i.test(cleanText)) lastUnpricedLine = cleanText;
+            return;
+          }
+
+          cleanText = cleanText.replace(/^\d+\s+/, '').trim(); // Strip table row index!
+          let qty = 1, unitPrice = val, totalPrice = val, rawName = cleanText;
+
+          const numPrices = [];
+          cleanText.split(/\s+/).forEach(tok => { const v = this.parseUniversalFloat(tok, cleanText); if (v !== null) numPrices.push(v); });
+
+          if (numPrices.length > 1) {
+            const lastF = numPrices[numPrices.length - 1], firstF = numPrices[0], secondF = numPrices[1];
+            if (firstF < 100 && secondF > 0 && Math.abs((firstF * secondF) - lastF) <= (lastF * 0.25)) {
+              qty = Math.round(firstF); unitPrice = secondF; totalPrice = lastF;
+            } else if (lastUnpricedLine) { rawName = lastUnpricedLine; unitPrice = firstF; totalPrice = lastF; }
+          } else if (lastUnpricedLine && !/total|subtotal|tax|discount|cash|change/i.test(cleanText)) {
+            rawName = lastUnpricedLine; unitPrice = val; totalPrice = val;
+          }
+
+          const cleanName = rawName.replace(/(?:\d+[\.,]\d{2})/g, '').replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').replace(/[\$€£₹@xX\-\.]+\s*$/, '').trim();
+          if (cleanName.length > 1 && !/^\d+$/.test(cleanName) && !/^(?:pcs|kgs|nos|box|ml|gm)$/i.test(cleanName)) {
+            items.push({ name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice });
+            lastUnpricedLine = null;
+          }
+        });
+
+        return { items, totals, type: "STACKED_MULTI_COLUMN" };
+      }
+
+      // TRIAL 5: DIGITAL APP CART COMBINATORIAL SCANNER (Blinkit / Zepto)
+      strategyDigitalCart(lines) {
+        const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
+        const candidates = [];
+
+        lines.forEach(l => {
+          const val = this.parseUniversalFloat(l.text, l.text);
+          if (val === null) return;
+          if (/mrp|item\s*total/i.test(l.text)) totals.subtotal = val;
+          else if (/bill\s*total|to\s*pay|total\s*amount/i.test(l.text) || (/total/i.test(l.text) && !/item|sub/i.test(l.text))) totals.grandTotal = val;
+          else if (/delivery/i.test(l.text)) totals.delivery += val;
+          else if (/surge|handling|small\s*cart/i.test(l.text)) totals.surge += val;
+          else if (/discount|coupon|saved/i.test(l.text)) candidates.push({ val: Math.abs(val), line: l.text });
+        });
+
+        if (totals.grandTotal !== null && totals.subtotal !== null) {
+          const target = Number((totals.subtotal + totals.delivery + totals.surge - totals.grandTotal).toFixed(2));
+          let bestDisc = 0;
+          candidates.forEach(c => { if (Math.abs(c.val - target) <= 0.50) bestDisc = c.val; });
+          totals.discount = bestDisc || (candidates.length > 0 ? candidates[0].val : 0);
+        } else { totals.discount = candidates.reduce((s, c) => s + c.val, 0); }
+
+        if (totals.grandTotal === null && totals.subtotal !== null) {
+          totals.grandTotal = Number((totals.subtotal - totals.discount + totals.delivery + totals.surge).toFixed(2));
+        }
+        return { items: [], totals, type: "DIGITAL_APP_CART" };
+      }
+
+      // TRIAL 6: PERMISSIVE ALGEBRAIC MATH
+      strategyPermissiveMath(lines) {
+        const items = [];
+        const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
+        lines.forEach(l => {
+          if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
+          this.extractTotals(l.text, totals);
+          const parsed = this.parseLineItem(l.text);
+          if (parsed) items.push(parsed);
+        });
+        return { items, totals, type: "PERMISSIVE_ALGEBRAIC" };
+      }
+
+      extractTotals(text, totalsBlock) {
+        const val = this.parseUniversalFloat(text, text);
+        if (val === null || /\d{6,}/.test(text)) return;
+        if (/\b(?:tip|gratuity|srvc\s*chg)\b/i.test(text) && !/free/i.test(text)) totalsBlock.tip += val;
+        else if (/\b(?:tax|vat|gst|hst|cgst|sgst|igst)\b/i.test(text)) totalsBlock.tax += val;
+        else if (/rounding|round\s*off|adjustment/i.test(text)) totalsBlock.rounding += (/-/.test(text) ? -val : val);
+        else if (/^sub\s*total|\bsubtotal\b|\bnet\s*amount\b/i.test(text)) totalsBlock.subtotal = val;
+        else if (/total|amount\s*due|balance\s*due|charge/i.test(text) && !/sub/i.test(text)) totalsBlock.grandTotal = val;
+        else if (/discount|promo|off|coupon|voucher|saved\s+\d|cartwheel|loyalty/i.test(text)) totalsBlock.discount += Math.abs(val);
+      }
+
+      parseLineItem(text) {
+        const numPrices = [];
+        text.split(/\s+/).forEach(tok => { const v = this.parseUniversalFloat(tok, text); if (v !== null) numPrices.push(v); });
+        const lastPrice = numPrices.length > 0 ? numPrices[numPrices.length - 1] : null;
+        if (lastPrice === null || /total|subtotal|tax|discount|cash|change/i.test(text) || /(?:\/\s*(?:kg|lb|gm)|net\s*wt|@\s*\$?\d|\bea\b|saved|loyalty)/i.test(text)) return null;
+
+        let qty = 1, unitPrice = lastPrice, totalPrice = lastPrice, rawName = text;
+        const inlineMatch = text.match(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})/i);
+        const attachedLead = text.match(/^(\d+)\s*[xX\*@à]\s*([A-Za-z0-9\s\-_.,]+)/);
+
+        if (inlineMatch) {
+          qty = parseInt(inlineMatch[1], 10);
+          unitPrice = this.parseUniversalFloat(inlineMatch[2], text) || lastPrice;
+          totalPrice = Number((qty * unitPrice).toFixed(2));
+          rawName = text.replace(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})/i, '');
+        } else if (attachedLead && parseInt(attachedLead[1], 10) < 100) {
+          qty = parseInt(attachedLead[1], 10); rawName = attachedLead[2];
+          if (qty > 1) { totalPrice = lastPrice; unitPrice = Number((lastPrice / qty).toFixed(2)); }
         }
 
-        // STAGE 6: FINANCIAL ACCOUNTING AUDIT
-        let calcSub = items.reduce((sum, item) => sum + item.total_price, 0);
+        const cleanName = rawName.replace(/(?:\d+[\.,]\d{2})/g, '').replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').replace(/[\$€£₹@xX\-\.]+\s*$/, '').trim();
+        if (cleanName.length < 2 || /^\d+$/.test(cleanName) || /^(?:pcs|kgs|nos|box|ml|gm)$/i.test(cleanName)) return null;
+        return { name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice };
+      }
+
+      finalizeTrial(res) {
+        let calcSub = res.items.reduce((sum, item) => sum + item.total_price, 0);
         calcSub = Number(calcSub.toFixed(2));
-        if (items.length === 0 && (archetype === "CHARGE_SLIP" || archetype === "DIGITAL_APP_CART")) {
-          calcSub = totalsBlock.subtotal || totalsBlock.grandTotal || 0.0;
+        if (res.items.length === 0 && (res.type === "CHARGE_SLIP" || res.type === "DIGITAL_APP_CART")) {
+          calcSub = res.totals.subtotal || res.totals.grandTotal || 0.0;
         }
 
-        let grand = totalsBlock.grandTotal;
+        let grand = res.totals.grandTotal;
         if (grand === null) {
-          grand = Number((calcSub - totalsBlock.discount + totalsBlock.tax + totalsBlock.tip + totalsBlock.rounding + totalsBlock.delivery + totalsBlock.surge).toFixed(2));
+          grand = Number((calcSub - res.totals.discount + res.totals.tax + res.totals.tip + res.totals.rounding + res.totals.delivery + res.totals.surge).toFixed(2));
         }
 
-        const expected = Number((calcSub - totalsBlock.discount + totalsBlock.tax + totalsBlock.tip + totalsBlock.rounding + totalsBlock.delivery + totalsBlock.surge).toFixed(2));
+        const expected = Number((calcSub - res.totals.discount + res.totals.tax + res.totals.tip + res.totals.rounding + res.totals.delivery + res.totals.surge).toFixed(2));
         const diff = Number((grand - expected).toFixed(2));
-        const isValid = Math.abs(diff) <= 0.05;
+        const isValid = Math.abs(diff) <= 0.10; // 10-cent OCR rounding slack!
 
-        const output = {
-          receipt_type: archetype,
-          enterprise: meta.enterprise,
-          date: meta.date,
-          time: meta.time,
-          items: items,
-          financials: { calculated_subtotal: calcSub, extracted_subtotal: totalsBlock.subtotal, tax: totalsBlock.tax, discount: totalsBlock.discount, tip: totalsBlock.tip, rounding: totalsBlock.rounding, grand_total: grand },
-          financial_audit: { is_mathematically_valid: isValid, discrepancy: diff, audit_notes: isValid ? ["✓ Accounting equation balanced perfectly."] : [`Equation mismatch: Expected Net $${expected}, read $${grand}. Diff: $${diff}`] }
+        return {
+          hypothesis_name: res.hypothesis_name,
+          receipt_type: res.type,
+          enterprise: res.enterprise,
+          date: res.date,
+          time: res.time,
+          items: res.items,
+          financials: { calculated_subtotal: calcSub, extracted_subtotal: res.totals.subtotal, tax: res.totals.tax, discount: res.totals.discount, tip: res.totals.tip, rounding: res.totals.rounding, delivery_charges: res.totals.delivery, surge_charges: res.totals.surge, grand_total: grand },
+          audit: { is_mathematically_valid: isValid, discrepancy: diff, audit_notes: isValid ? ["✓ Accounting equation balanced within OCR rounding slack."] : [`Equation mismatch: Expected $${expected}, read $${grand}. Diff: $${diff}`] }
         };
-
-        if (meta.taxId) output.tax_id_gstin = meta.taxId;
-        if (totalsBlock.delivery > 0 || totalsBlock.surge > 0) {
-          output.financials.delivery_charges = totalsBlock.delivery;
-          output.financials.surge_charges = totalsBlock.surge;
-        }
-
-        return output;
       }
     }
 
-    const layoutEngine = new UniversalLayoutEngine();
+    const consensusEngine = new UniversalConsensusEngine();
 
     // -------------------------------------------------------------
     // 6. PIPELINE EXECUTION WITH STRICT MUTEX LOCK
@@ -738,6 +781,7 @@
       isProcessing = true;
       receiptInput.disabled = true;
       auditPanel.style.display = 'none';
+      leaderboardCard.style.display = 'none';
       jsonOutput.textContent = 'Running Stage 1: Vision OCR & Auto-Crop...';
       ocrOutput.textContent = 'Processing...';
       sessionStatusLabel.textContent = 'Inference Running (Locked)';
@@ -753,7 +797,7 @@
         const [ocrResults] = await safePredict(processedInput);
         const rawOcrItems = ocrResults.items || ocrResults.words || [];
         
-        const sortedLines = layoutEngine.clusterSpatialLines(rawOcrItems);
+        const sortedLines = consensusEngine.clusterSpatialLines(rawOcrItems);
         ocrTimeElem.textContent = `${(performance.now() - t0).toFixed(0)} ms`;
         ocrOutput.textContent = sortedLines.map(l => l.text).join('\n');
 
@@ -777,13 +821,34 @@
           } catch (err) { if (!autoFallbackCheck.checked) throw err; }
         }
 
-        if (!finalJson || currentMode === 'spatial') {
-          if (currentMode !== 'spatial') console.warn('AI Parsing failed syntax check. Executing Universal Layout-Aware Engine Auto-Fallback...');
-          finalJson = layoutEngine.process(rawOcrItems);
+        if (!finalJson || currentMode === 'consensus') {
+          if (currentMode !== 'consensus') console.warn('AI Parsing failed syntax check. Executing 6-Trial Consensus Matrix Auto-Fallback...');
+          const consensusResult = consensusEngine.runConsensus(rawOcrItems);
+          finalJson = consensusResult.winner;
+          winnerLabel.textContent = finalJson.hypothesis_name.split(':')[0];
+
+          // Render Experimental Leaderboard Table
+          leaderboardBody.innerHTML = '';
+          consensusResult.all_trials.forEach(t => {
+            const row = document.createElement('tr');
+            if (t.is_consensus_winner) row.className = 'winner-row';
+            row.innerHTML = `
+              <td>${t.is_consensus_winner ? '🏆 ' : ''}${t.hypothesis_name}</td>
+              <td>${t.items.length}</td>
+              <td>$${t.financials.calculated_subtotal}</td>
+              <td>$${t.financials.discount}</td>
+              <td>$${Number((t.financials.tax + t.financials.tip + t.financials.delivery_charges + t.financials.surge_charges).toFixed(2))}</td>
+              <td>$${t.financials.grand_total}</td>
+              <td style="color: ${t.audit.is_mathematically_valid ? '#4ade80' : '#f87171'}">$${t.audit.discrepancy}</td>
+              <td><strong>${t.convergence_score} pts</strong></td>
+            `;
+            leaderboardBody.appendChild(row);
+          });
+          leaderboardCard.style.display = 'block';
         } else if (!finalJson.financial_audit && !finalJson.audit) {
-          const audit = layoutEngine.process(rawOcrItems);
-          finalJson.financials = audit.financials;
-          finalJson.financial_audit = audit.financial_audit;
+          const consensusResult = consensusEngine.runConsensus(rawOcrItems);
+          finalJson.financials = consensusResult.winner.financials;
+          finalJson.financial_audit = consensusResult.winner.audit;
         }
 
         parseTimeElem.textContent = `${(performance.now() - t1).toFixed(0)} ms`;
@@ -793,10 +858,10 @@
         auditPanel.style.display = 'block';
         if (auditData.is_mathematically_valid) {
           auditPanel.className = 'audit-panel audit-pass';
-          auditPanel.innerHTML = `✓ FINANCIAL MATH AUDIT PASSED: Subtotal and taxes balance perfectly to Grand Total.`;
+          auditPanel.innerHTML = `✓ CONSENSUS MATH AUDIT PASSED: Winning trial balanced accounting equation to Grand Total.`;
         } else {
           auditPanel.className = 'audit-panel audit-fail';
-          auditPanel.innerHTML = `⚠️ FINANCIAL MATH DISCREPANCY DETECTED: Discrepancy of $${auditData.discrepancy || '0.00'}. See JSON audit notes for details.`;
+          auditPanel.innerHTML = `⚠️ CONSENSUS MATH DISCREPANCY DETECTED: Winning trial discrepancy of $${auditData.discrepancy || '0.00'}. See JSON audit notes for details.`;
         }
 
       } catch (err) {
