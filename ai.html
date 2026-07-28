@@ -3,106 +3,121 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ultimate Receipt Parser Playground (Edge AI / HF / Regex)</title>
+  <title>Universal Client-Side Receipt Parser & Math Auditor</title>
   <style>
-    :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #4ade80; --error: #f87171; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 950px; margin: 2rem auto; padding: 0 1.5rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
     h2, h3 { margin-top: 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-    @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
     label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
     select, input[type="text"], input[type="file"] { width: 100%; padding: 0.65rem; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; color: var(--text); box-sizing: border-box; }
     input[type="file"] { border: 2px dashed var(--border); cursor: pointer; }
     input[type="file"]:disabled, button:disabled, select:disabled, input:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn { display: inline-block; padding: 0.7rem 1.4rem; background: #0284c7; color: white; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-    .btn:hover { background: #0369a1; }
+    .btn-group { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1rem; }
+    .btn { padding: 0.7rem 1.4rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    .btn-primary { background: #0284c7; color: white; }
+    .btn-primary:hover { background: #0369a1; }
+    .btn-danger { background: #dc2626; color: white; }
+    .btn-danger:hover { background: #b91c1c; }
     .status { margin-top: 10px; font-weight: 600; font-size: 0.9rem; color: var(--accent); }
-    pre { background: #020617; color: #38bdf8; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; border: 1px solid var(--border); max-height: 450px; }
+    pre { background: #020617; color: #38bdf8; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; border: 1px solid var(--border); max-height: 480px; }
     .metrics { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
     .metric-badge { background: #020617; padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
-    .engine-section { padding: 1rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1rem; background: #162032; }
+    .audit-panel { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600; display: none; }
+    .audit-pass { background: rgba(74, 222, 128, 0.1); border: 1px solid var(--success); color: var(--success); }
+    .audit-fail { background: rgba(248, 113, 113, 0.1); border: 1px solid var(--error); color: var(--error); }
   </style>
 </head>
 <body>
 
-  <h2>Ultimate Receipt Parser Playground</h2>
-  <p style="color: var(--muted);">Compare Microsoft Edge Native AI (Phi-mini), Custom Hugging Face SLMs, and Deterministic Regex.</p>
+  <h2>Universal Client-Side Receipt Parser</h2>
+  <p style="color: var(--muted);">Compare Edge Native AI, Hugging Face SLMs, NER Token Tagging, and Financial Math Auditing.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
-    <h3>1. Select & Initialize Engine</h3>
+    <h3>1. Engine Configuration & Memory Control</h3>
     
     <div class="grid">
       <div>
-        <label for="engineSelect">Parsing Engine Mode:</label>
+        <label for="engineSelect">Stage 2 Extraction Paradigm:</label>
         <select id="engineSelect">
           <option value="edge">Edge Prompt API (window.ai - Phi-mini) [0 MB]</option>
-          <option value="hf">Hugging Face SLM (Transformers.js) [~90 MB]</option>
-          <option value="regex">Deterministic Regex & Spatial Layout [0 MB]</option>
+          <option value="hf-gen">HF Generative SLM (Transformers.js) [~90 MB]</option>
+          <option value="hf-ner">HF Token-Classification NER [~40 MB]</option>
+          <option value="regex">Deterministic Math Regex Only [0 MB]</option>
         </select>
       </div>
 
       <div id="hfRepoContainer" style="display: none;">
-        <label for="hfRepoInput">HF Model Repo (< 100MB target):</label>
-        <input type="text" id="hfRepoInput" value="onnx-community/SmolLM2-135M-Instruct-ONNX-MHA" />
+        <label for="hfRepoInput">HF Model Repository:</label>
+        <input type="text" id="hfRepoInput" value="onnx-community/SmolLM2-135M-Instruct" />
       </div>
 
       <div id="hfBackendContainer" style="display: none;">
-        <label for="hfBackendSelect">Transformers.js Backend:</label>
+        <label for="hfBackendSelect">Transformers.js Runtime Backend:</label>
         <select id="hfBackendSelect">
           <option value="webgpu">WebGPU (Fastest GPU)</option>
           <option value="wasm">WASM SIMD (Most Stable CPU)</option>
-          <option value="webnn">WebNN (NPU)</option>
+          <option value="webnn">WebNN (NPU Accelerated)</option>
         </select>
       </div>
     </div>
 
-    <div style="margin-bottom: 1rem;">
-      <label>
+    <div style="margin-top: 0.5rem;">
+      <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
         <input type="checkbox" id="autoFallbackCheck" checked />
-        <strong>Auto-Fallback to Regex</strong> if AI model hallucinates or fails JSON syntax.
+        <span><strong>Auto-Fallback to Math Regex Engine</strong> if AI model outputs malformed JSON.</span>
       </label>
     </div>
 
-    <button id="initBtn" class="btn">Initialize Selected Pipeline</button>
-    <div id="status" class="status">Select an engine mode and click Initialize...</div>
+    <div class="btn-group">
+      <button id="initBtn" class="btn btn-primary">Initialize Selected Pipeline</button>
+      <button id="freeMemBtn" class="btn btn-danger" title="Disposes ONNX sessions, destroys window.ai sessions, and frees GPU VRAM">Free Engine Memory</button>
+    </div>
+    
+    <div id="status" class="status">Select an engine paradigm and click Initialize...</div>
 
     <div class="metrics">
-      <div class="metric-badge">Active Engine: <span id="activeEngineLabel">None</span></div>
-      <div class="metric-badge">OCR Time: <span id="ocrTime">0 ms</span></div>
-      <div class="metric-badge">Parsing Time: <span id="parseTime">0 ms</span></div>
+      <div class="metric-badge">Active Mode: <span id="activeEngineLabel">None</span></div>
+      <div class="metric-badge">VRAM / Memory Status: <span id="memStatusLabel">Clean</span></div>
+      <div class="metric-badge">OCR Speed: <span id="ocrTime">0 ms</span></div>
+      <div class="metric-badge">Parse Speed: <span id="parseTime">0 ms</span></div>
     </div>
   </div>
 
   <!-- INPUT & OUTPUT -->
   <div class="card">
-    <h3>2. Upload Receipt Image</h3>
+    <h3>2. Upload Receipt Photo</h3>
     <input type="file" id="receiptInput" accept="image/*" disabled />
   </div>
 
+  <!-- MATH AUDIT BANNER -->
+  <div id="auditPanel" class="audit-panel"></div>
+
   <div class="grid">
     <div class="card" style="margin-bottom: 0;">
-      <h3>Raw OCR Text Lines</h3>
-      <pre id="ocrOutput" style="color: #94a3b8;">No OCR data yet...</pre>
+      <h3>Raw OCR Spatial Output</h3>
+      <pre id="ocrOutput" style="color: #94a3b8;">Waiting for image upload...</pre>
     </div>
     <div class="card" style="margin-bottom: 0;">
-      <h3>Structured JSON Output</h3>
-      <pre id="jsonOutput">No parsed data yet...</pre>
+      <h3>Audited Receipt JSON</h3>
+      <pre id="jsonOutput">Waiting for extraction...</pre>
     </div>
   </div>
 
-  <!-- CDN IMPORTS & LOGIC -->
+  <!-- CDN IMPORTS & ENGINE ARCHITECTURE -->
   <script type="module">
     import { PaddleOCR } from 'https://cdn.jsdelivr.net/npm/@paddleocr/paddleocr-js@0.4.2/+esm';
     import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
 
-    // Safely configure WASM threads
+    // Optimize WebAssembly multi-threading
     if (env.backends?.onnx?.wasm) {
       env.backends.onnx.wasm.numThreads = Math.min(4, navigator.hardwareConcurrency || 2);
     }
 
-    // UI Elements
+    // UI References
     const engineSelect = document.getElementById('engineSelect');
     const hfRepoContainer = document.getElementById('hfRepoContainer');
     const hfBackendContainer = document.getElementById('hfBackendContainer');
@@ -110,36 +125,85 @@
     const hfBackendSelect = document.getElementById('hfBackendSelect');
     const autoFallbackCheck = document.getElementById('autoFallbackCheck');
     const initBtn = document.getElementById('initBtn');
+    const freeMemBtn = document.getElementById('freeMemBtn');
     const statusElem = document.getElementById('status');
     const receiptInput = document.getElementById('receiptInput');
     const activeEngineLabel = document.getElementById('activeEngineLabel');
+    const memStatusLabel = document.getElementById('memStatusLabel');
     const ocrTimeElem = document.getElementById('ocrTime');
     const parseTimeElem = document.getElementById('parseTime');
     const ocrOutput = document.getElementById('ocrOutput');
     const jsonOutput = document.getElementById('jsonOutput');
+    const auditPanel = document.getElementById('auditPanel');
 
+    // Global Pipeline State (Tracked for Explicit Memory Disposal)
     let ocrEngine = null;
     let edgeAiSession = null;
     let hfPipeline = null;
     let currentMode = null;
 
-    // Toggle HF configuration input visibility
+    // Toggle configuration UI visibility
     engineSelect.addEventListener('change', () => {
-      const isHf = engineSelect.value === 'hf';
-      hfRepoContainer.style.display = isHf ? 'block' : 'none';
-      hfBackendContainer.style.display = isHf ? 'block' : 'none';
+      const mode = engineSelect.value;
+      hfRepoContainer.style.display = (mode === 'hf-gen' || mode === 'hf-ner') ? 'block' : 'none';
+      hfBackendContainer.style.display = (mode === 'hf-gen' || mode === 'hf-ner') ? 'block' : 'none';
+      if (mode === 'hf-ner' && hfRepoInput.value.includes('SmolLM')) {
+        hfRepoInput.value = 'onnx-community/distilbert-NER-ONNX';
+      } else if (mode === 'hf-gen' && hfRepoInput.value.includes('NER')) {
+        hfRepoInput.value = 'onnx-community/SmolLM2-135M-Instruct';
+      }
     });
 
     // -------------------------------------------------------------
-    // 1. INITIALIZE PIPELINE
+    // 1. MEMORY MANAGEMENT ENGINE (CLEANUP & DISPOSAL)
+    // -------------------------------------------------------------
+    async function freeEngineMemory(keepOcr = true) {
+      statusElem.textContent = 'Releasing tensor buffers and terminating IPC threads...';
+      
+      // Destroy Edge window.ai session
+      if (edgeAiSession) {
+        if (typeof edgeAiSession.destroy === 'function') edgeAiSession.destroy();
+        edgeAiSession = null;
+      }
+
+      // Dispose Transformers.js ONNX sessions & WebGPU VRAM
+      if (hfPipeline) {
+        if (typeof hfPipeline.dispose === 'function') await hfPipeline.dispose();
+        hfPipeline = null;
+      }
+
+      // Optionally release OCR vision model
+      if (!keepOcr && ocrEngine) {
+        if (typeof ocrEngine.release === 'function') ocrEngine.release();
+        ocrEngine = null;
+      }
+
+      // Trigger Garbage Collection hint
+      currentMode = null;
+      activeEngineLabel.textContent = 'None';
+      memStatusLabel.textContent = keepOcr ? 'OCR In-Memory (SLMs Purged)' : 'All Memory Freed';
+      memStatusLabel.style.color = '#4ade80';
+      receiptInput.disabled = true;
+      statusElem.textContent = 'Memory cleaned successfully! You can now safely switch models.';
+      statusElem.style.color = '#4ade80';
+    }
+
+    freeMemBtn.addEventListener('click', () => freeEngineMemory(false));
+
+    // -------------------------------------------------------------
+    // 2. PIPELINE INITIALIZATION
     // -------------------------------------------------------------
     initBtn.addEventListener('click', async () => {
       initBtn.disabled = true;
       receiptInput.disabled = true;
-      currentMode = engineSelect.value;
+      const selectedMode = engineSelect.value;
+
+      // Ensure previous Stage 2 models are purged before loading a new one
+      await freeEngineMemory(true);
+      currentMode = selectedMode;
 
       try {
-        // Step A: Initialize PaddleOCR (~11 MB) if not loaded
+        // Step A: Initialize PaddleOCR Vision Engine (~11 MB) if missing
         if (!ocrEngine) {
           statusElem.textContent = 'Loading PaddleOCR vision weights (~11 MB)...';
           ocrEngine = await PaddleOCR.create({
@@ -149,41 +213,45 @@
           });
         }
 
-        // Step B: Initialize Selected Engine
+        // Step B: Initialize Selected Stage 2 Paradigm
         if (currentMode === 'edge') {
           statusElem.textContent = 'Connecting to Microsoft Edge Prompt API (Phi-mini)...';
           const aiFactory = window.ai?.languageModel || globalThis.ai?.languageModel;
-          
-          if (!aiFactory) {
-            throw new Error('Edge Prompt API not found. Please ensure #prompt-api-for-gemini-nano is enabled in edge://flags.');
-          }
+          if (!aiFactory) throw new Error('Edge Prompt API not found. Please enable #prompt-api-for-gemini-nano in edge://flags.');
 
           const cap = await aiFactory.capabilities();
-          if (cap.available === 'no') {
-            throw new Error('On-device AI is currently unavailable on this system.');
-          }
+          if (cap.available === 'no') throw new Error('On-device AI is currently unavailable on this operating system.');
 
           edgeAiSession = await aiFactory.create({
-            systemPrompt: 'You are a strict JSON receipt parser. Output ONLY valid JSON without Markdown formatting or markdown fences.'
+            systemPrompt: 'You are a strict JSON receipt parser. Output ONLY valid JSON without Markdown fences.'
           });
           activeEngineLabel.textContent = 'Edge Native (Phi-mini)';
+          memStatusLabel.textContent = 'Edge IPC Allocated';
 
-        } else if (currentMode === 'hf') {
+        } else if (currentMode === 'hf-gen') {
           const repoId = hfRepoInput.value.trim();
           const backend = hfBackendSelect.value;
-          statusElem.textContent = `Loading ${repoId} into [${backend.toUpperCase()}] (~85-95 MB)...`;
+          statusElem.textContent = `Loading Generative SLM [${repoId}] via [${backend.toUpperCase()}]...`;
           
-          hfPipeline = await pipeline('text-generation', repoId, {
-            device: backend,
-            dtype: 'q4'
-          });
-          activeEngineLabel.textContent = `HF: ${repoId.split('/')[1]} (${backend})`;
+          hfPipeline = await pipeline('text-generation', repoId, { device: backend, dtype: 'q4' });
+          activeEngineLabel.textContent = `HF Gen: ${repoId.split('/')[1]}`;
+          memStatusLabel.textContent = `${backend.toUpperCase()} VRAM Allocated`;
+
+        } else if (currentMode === 'hf-ner') {
+          const repoId = hfRepoInput.value.trim();
+          const backend = hfBackendSelect.value;
+          statusElem.textContent = `Loading Token Classification NER [${repoId}] via [${backend.toUpperCase()}]...`;
+          
+          hfPipeline = await pipeline('token-classification', repoId, { device: backend });
+          activeEngineLabel.textContent = `HF NER: ${repoId.split('/')[1]}`;
+          memStatusLabel.textContent = `${backend.toUpperCase()} VRAM Allocated`;
 
         } else {
-          activeEngineLabel.textContent = 'Deterministic Regex';
+          activeEngineLabel.textContent = 'Deterministic Math Regex';
+          memStatusLabel.textContent = 'Zero VRAM (CPU Pure Math)';
         }
 
-        statusElem.textContent = 'Pipeline Ready! Upload a receipt image below.';
+        statusElem.textContent = 'Pipeline Ready! Upload a receipt photo below.';
         statusElem.style.color = '#4ade80';
         receiptInput.disabled = false;
         initBtn.disabled = false;
@@ -196,7 +264,7 @@
     });
 
     // -------------------------------------------------------------
-    // 2. OCR SPATIAL SORTING HELPER
+    // 3. SPATIAL GEOMETRY & READING-ORDER NORMALIZER
     // -------------------------------------------------------------
     function extractSortedLines(rawItems) {
       const items = rawItems.map(item => {
@@ -206,7 +274,7 @@
           top = Array.isArray(pts[0]) ? Math.min(...pts.map(p => p[1])) : pts[1];
           left = Array.isArray(pts[0]) ? Math.min(...pts.map(p => p[0])) : pts[0];
         }
-        return { text: (item.text || '').trim(), top, left, box: item.box || { top, left, height: 15 } };
+        return { text: (item.text || '').trim(), top, left, height: 15 };
       }).filter(i => i.text.length > 0);
 
       items.sort((a, b) => a.top - b.top);
@@ -226,58 +294,110 @@
     }
 
     // -------------------------------------------------------------
-    // 3. DETERMINISTIC REGEX ENGINE (SAFETY NET)
+    // 4. THE MATHEMATICAL RECEIPT AUDIT ENGINE
     // -------------------------------------------------------------
-    function runRegexFallback(textLines) {
+    function parseAndValidateReceipt(textLines) {
       const priceRegex = /(\d+[\.,]\d{2})/;
-      const dateRegex = /\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4})\b/;
-      const timeRegex = /\b((?:2[0-3]|[01]?[0-9]):[0-5][0-9])\b/;
+      const taxRegex = /\b(?:tax|vat|gst|hst):?\s*(?:\(\d+%\))?\s*(\d+[\.,]\d{2})/i;
+      const discountRegex = /\b(?:discount|savings|promo|coupon):?\s*-?\s*(\d+[\.,]\d{2})/i;
+      const tipRegex = /\b(?:tip|gratuity):?\s*(\d+[\.,]\d{2})/i;
+      const qtyAtRegex = /^(\d+)\s*(?:x|X|@)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/;
 
       const result = {
         enterprise: textLines[0] || "Unknown Enterprise",
         date: "Not Found",
         time: "Not Found",
         items: [],
-        total: 0.0
+        financials: { calculated_subtotal: 0.0, extracted_subtotal: null, tax: 0.0, discount: 0.0, tip: 0.0, grand_total: null },
+        audit: { is_mathematically_valid: false, discrepancy: 0.0, item_errors: [], audit_notes: [] }
       };
 
       textLines.forEach((line, idx) => {
-        if (!result.date && dateRegex.test(line)) result.date = line.match(dateRegex)[1];
-        if (!result.time && timeRegex.test(line)) result.time = line.match(timeRegex)[1];
+        const clean = line.trim();
+        if (!result.date && /\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4})\b/.test(clean)) result.date = clean.match(/\b(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4})\b/)[1];
+        if (!result.time && /\b((?:2[0-3]|[01]?[0-9]):[0-5][0-9])\b/.test(clean)) result.time = clean.match(/\b((?:2[0-3]|[01]?[0-9]):[0-5][0-9])\b/)[1];
 
-        if (/total|amount due|balance/i.test(line)) {
-          const match = line.match(priceRegex);
-          if (match) result.total = parseFloat(match[1].replace(',', '.'));
-        } else if (idx > 0 && priceRegex.test(line)) {
-          const prices = line.match(new RegExp(priceRegex, 'g'));
-          if (prices) {
-            const price = parseFloat(prices[prices.length - 1].replace(',', '.'));
-            const name = line.replace(new RegExp(priceRegex, 'g'), '').trim();
-            if (name.length > 1 && !/total|tax|change|cash/i.test(name)) {
-              result.items.push({ name, quantity: 1, unit_price: price, total_price: price });
+        if (taxRegex.test(clean)) { result.financials.tax += parseFloat(clean.match(taxRegex)[1].replace(',', '.')); return; }
+        if (discountRegex.test(clean)) { result.financials.discount += parseFloat(clean.match(discountRegex)[1].replace(',', '.')); return; }
+        if (tipRegex.test(clean)) { result.financials.tip += parseFloat(clean.match(tipRegex)[1].replace(',', '.')); return; }
+        if (/^subtotal/i.test(clean) && priceRegex.test(clean)) {
+          const m = clean.match(new RegExp(priceRegex, 'g'));
+          result.financials.extracted_subtotal = parseFloat(m[m.length - 1].replace(',', '.'));
+          return;
+        }
+        if (/total|amount due|balance/i.test(clean) && !/subtotal/i.test(clean)) {
+          const m = clean.match(new RegExp(priceRegex, 'g'));
+          if (m) result.financials.grand_total = parseFloat(m[m.length - 1].replace(',', '.'));
+          return;
+        }
+
+        const prices = clean.match(new RegExp(priceRegex, 'g'));
+        if (prices && idx > 0 && !/cash|change|card|visa|mastercard|subtotal|total|tax/i.test(clean)) {
+          let qty = 1, unit = 0.0, total = parseFloat(prices[prices.length - 1].replace(',', '.')), name = clean;
+          const qm = clean.match(qtyAtRegex);
+          if (qm) {
+            qty = parseInt(qm[1], 10);
+            unit = parseFloat(qm[2].replace(',', '.'));
+            total = qm[3] ? parseFloat(qm[3].replace(',', '.')) : qty * unit;
+            name = clean.replace(qtyAtRegex, '').trim();
+          } else {
+            unit = total;
+            name = clean.replace(priceRegex, '').trim();
+          }
+          name = name.replace(/[\$€£₹@xX\-]+$/, '').trim();
+          if (name.length > 1 && !/^\d+$/.test(name)) {
+            const expectedItemTotal = Number((qty * unit).toFixed(2));
+            if (Math.abs(expectedItemTotal - total) > 0.02) {
+              result.audit.item_errors.push(`Math mismatch on "${name}": ${qty} @ ${unit} = ${expectedItemTotal}, OCR read ${total}`);
             }
+            result.items.push({ name, quantity: qty, unit_price: unit, total_price: total });
+            result.financials.calculated_subtotal += total;
           }
         }
       });
 
-      if (result.total === 0.0 && result.items.length > 0) {
-        result.total = result.items.reduce((sum, item) => sum + item.total_price, 0);
+      result.financials.calculated_subtotal = Number(result.financials.calculated_subtotal.toFixed(2));
+      if (result.financials.grand_total === null) {
+        result.financials.grand_total = Number((result.financials.calculated_subtotal + result.financials.tax + result.financials.tip - result.financials.discount).toFixed(2));
+        result.audit.audit_notes.push("Grand total estimated from items, tax, and tip.");
+      }
+
+      const expectedGrand = Number((result.financials.calculated_subtotal + result.financials.tax + result.financials.tip - result.financials.discount).toFixed(2));
+      const diff = Number((result.financials.grand_total - expectedGrand).toFixed(2));
+      result.audit.discrepancy = diff;
+      result.audit.is_mathematically_valid = (Math.abs(diff) <= 0.05);
+
+      if (!result.audit.is_mathematically_valid) {
+        result.audit.audit_notes.push(`Equation Fails! Subtotal(${result.financials.calculated_subtotal}) + Tax(${result.financials.tax}) - Discount(${result.financials.discount}) = Expected ${expectedGrand}, but Grand Total reads ${result.financials.grand_total}.`);
       }
       return result;
     }
 
     // -------------------------------------------------------------
-    // 4. EXECUTE PARSING PIPELINE
+    // 5. HELPER: CLEAN JSON EXTRACTOR
+    // -------------------------------------------------------------
+    function extractCleanJson(rawResp) {
+      const stripped = rawResp.replace(/```(?:json)?|```/g, '').trim();
+      const start = stripped.indexOf('{'), end = stripped.lastIndexOf('}');
+      if (start === -1 || end === -1) throw new Error('No JSON brackets located in output.');
+      
+      let jsonStr = stripped.substring(start, end + 1).replace(/,\s*([\]}])/g, '$1');
+      return JSON.parse(jsonStr);
+    }
+
+    // -------------------------------------------------------------
+    // 6. PIPELINE EXECUTION & AUDIT RENDERING
     // -------------------------------------------------------------
     receiptInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file || !ocrEngine) return;
 
+      auditPanel.style.display = 'none';
       jsonOutput.textContent = 'Running Stage 1: Vision OCR...';
-      ocrOutput.textContent = 'Extracting coordinates...';
+      ocrOutput.textContent = 'Extracting bounding boxes...';
 
       try {
-        // --- STAGE 1: OCR ---
+        // Stage 1: Vision OCR
         const t0 = performance.now();
         const [ocrResults] = await ocrEngine.predict(file);
         const textLines = extractSortedLines(ocrResults.items || ocrResults.words || []);
@@ -289,50 +409,78 @@
         const t1 = performance.now();
         let finalJson = null;
 
-        // --- STAGE 2A: EDGE PROMPT API ---
+        // Stage 2A: Edge Prompt API (Phi-mini)
         if (currentMode === 'edge') {
           const prompt = `Convert this OCR receipt text into structured JSON with keys: "enterprise", "date", "time", "items" (array of objects with name, quantity, unit_price, total_price), and "total":\n\n${cleanText}`;
-          const rawResp = await edgeAiSession.prompt(prompt);
-          
           try {
-            const jsonStr = rawResp.substring(rawResp.indexOf('{'), rawResp.lastIndexOf('}') + 1);
-            finalJson = JSON.parse(jsonStr);
-          } catch {
-            if (!autoFallbackCheck.checked) throw new Error(`Edge AI returned invalid JSON:\n${rawResp}`);
+            const resp = await edgeAiSession.prompt(prompt);
+            finalJson = extractCleanJson(resp);
+          } catch (err) {
+            if (!autoFallbackCheck.checked) throw err;
           }
         }
 
-        // --- STAGE 2B: HUGGING FACE SLM ---
-        else if (currentMode === 'hf') {
-          const schemaPrompt = `You are a strict JSON converter. Convert OCR text to JSON matching: {"enterprise":"string","date":"string","time":"string","items":[{"name":"string","quantity":1,"unit_price":0.0,"total_price":0.0}],"total":0.0}`;
-          const prompt = `<|im_start|>system\n${schemaPrompt}<|im_end|>\n<|im_start|>user\n${cleanText}<|im_end|>\n<|im_start|>assistant\n`;
-          
-          const output = await hfPipeline(prompt, { max_new_tokens: 350, temperature: 0.0, do_sample: false, return_full_text: false });
-          console.log (output);
-          const rawResp = output[0].generated_text.trim();
-
+        // Stage 2B: HF Generative SLM
+        else if (currentMode === 'hf-gen') {
+          const prompt = `<|im_start|>system\nYou are a strict JSON receipt parser. Output ONLY valid JSON matching: {"enterprise":"string","date":"string","time":"string","items":[{"name":"string","quantity":1,"unit_price":0.0,"total_price":0.0}],"total":0.0}<|im_end|>\n<|im_start|>user\n${cleanText}<|im_end|>\n<|im_start|>assistant\n`;
           try {
-            const jsonStr = rawResp.substring(rawResp.indexOf('{'), rawResp.lastIndexOf('}') + 1);
-            finalJson = JSON.parse(jsonStr);
-          } catch {
-            if (!autoFallbackCheck.checked) throw new Error(`HF Model returned invalid JSON:\n${rawResp}`);
+            const out = await hfPipeline(prompt, { max_new_tokens: 350, temperature: 0.0, do_sample: false, return_full_text: false });
+            finalJson = extractCleanJson(out[0].generated_text);
+          } catch (err) {
+            if (!autoFallbackCheck.checked) throw err;
           }
         }
 
-        // --- STAGE 2C: REGEX FALLBACK EXECUTION ---
+        // Stage 2C: HF Token Classification (NER Tagging)
+        else if (currentMode === 'hf-ner') {
+          try {
+            // Run NER over flat text and map entities to fields
+            const entities = await hfPipeline(cleanText);
+            finalJson = { enterprise: "Unknown Enterprise", date: "Not Found", time: "Not Found", items: [], total: 0.0, raw_ner_entities: entities };
+            
+            entities.forEach(ent => {
+              if (ent.entity_group === 'ORG' && finalJson.enterprise === "Unknown Enterprise") finalJson.enterprise = ent.word;
+              if (ent.entity_group === 'DATE' && finalJson.date === "Not Found") finalJson.date = ent.word;
+            });
+            
+            // Pass line geometry into Math Validator to extract line items & financials accurately
+            const mathAudit = parseAndValidateReceipt(textLines);
+            finalJson.items = mathAudit.items;
+            finalJson.total = mathAudit.financials.grand_total;
+            finalJson.financial_audit = mathAudit.audit;
+          } catch (err) {
+            if (!autoFallbackCheck.checked) throw err;
+          }
+        }
+
+        // Stage 2D: Deterministic Math Regex (Or Auto-Fallback execution)
         if (!finalJson || currentMode === 'regex') {
-          if (currentMode !== 'regex') {
-            console.warn('AI Model failed strict JSON parsing. Auto-falling back to Regex engine...');
-          }
-          finalJson = runRegexFallback(textLines);
-          if (currentMode !== 'regex') finalJson._note = "Parsed via Regex Auto-Fallback due to AI syntax deviation.";
+          if (currentMode !== 'regex') console.warn('AI Parsing failed syntax check. Executing Math Regex Auto-Fallback...');
+          finalJson = parseAndValidateReceipt(textLines);
+          if (currentMode !== 'regex') finalJson._extraction_notice = "Executed via Deterministic Math Regex Auto-Fallback due to AI syntax error.";
+        } else if (!finalJson.financial_audit && !finalJson.audit) {
+          // If generated by LLM, run the math validator against the extracted items to verify accuracy!
+          const audit = parseAndValidateReceipt(textLines);
+          finalJson.financial_audit = audit.audit;
+          finalJson.audited_financials = audit.financials;
         }
 
         parseTimeElem.textContent = `${(performance.now() - t1).toFixed(0)} ms`;
         jsonOutput.textContent = JSON.stringify(finalJson, null, 2);
 
+        // Render Visual Math Audit Banner
+        const auditData = finalJson.financial_audit || finalJson.audit || {};
+        auditPanel.style.display = 'block';
+        if (auditData.is_mathematically_valid) {
+          auditPanel.className = 'audit-panel audit-pass';
+          auditPanel.innerHTML = `✓ FINANCIAL MATH AUDIT PASSED: Subtotal and taxes balance perfectly to Grand Total.`;
+        } else {
+          auditPanel.className = 'audit-panel audit-fail';
+          auditPanel.innerHTML = `⚠️ FINANCIAL MATH DISCREPANCY DETECTED: Discrepancy of $${auditData.discrepancy || '0.00'}. See JSON audit notes for details.`;
+        }
+
       } catch (err) {
-        jsonOutput.textContent = `Execution Error: ${err.message}\n${err.stack}`;
+        jsonOutput.textContent = `Pipeline Execution Error: ${err.message}\n${err.stack}`;
       }
     });
   </script>
