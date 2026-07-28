@@ -34,7 +34,7 @@
 <body>
 
   <h2>Universal Layout-Aware POS & Digital Cart Engine</h2>
-  <p style="color: var(--muted);">Powered by Spatial Line Agglomeration, Algorithmic Levenshtein Lexicons, X-Axis Column Projection, and Accounting Auditing.</p>
+  <p style="color: var(--muted);">Powered by In-Place Barcode Stripping, Multi-Line Stacking, Multi-Column Table Math, and Produce Blacklists.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -470,10 +470,9 @@
 
         if (rightEdges.length === 0) return { minX: docWidth * 0.5, maxX: docWidth };
 
-        // Find vertical cluster of right-aligned monetary values
         rightEdges.sort((a, b) => a - b);
         let bestCluster = [], currentCluster = [rightEdges[0]];
-        const tolerance = docWidth * 0.08; // 8% width tolerance for right alignment
+        const tolerance = docWidth * 0.08;
 
         for (let i = 1; i < rightEdges.length; i++) {
           if (rightEdges[i] - rightEdges[i - 1] <= tolerance) {
@@ -494,7 +493,6 @@
         if (!str) return null;
         if (this.contactAndIdShield.test(textLine) && !/(?:subtotal|total|amount|price|cost|rate|amt|usd|rm|chf|eur|₹|\$)/i.test(textLine)) return null;
 
-        // STRIKETHROUGH / FREE OVERRIDE: If line says "free" or "waived", zero out fee!
         if (FuzzyLexiconEngine.matchLexicon(textLine, this.lexicons.FREE) && FuzzyLexiconEngine.matchLexicon(textLine, this.lexicons.FEE)) {
           return 0.00;
         }
@@ -510,7 +508,6 @@
         if (!match) return null;
         const val = parseFloat(match[1]);
         
-        // STRICT INTEGER SHIELD: Reject integers >= 100 unless explicit currency/cents or summary line
         if (Number.isInteger(val) && Math.abs(val) >= 100) {
           const isSummary = FuzzyLexiconEngine.matchLexicon(textLine, this.lexicons.TOTAL) || FuzzyLexiconEngine.matchLexicon(textLine, this.lexicons.SUBTOTAL);
           if (!/(?:\$|£|€|₹|RM|CHF|EUR|USD|00$|,00$|\.00$)/i.test(str) && !isSummary) return null;
@@ -563,7 +560,7 @@
         const totalsBlock = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
         let items = [];
 
-        // ROUTE 1: DIGITAL APP CART (Blinkit, Zepto, Instacart)
+        // ROUTE 1: DIGITAL APP CART
         if (archetype === "DIGITAL_APP_CART") {
           const candidates = [];
           lines.forEach(l => {
@@ -571,12 +568,11 @@
             if (val === null) return;
             if (/mrp|item\s*total/i.test(l.text)) totalsBlock.subtotal = val;
             else if (/bill\s*total|to\s*pay|total\s*amount/i.test(l.text) || (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.TOTAL) && !/item|sub/i.test(l.text))) totalsBlock.grandTotal = val;
-            else if (/delivery/i.test(l.text)) totalsBlock.delivery += val; // Will be 0.00 if "free" was written!
+            else if (/delivery/i.test(l.text)) totalsBlock.delivery += val;
             else if (/surge|handling|small\s*cart/i.test(l.text)) totalsBlock.surge += val;
             else if (/discount|coupon|saved/i.test(l.text)) candidates.push({ val: Math.abs(val), line: l.text });
           });
 
-          // Combinatorial Reconciler: Test which discount subset balances declared Total ($424)!
           if (totalsBlock.grandTotal !== null && totalsBlock.subtotal !== null) {
             const target = Number((totalsBlock.subtotal + totalsBlock.delivery + totalsBlock.surge - totalsBlock.grandTotal).toFixed(2));
             let bestDisc = 0;
@@ -595,57 +591,89 @@
             }
           });
 
+          // STACKED LINE MEMORY (Resolves Sapphire split two-line items!)
+          let lastUnpricedLine = null;
+
           lines.forEach(l => {
             if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
-            const val = this.parseUniversalFloat(l.text, l.text);
 
-            // Extract Summary Totals
+            // IN-PLACE BARCODE STRIPPING (Resolves Target 9-digit DPCI bugs!)
+            let cleanLineText = l.text.replace(/\b\d{6,}\b/g, '').trim();
+            const val = this.parseUniversalFloat(cleanLineText, cleanLineText);
+
             if (val !== null) {
-              if (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.FEE) && !/free/i.test(l.text)) { totalsBlock.tip += val; return; }
-              if (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.TAX)) { totalsBlock.tax += val; return; }
-              if (/rounding|round\s*off|adjustment/i.test(l.text)) { totalsBlock.rounding += (/-/.test(l.text) ? -val : val); return; }
-              if (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.SUBTOTAL)) { totalsBlock.subtotal = val; return; }
-              if (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.TOTAL) && !/sub|item/i.test(l.text)) { totalsBlock.grandTotal = val; return; }
-              if (FuzzyLexiconEngine.matchLexicon(l.text, this.lexicons.DISCOUNT) || /loyalty|cartwheel|saved/i.test(l.text)) { totalsBlock.discount += Math.abs(val); return; }
+              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.FEE) && !/free/i.test(cleanLineText)) { totalsBlock.tip += val; return; }
+              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.TAX)) { totalsBlock.tax += val; return; }
+              if (/rounding|round\s*off|adjustment/i.test(cleanLineText)) { totalsBlock.rounding += (/-/.test(cleanLineText) ? -val : val); return; }
+              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.SUBTOTAL)) { totalsBlock.subtotal = val; return; }
+              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.TOTAL) && !/sub|item/i.test(cleanLineText)) { totalsBlock.grandTotal = val; return; }
+              if (FuzzyLexiconEngine.matchLexicon(cleanLineText, this.lexicons.DISCOUNT) || /loyalty|cartwheel|saved/i.test(cleanLineText)) { totalsBlock.discount += Math.abs(val); return; }
             }
 
-            // QUARANTINE: Reject lines physically outside Table Y-Boundaries
-            if (l.y <= topY || l.y >= bottomY) return;
-            if (val === null || /\b\d{6,}\b/.test(l.text)) return;
+            // PRODUCE & MODIFIER BLACKLIST (Resolves WEO Produce weight lines!)
+            if (/(?:\/\s*(?:kg|lb|gm|oz|l|ml)|net\s*wt|@\s*\$?\d|\bea\b|saved\s+\$?\d|mfrcpn|loyalty)/i.test(cleanLineText)) {
+              if (/loyalty|saved|discount|off|coupon/i.test(cleanLineText) && val !== null) {
+                totalsBlock.discount += Math.abs(val);
+              }
+              return;
+            }
 
-            // Check if right-most number falls into projected Price Column
+            if (l.y <= topY || l.y >= bottomY) return;
+            if (val === null) {
+              if (cleanLineText.length > 2 && !/total|subtotal|tax|discount|cash|change/i.test(cleanLineText)) {
+                lastUnpricedLine = cleanLineText;
+              }
+              return;
+            }
+
             const rightTokens = l.items.filter(i => i.box.right >= priceCol.minX);
             if (rightTokens.length === 0 && archetype === "TABULAR_INVOICE_B2B_GST") return;
 
-            let qty = 1, unitPrice = val, totalPrice = val, rawName = l.text;
-            const inlineMatch = l.text.match(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i);
-            const attachedLead = l.text.match(/^(\d+)\s*[xX\*@à]\s*([A-Za-z0-9\s\-_.,]+)/);
-            const leadQty = l.text.match(/^(\d+)\s+([A-Za-z].*)/);
+            let qty = 1, unitPrice = val, totalPrice = val, rawName = cleanLineText;
+
+            // STRIP LEADING TABLE ROW NUMBERS (Resolves SS Supermarket indexing!)
+            rawName = rawName.replace(/^\d+\s+/, '').trim();
+
+            const inlineMatch = cleanLineText.match(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i);
+            const attachedLead = cleanLineText.match(/^(\d+)\s*[xX\*@à]\s*([A-Za-z0-9\s\-_.,]+)/);
+            const leadQty = cleanLineText.match(/^(\d+)\s+([A-Za-z].*)/);
 
             if (inlineMatch) {
               qty = parseInt(inlineMatch[1], 10);
-              unitPrice = this.parseUniversalFloat(inlineMatch[2], l.text) || val;
-              totalPrice = inlineMatch[3] ? (this.parseUniversalFloat(inlineMatch[3], l.text) || Number((qty * unitPrice).toFixed(2))) : Number((qty * unitPrice).toFixed(2));
-              rawName = l.text.replace(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i, '');
+              unitPrice = this.parseUniversalFloat(inlineMatch[2], cleanLineText) || val;
+              totalPrice = inlineMatch[3] ? (this.parseUniversalFloat(inlineMatch[3], cleanLineText) || Number((qty * unitPrice).toFixed(2))) : Number((qty * unitPrice).toFixed(2));
+              rawName = cleanLineText.replace(/(\d+)\s*(?:x|X|@|à)\s*(\d+[\.,]\d{2})(?:\s+(\d+[\.,]\d{2}))?/i, '');
             } else if (attachedLead && parseInt(attachedLead[1], 10) < 100) {
               qty = parseInt(attachedLead[1], 10); rawName = attachedLead[2];
               if (qty > 1) { totalPrice = val; unitPrice = Number((val / qty).toFixed(2)); }
-            } else if (leadQty && parseInt(leadQty[1], 10) < 100) {
-              qty = parseInt(leadQty[1], 10); rawName = leadQty[2];
+            } else {
               const numPrices = [];
-              l.text.split(/\s+/).forEach(tok => { const v = this.parseUniversalFloat(tok, l.text); if (v !== null) numPrices.push(v); });
-              if (numPrices.length > 1 && Math.abs((qty * numPrices[numPrices.length - 2]) - val) <= 0.05) {
-                unitPrice = numPrices[numPrices.length - 2]; totalPrice = val;
-              } else if (qty > 1) { totalPrice = val; unitPrice = Number((val / qty).toFixed(2)); }
+              cleanLineText.split(/\s+/).forEach(tok => { const v = this.parseUniversalFloat(tok, cleanLineText); if (v !== null) numPrices.push(v); });
+              
+              if (numPrices.length > 1) {
+                // MULTI-FLOAT TABLE ROW OR STACKED ROW
+                const lastF = numPrices[numPrices.length - 1];
+                const firstF = numPrices[0];
+                const secondF = numPrices[1];
+                
+                if (firstF < 100 && secondF > 0 && Math.abs((firstF * secondF) - lastF) <= (lastF * 0.25)) {
+                  qty = Math.round(firstF); unitPrice = secondF; totalPrice = lastF;
+                } else if (lastUnpricedLine) {
+                  rawName = lastUnpricedLine; unitPrice = firstF; totalPrice = lastF;
+                }
+              } else if (leadQty && parseInt(leadQty[1], 10) < 100) {
+                qty = parseInt(leadQty[1], 10); rawName = leadQty[2];
+                if (qty > 1) { totalPrice = val; unitPrice = Number((val / qty).toFixed(2)); }
+              }
             }
 
             const cleanName = rawName.replace(/(?:\d+[\.,]\d{2})/g, '').replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').replace(/[\$€£₹@xX\-\.]+\s*$/, '').trim();
             if (cleanName.length > 1 && !/^\d+$/.test(cleanName) && !/^(?:pcs|kgs|nos|box|ml|gm)$/i.test(cleanName)) {
               items.push({ name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice });
+              lastUnpricedLine = null; // Clear unpriced memory once matched!
             }
           });
 
-          // Algebraic Discount Reconciler ($A - B = C$) without Double-Dipping
           const reconciled = [];
           for (let i = 0; i < items.length; i++) {
             const curr = items[i], n1 = items[i + 1], n2 = items[i + 2];
