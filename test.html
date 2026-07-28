@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Universal 6-Trial Consensus POS & Digital Cart Engine</title>
+  <title>Definitive Universal POS & Digital Cart Consensus Engine</title>
   <style>
     :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #4ade80; --error: #f87171; --warning: #facc15; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1250px; margin: 2rem auto; padding: 0 1.5rem; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
     h2, h3 { margin-top: 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
@@ -31,14 +31,19 @@
     .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
     .leaderboard-table th, .leaderboard-table td { padding: 0.65rem; border: 1px solid var(--border); text-align: left; }
     .leaderboard-table th { background: #020617; color: var(--accent); }
-    .winner-row { background: rgba(56, 189, 248, 0.15); font-weight: bold; border: 2px solid var(--accent); }
+    .winner-row { background: rgba(56, 189, 248, 0.18); font-weight: bold; border: 2px solid var(--accent); }
     canvas { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 0.5rem; }
+    .cache-banner { background: rgba(250, 204, 21, 0.15); border: 1px solid var(--warning); color: var(--warning); padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.85rem; font-weight: 600; }
   </style>
 </head>
 <body>
 
-  <h2>Universal 6-Trial Consensus POS & Digital Cart Engine</h2>
-  <p style="color: var(--muted);">Executes 6 parallel spatial extraction trials with noise masking, Levenshtein typo lexicons, and combinatorial math evaluation.</p>
+  <div class="cache-banner">
+    ⚡ HARD REFRESH REQUIRED: Press <strong>Ctrl + F5</strong> (Windows) or <strong>Cmd + Shift + R</strong> (Mac) to ensure your browser isn't executing older cached JavaScript!
+  </div>
+
+  <h2>Definitive Universal POS & Digital Cart Consensus Engine</h2>
+  <p style="color: var(--muted);">Powered by Item Density Gravity, Cross-Hypothesis Validation, Levenshtein Lexicons, and 2D Spatial Token Graphs.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -48,7 +53,7 @@
       <div>
         <label for="engineSelect">Extraction Paradigm:</label>
         <select id="engineSelect">
-          <option value="consensus">6-Trial Spatial Consensus Matrix Only [0 MB]</option>
+          <option value="consensus">6-Trial Cross-Validating Consensus Matrix [0 MB]</option>
           <option value="edge">Edge Prompt API (window.ai - Phi-mini) [0 MB]</option>
           <option value="hf-gen">HF Generative SLM (Transformers.js) [~90 MB]</option>
         </select>
@@ -116,7 +121,7 @@
 
   <!-- EXPERIMENTAL LEADERBOARD TABLE -->
   <div class="card" id="leaderboardCard" style="display: none;">
-    <h3>3. 6-Trial Experimental Hypothesis Leaderboard</h3>
+    <h3>3. 6-Trial Cross-Validating Hypothesis Leaderboard</h3>
     <table class="leaderboard-table">
       <thead>
         <tr>
@@ -127,7 +132,7 @@
           <th>Tax & Fees ($)</th>
           <th>Grand Total ($)</th>
           <th>Discrepancy</th>
-          <th>Convergence Score</th>
+          <th>Consensus Gravity Score</th>
         </tr>
       </thead>
       <tbody id="leaderboardBody"></tbody>
@@ -384,7 +389,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. THE 6-TRIAL SPATIAL CONSENSUS MATRIX & LEVENSHTEIN ENGINE
+    // 5. THE DEFINITIVE 6-TRIAL CONSENSUS MATRIX & LEVENSHTEIN ENGINE
     // -------------------------------------------------------------
     class FuzzyLexiconNormalizer {
       static levenshtein(a, b) {
@@ -428,7 +433,7 @@
       }
     }
 
-    class UniversalConsensusEngine {
+    class DefinitiveConsensusEngine {
       constructor() {
         this.dateRegex = /\b(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[\s,:\.-]+)?(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4}|\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{2,4})\b/i;
         this.timeRegex = /\b((?:2[0-3]|[01]?[0-9]|O|l)[:\.][0-5O][0-9O](?:[:\.][0-5O][0-9O])?(?:\s*[AP]M)?)\b/i;
@@ -439,7 +444,6 @@
         if (!str) return null;
         if (this.contactAndIdShield.test(textLine) && !/(?:subtotal|total|amount|price|cost|rate|amt|usd|rm|chf|eur|₹|\$)/i.test(textLine)) return null;
 
-        // STRIKETHROUGH / FREE OVERRIDE: If line says "free" or "waived", zero out delivery fee!
         if (/free|waived|incl\.|included|strikethrough/i.test(textLine) && /(?:delivery|shipping|packaging|charge|fee|bag)/i.test(textLine)) {
           return 0.00;
         }
@@ -456,7 +460,6 @@
         const match = clean.match(/(-?\d+(?:\.\d+)?)/);
         if (!match) return null;
         const val = parseFloat(match[1]);
-        
         if (Number.isInteger(val) && Math.abs(val) >= 100) {
           if (!/(?:\$|£|€|₹|RM|CHF|EUR|USD|00$|,00$|\.00$)/i.test(str) && !/(?:total|subtotal|amount|price)/i.test(textLine)) return null;
         }
@@ -499,7 +502,7 @@
         return lines;
       }
 
-      // EXECUTE 6 CONCURRENT EXPERIMENTAL TRIALS
+      // EXECUTE 6 CONCURRENT PARALLEL TRIALS WITH ITEM GRAVITY & CROSS-VALIDATION
       runConsensus(rawOcrItems) {
         const docWidth = Math.max(...rawOcrItems.map(i => {
           const pts = i.poly || i.points || i.box || [];
@@ -509,28 +512,48 @@
         const trials = [
           this.executeTrial(rawOcrItems, "Trial 1: Table Y-Bounded Quarantine", (lines) => this.strategyTableWindow(lines)),
           this.executeTrial(rawOcrItems, "Trial 2: X-Axis Right-Margin Projection", (lines) => this.strategyRightMargin(lines, docWidth)),
-          this.executeTrial(rawOcrItems, "Trial 3: Aggressive Noise-Box Masking", (lines) => this.strategyTableWindow(lines), (item) => !/\b\d{6,}\b|tel|fax|pin|zip|gstin|strn|ntn/i.test(item.text)),
+          this.executeTrial(rawOcrItems, "Trial 3: Aggressive Upstream Noise Deletion", (lines) => this.strategyTableWindow(lines), (item) => !/\b\d{6,}\b|tel|fax|pin|zip|gstin|strn|ntn/i.test(item.text)),
           this.executeTrial(rawOcrItems, "Trial 4: Stacked Line & Multi-Column Reconciler", (lines) => this.strategyStackedMultiColumn(lines)),
           this.executeTrial(rawOcrItems, "Trial 5: Digital App Cart Combinatorial Scanner", (lines) => this.strategyDigitalCart(lines)),
           this.executeTrial(rawOcrItems, "Trial 6: Permissive Algebraic Reconciler", (lines) => this.strategyPermissiveMath(lines))
         ];
 
-        // Evaluate and score experimental trials
+        // THE DEFINITIVE GRAVITY & CROSS-VALIDATION SCORING MODEL
         let bestTrial = trials[0];
         let maxScore = -999999;
 
         trials.forEach(t => {
           let score = 0;
-          // Math Convergence Score (+1000 points for balanced accounting equation!)
-          if (t.audit.is_mathematically_valid) score += 1000;
-          else score -= Math.min(800, Math.abs(t.audit.discrepancy) * 10);
 
-          // Comprehensive item count bonus (+20 per item up to 30 items)
-          if (t.items.length > 0 && t.items.length <= 30) score += Math.min(300, t.items.length * 20);
-          else if (t.items.length === 0 && t.receipt_type !== "DIGITAL_APP_CART" && t.receipt_type !== "CHARGE_SLIP") score -= 500;
+          // 1. ITEM DENSITY GRAVITY (+60 pts per item, -2500 if 0 items on standard receipt!)
+          if (t.items.length > 0) {
+            score += Math.min(1800, t.items.length * 60);
+          } else if (!["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
+            score -= 2500; // Nuclear penalty for extracting 0 items on an itemized bill
+          }
 
-          // Grand total presence bonus
-          if (t.financials.grand_total !== null && t.financials.grand_total !== 0) score += 150;
+          // 2. MATHEMATICAL BALANCE (+1200 pts for perfect accounting math)
+          if (t.audit.is_mathematically_valid) {
+            score += 1200;
+          } else {
+            score -= Math.min(800, Math.abs(t.audit.discrepancy) * 12);
+          }
+
+          // 3. GRAND TOTAL PRESENCE BONUS
+          if (t.financials.grand_total !== null && t.financials.grand_total !== 0) {
+            score += 200;
+          } else {
+            score -= 500;
+          }
+
+          // 4. CROSS-HYPOTHESIS CONSENSUS BONUS (+250 pts per agreeing trial!)
+          let totalAgreements = 0;
+          trials.forEach(other => {
+            if (other !== t && other.financials.grand_total === t.financials.grand_total && t.financials.grand_total !== null) {
+              totalAgreements++;
+            }
+          });
+          score += totalAgreements * 250;
 
           t.convergence_score = Math.round(score);
           if (t.convergence_score > maxScore) { maxScore = t.convergence_score; bestTrial = t; }
@@ -569,7 +592,6 @@
         return meta;
       }
 
-      // TRIAL 1: TABLE WINDOW QUARANTINE
       strategyTableWindow(lines) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
@@ -593,7 +615,6 @@
         return { items, totals, type: "ITEMIZED_STANDARD" };
       }
 
-      // TRIAL 2: RIGHT MARGIN PRICE ISOLATION
       strategyRightMargin(lines, docWidth) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
@@ -614,7 +635,6 @@
         return { items, totals, type: "RIGHT_MARGIN_ISOLATED" };
       }
 
-      // TRIAL 4: STACKED LINE & MULTI-COLUMN RECONCILER (Sapphire & Indian GST)
       strategyStackedMultiColumn(lines) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
@@ -622,7 +642,7 @@
 
         lines.forEach(l => {
           if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
-          let cleanText = l.text.replace(/\b\d{6,}\b/g, '').trim(); // Strip Target barcodes!
+          let cleanText = l.text.replace(/\b\d{6,}\b/g, '').trim();
           const val = this.parseUniversalFloat(cleanText, cleanText);
 
           this.extractTotals(cleanText, totals);
@@ -633,7 +653,7 @@
             return;
           }
 
-          cleanText = cleanText.replace(/^\d+\s+/, '').trim(); // Strip table row index!
+          cleanText = cleanText.replace(/^\d+\s+/, '').trim();
           let qty = 1, unitPrice = val, totalPrice = val, rawName = cleanText;
 
           const numPrices = [];
@@ -658,7 +678,6 @@
         return { items, totals, type: "STACKED_MULTI_COLUMN" };
       }
 
-      // TRIAL 5: DIGITAL APP CART COMBINATORIAL SCANNER (Blinkit / Zepto)
       strategyDigitalCart(lines) {
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
         const candidates = [];
@@ -686,7 +705,6 @@
         return { items: [], totals, type: "DIGITAL_APP_CART" };
       }
 
-      // TRIAL 6: PERMISSIVE ALGEBRAIC MATH
       strategyPermissiveMath(lines) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
@@ -764,7 +782,7 @@
       }
     }
 
-    const consensusEngine = new UniversalConsensusEngine();
+    const consensusEngine = new DefinitiveConsensusEngine();
 
     // -------------------------------------------------------------
     // 6. PIPELINE EXECUTION WITH STRICT MUTEX LOCK
@@ -861,7 +879,7 @@
           auditPanel.innerHTML = `✓ CONSENSUS MATH AUDIT PASSED: Winning trial balanced accounting equation to Grand Total.`;
         } else {
           auditPanel.className = 'audit-panel audit-fail';
-          auditPanel.innerHTML = `⚠️ CONSENSUS MATH DISCREPANCY DETECTED: Winning trial discrepancy of $${auditData.discrepancy || '0.00'}. See JSON audit notes for details.`;
+          auditPanel.innerHTML = `⚠️ CONSENSUS MATH DISCREPANCY DETECTED: Best trial discrepancy of $${auditData.discrepancy || '0.00'}. See JSON audit notes for details.`;
         }
 
       } catch (err) {
