@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>11-Trial Candidate Synthesis & Continuous Consensus POS Engine</title>
+  <title>Physically Gated 11-Trial Consensus POS & Digital Cart Engine</title>
   <style>
     :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #4ade80; --error: #f87171; --warning: #facc15; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1380px; margin: 2rem auto; padding: 0 1.5rem; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
     h2, h3 { margin-top: 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
@@ -28,7 +28,7 @@
     .audit-panel { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600; display: none; }
     .audit-pass { background: rgba(74, 222, 128, 0.1); border: 1px solid var(--success); color: var(--success); }
     .audit-fail { background: rgba(248, 113, 113, 0.1); border: 1px solid var(--error); color: var(--error); }
-    .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.82rem; }
+    .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.80rem; }
     .leaderboard-table th, .leaderboard-table td { padding: 0.55rem; border: 1px solid var(--border); text-align: left; }
     .leaderboard-table th { background: #020617; color: var(--accent); }
     .winner-row { background: rgba(56, 189, 248, 0.22); font-weight: bold; border: 2px solid var(--accent); }
@@ -42,8 +42,8 @@
     ⚡ HARD REFRESH REQUIRED: Press <strong>Ctrl + F5</strong> (Windows) or <strong>Cmd + Shift + R</strong> (Mac) to ensure your browser isn't executing older cached JavaScript!
   </div>
 
-  <h2>11-Trial Candidate Synthesis & Continuous Consensus POS Engine</h2>
-  <p style="color: var(--muted);">Powered by Cross-Branch Candidate Pooling, Unmasked Baseline Re-Validation, and Continuous Discrepancy Scoring.</p>
+  <h2>Physically Gated 11-Trial POS & Digital Cart Consensus Engine</h2>
+  <p style="color: var(--muted);">Phase 5: Powered by Physical Line Ceilings, Dynamic Density Columns, Exponential Math Decay, and WASM VRAM Sweeping.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -53,7 +53,7 @@
       <div>
         <label for="engineSelect">Extraction Paradigm:</label>
         <select id="engineSelect">
-          <option value="consensus">11-Trial Candidate Synthesis & Continuous Matrix [0 MB]</option>
+          <option value="consensus">11-Trial Physically Gated Consensus Matrix [0 MB]</option>
           <option value="edge">Edge Prompt API (window.ai - Phi-mini) [0 MB]</option>
           <option value="hf-gen">HF Generative SLM (Transformers.js) [~90 MB]</option>
         </select>
@@ -76,12 +76,12 @@
     <div style="margin-top: 0.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap;">
       <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
         <input type="checkbox" id="autoCropCheck" checked />
-        <span><strong>Enable OpenCV Auto-Crop</strong> (Perspective warp & noise cleanup)</span>
+        <span><strong>Enable OpenCV Auto-Crop</strong> (Perspective warp & strict WASM cleanup)</span>
       </label>
 
       <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
         <input type="checkbox" id="fuzzyCheck" checked />
-        <span><strong>Enable Levenshtein Typo Lexicons</strong> (Normalizes OCR typos: tree→free, USO→USD, 10tal→total)</span>
+        <span><strong>Enable Confidence-Weighted Lexicons</strong> (Normalizes typos only when AI is unsure)</span>
       </label>
 
       <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
@@ -100,7 +100,7 @@
     <div class="metrics">
       <div class="metric-badge">Active Engine: <span id="activeEngineLabel">None</span></div>
       <div class="metric-badge">Winning Trial: <span id="winnerLabel">None</span></div>
-      <div class="metric-badge">Anchor Est. Items: <span id="anchorItemsLabel">0</span></div>
+      <div class="metric-badge">Physical Table Lines (N_physical): <span id="physicalLinesLabel">0</span></div>
       <div class="metric-badge">Global Mode Total: <span id="modeTotalLabel">$0.00</span></div>
       <div class="metric-badge">Session Status: <span id="sessionStatusLabel">Clean</span></div>
       <div class="metric-badge">Crop Speed: <span id="cropTime">0 ms</span></div>
@@ -123,18 +123,19 @@
 
   <!-- LEADERBOARD TABLE -->
   <div class="card" id="leaderboardCard" style="display: none;">
-    <h3>3. 11-Trial Candidate Synthesis & Continuous Leaderboard</h3>
+    <h3>3. 11-Trial Physically Gated Experimental Leaderboard</h3>
     <table class="leaderboard-table">
       <thead>
         <tr>
           <th>Trial ID & Strategy</th>
           <th>Items Found</th>
+          <th>Recall Ratio</th>
+          <th>Spatial Voids</th>
           <th>Subtotal ($)</th>
           <th>Discounts ($)</th>
-          <th>Tax & Fees ($)</th>
           <th>Grand Total ($)</th>
           <th>Discrepancy</th>
-          <th>Continuous Gravity Score</th>
+          <th>Exponential Gravity Score</th>
         </tr>
       </thead>
       <tbody id="leaderboardBody"></tbody>
@@ -177,7 +178,7 @@
     const receiptInput = document.getElementById('receiptInput');
     const activeEngineLabel = document.getElementById('activeEngineLabel');
     const winnerLabel = document.getElementById('winnerLabel');
-    const anchorItemsLabel = document.getElementById('anchorItemsLabel');
+    const physicalLinesLabel = document.getElementById('physicalLinesLabel');
     const modeTotalLabel = document.getElementById('modeTotalLabel');
     const sessionStatusLabel = document.getElementById('sessionStatusLabel');
     const cropTimeElem = document.getElementById('cropTime');
@@ -237,7 +238,7 @@
       currentMode = null;
       activeEngineLabel.textContent = 'None';
       winnerLabel.textContent = 'None';
-      anchorItemsLabel.textContent = '0';
+      physicalLinesLabel.textContent = '0';
       modeTotalLabel.textContent = '$0.00';
       sessionStatusLabel.textContent = keepOcr ? 'OCR Active (SLMs Purged)' : 'Full System Reset';
       sessionStatusLabel.style.color = '#4ade80';
@@ -288,7 +289,7 @@
           hfPipeline = await pipeline('text-generation', repoId, { device: hfBackendSelect.value, dtype: 'q4' });
           activeEngineLabel.textContent = `HF Gen: ${repoId.split('/')[1]}`;
         } else {
-          activeEngineLabel.textContent = '11-Trial Consensus Matrix';
+          activeEngineLabel.textContent = '11-Trial Physically Gated Engine';
         }
 
         sessionStatusLabel.textContent = 'Active & Healthy';
@@ -331,15 +332,25 @@
     }
 
     // -------------------------------------------------------------
-    // 4. OPENCV AUTO-CROP
+    // 4. OPENCV AUTO-CROP (PHASE 5: STRICT WASM MEMORY SWEEP)
     // -------------------------------------------------------------
     async function applyOpenCvAutoCrop(imageElement) {
       if (!cvReady || !autoCropCheck.checked) return imageElement;
       const t0 = performance.now();
-      let src = cv.imread(imageElement), dst = new cv.Mat(), gray = new cv.Mat(), blurred = new cv.Mat(), edges = new cv.Mat();
-      let contours = new cv.MatVector(), hierarchy = new cv.Mat();
+      
+      // Declare all variables upfront so `finally` block can sweep them safely
+      let src, dst, gray, blurred, edges, contours, hierarchy;
+      let srcTri, dstTri, M, approx;
 
       try {
+        src = cv.imread(imageElement);
+        dst = new cv.Mat();
+        gray = new cv.Mat();
+        blurred = new cv.Mat();
+        edges = new cv.Mat();
+        contours = new cv.MatVector();
+        hierarchy = new cv.Mat();
+        
         cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
         cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
         cv.Canny(blurred, edges, 75, 200);
@@ -349,22 +360,23 @@
         for (let i = 0; i < contours.size(); ++i) {
           const cnt = contours.get(i), area = cv.contourArea(cnt);
           if (area > maxArea && area > imgArea * 0.1) {
-            let peri = cv.arcLength(cnt, true), approx = new cv.Mat();
-            cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
-            if (approx.rows === 4) { maxArea = area; maxIdx = i; }
-            approx.delete();
+            let peri = cv.arcLength(cnt, true);
+            let tempApprox = new cv.Mat();
+            cv.approxPolyDP(cnt, tempApprox, 0.02 * peri, true);
+            if (tempApprox.rows === 4) { maxArea = area; maxIdx = i; }
+            tempApprox.delete();
           }
         }
 
         if (maxIdx !== -1) {
           const cnt = contours.get(maxIdx);
-          let peri = cv.arcLength(cnt, true), approx = new cv.Mat();
+          let peri = cv.arcLength(cnt, true);
+          approx = new cv.Mat();
           cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
 
           let pts = [];
           for (let i = 0; i < 4; i++) pts.push({ x: approx.data32S[i * 2], y: approx.data32S[i * 2 + 1] });
-          approx.delete();
-
+          
           pts.sort((a, b) => a.y - b.y);
           let top = pts.slice(0, 2).sort((a, b) => a.x - b.x), bottom = pts.slice(2, 4).sort((a, b) => a.x - b.x);
           let tl = top[0], tr = top[1], bl = bottom[0], br = bottom[1];
@@ -372,30 +384,42 @@
           let maxW = Math.max(Math.hypot(br.x - bl.x, br.y - bl.y), Math.hypot(tr.x - tl.x, tr.y - tl.y));
           let maxH = Math.max(Math.hypot(tr.x - br.x, tr.y - br.y), Math.hypot(tl.x - bl.x, tl.y - bl.y));
 
-          let srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, [tl.x, tl.y, tr.x, tr.y, br.x, br.y, bl.x, bl.y]);
-          let dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, maxW, 0, maxW, maxH, 0, maxH]);
+          srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, [tl.x, tl.y, tr.x, tr.y, br.x, br.y, bl.x, bl.y]);
+          dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, maxW, 0, maxW, maxH, 0, maxH]);
 
-          let M = cv.getPerspectiveTransform(srcTri, dstTri);
+          M = cv.getPerspectiveTransform(srcTri, dstTri);
           cv.warpPerspective(src, dst, M, new cv.Size(maxW, maxH), cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
 
-          srcTri.delete(); dstTri.delete(); M.delete();
           cv.imshow('cropCanvas', dst);
           canvasContainer.style.display = 'block';
           cropTimeElem.textContent = `${(performance.now() - t0).toFixed(0)} ms`;
-
-          src.delete(); dst.delete(); gray.delete(); blurred.delete(); edges.delete(); contours.delete(); hierarchy.delete();
+          
           return cropCanvas;
         }
-      } catch (err) { console.warn("OpenCV Auto-Crop bypassed:", err); }
+      } catch (err) { 
+        console.warn("OpenCV Auto-Crop bypassed due to layout error:", err); 
+      } finally {
+        // STRICT VRAM SWEEPING (Phase 5)
+        if (src) try { src.delete(); } catch(e){}
+        if (dst) try { dst.delete(); } catch(e){}
+        if (gray) try { gray.delete(); } catch(e){}
+        if (blurred) try { blurred.delete(); } catch(e){}
+        if (edges) try { edges.delete(); } catch(e){}
+        if (contours) try { contours.delete(); } catch(e){}
+        if (hierarchy) try { hierarchy.delete(); } catch(e){}
+        if (srcTri) try { srcTri.delete(); } catch(e){}
+        if (dstTri) try { dstTri.delete(); } catch(e){}
+        if (M) try { M.delete(); } catch(e){}
+        if (approx) try { approx.delete(); } catch(e){}
+      }
 
-      try { src.delete(); dst.delete(); gray.delete(); blurred.delete(); edges.delete(); contours.delete(); hierarchy.delete(); } catch (_) {}
       canvasContainer.style.display = 'none';
       cropTimeElem.textContent = '0 ms (Bypassed)';
       return imageElement;
     }
 
     // -------------------------------------------------------------
-    // 5. 11-TRIAL SYNTHESIS & CONTINUOUS CONSENSUS MATRIX
+    // 5. THE PHYSICALLY GATED 11-TRIAL CONSENSUS MATRIX
     // -------------------------------------------------------------
     class FuzzyLexiconNormalizer {
       static levenshtein(a, b) {
@@ -411,8 +435,13 @@
         return m[b.length][a.length];
       }
 
-      static normalizeLine(textLine) {
+      // PHASE 5: Confidence-Weighted Normalizer
+      static normalizeLine(textLine, confidence = 0.0) {
         if (!fuzzyCheck.checked) return textLine;
+        
+        // Trust the OCR if it is highly confident (>88%) to avoid false-positive auto-corrects
+        if (confidence > 0.88) return textLine;
+
         const tokens = textLine.split(/\s+/);
         const dict = {
           'free': ['tree', 'tred', 'fr33', 'waived'],
@@ -438,7 +467,7 @@
       }
     }
 
-    class ContinuousConsensusEngine {
+    class PhysicallyGatedConsensusEngine {
       constructor() {
         this.dateRegex = /\b(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[\s,:\.-]+)?(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4}|\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{2,4})\b/i;
         this.timeRegex = /\b((?:2[0-3]|[01]?[0-9]|O|l)[:\.][0-5O][0-9O](?:[:\.][0-5O][0-9O])?(?:\s*[AP]M)?)\b/i;
@@ -474,7 +503,11 @@
       clusterSpatialLines(rawOcrItems, filterFn = null) {
         let items = rawOcrItems.map(item => {
           let top = 0, left = 0, right = 0, bottom = 0;
-          const pts = item.poly || item.points || item.box || [];
+          let rawText = '';
+          let conf = 0.0;
+
+          // Parse PaddleOCR native outputs correctly for geometry, text, and confidence
+          const pts = item.poly || item.points || item.box || (Array.isArray(item) ? item[0] : []);
           if (Array.isArray(pts) && pts.length > 0) {
             if (Array.isArray(pts[0])) {
               const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
@@ -482,7 +515,18 @@
               top = Math.min(...ys); bottom = Math.max(...ys);
             } else if (typeof pts[0] === 'number') { left = pts[0]; top = pts[1]; right = pts[2]; bottom = pts[3]; }
           }
-          const text = FuzzyLexiconNormalizer.normalizeLine((item.text || item.label || '').trim());
+          
+          if (item.text !== undefined) rawText = item.text;
+          else if (item.label !== undefined) rawText = item.label;
+          else if (Array.isArray(item) && item.length === 2 && Array.isArray(item[1])) {
+            rawText = item[1][0];
+            conf = item[1][1];
+          }
+
+          if (item.confidence !== undefined) conf = item.confidence;
+
+          // Pass confidence into normalizer
+          const text = FuzzyLexiconNormalizer.normalizeLine(rawText.trim(), conf);
           return { text, box: { top, left, right, bottom, width: right - left, height: bottom - top }, rawItem: item };
         }).filter(i => i.text.length > 0);
 
@@ -507,38 +551,107 @@
         return lines;
       }
 
-      estimateUpstreamAnchors(lines, rawOcrItems) {
-        let explicitAnchor = null;
+      // PHASE 5: DYNAMIC COLUMN DETECTION (Right-Biased Median Filter)
+      calculateDynamicSplitX(lines, docWidth) {
+        const priceLeftCoords = [];
         lines.forEach(l => {
-          const match = l.text.match(/(?:items?\s*·?\s*|qty\s*:?\s*|items?\s*sold\s*=?\s*|total\s*items?\s*:?\s*)(\d+)/i);
-          if (match && parseInt(match[1], 10) > 0 && parseInt(match[1], 10) < 100) explicitAnchor = parseInt(match[1], 10);
+          l.items.forEach(item => {
+            const cleanText = item.text.replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').trim();
+            if (/^\d{1,3}(?:[.,]\d{3})*[.,]\d{2}$/.test(cleanText) || /^\d+[.,]\d{2}$/.test(cleanText)) {
+              priceLeftCoords.push(item.box.left);
+            }
+          });
         });
 
-        const docWidth = Math.max(...lines.map(l => l.right), 1000);
-        let rightColumnPriceCount = 0;
-        lines.forEach(l => {
-          const rightTokens = l.items.filter(i => i.box.left >= docWidth * 0.50);
-          const rightText = rightTokens.map(i => i.text).join(' ');
-          const val = this.parseUniversalFloat(rightText, l.text);
-          if (val !== null && val > 0 && !/total|subtotal|tax|cash|change|due/i.test(l.text)) rightColumnPriceCount++;
-        });
+        if (priceLeftCoords.length < 3) return docWidth * 0.58; 
 
-        return {
-          anchorItemCount: explicitAnchor || rightColumnPriceCount || 0,
-          hasExplicitAnchor: explicitAnchor !== null
-        };
+        priceLeftCoords.sort((a, b) => a - b);
+        const rightCandidates = priceLeftCoords.filter(x => x > docWidth * 0.4);
+        if (rightCandidates.length < 2) return docWidth * 0.58; 
+
+        const midIndex = Math.floor(rightCandidates.length / 2);
+        const medianX = rightCandidates.length % 2 !== 0 ? rightCandidates[midIndex] : (rightCandidates[midIndex - 1] + rightCandidates[midIndex]) / 2;
+        const splitX = medianX - (docWidth * 0.05);
+        return Math.max(docWidth * 0.40, Math.min(splitX, docWidth * 0.85));
       }
 
-      // EXECUTE 11 CONCURRENT EXTRACTION TRIALS WITH CONTINUOUS DISCREPANCY SCORING
+      // NEW METHOD: Find the Table Y-Boundaries
+      calculateTableBounds(lines) {
+        let topY = Number.MAX_SAFE_VALUE;
+        let bottomY = Number.MAX_SAFE_VALUE;
+
+        // 1. Bottom Anchor (First Subtotal/Total)
+        lines.forEach(l => {
+          if (bottomY === Number.MAX_SAFE_VALUE && /(?:sub\s*total|\bsubtotal\b|^total|amount\s*due|balance)/i.test(l.text) && !/item|number/i.test(l.text)) {
+            if (this.parseUniversalFloat(l.text, l.text) !== null) {
+              bottomY = l.y;
+            }
+          }
+        });
+
+        // 2. Top Anchor (First valid price)
+        lines.forEach(l => {
+          if (l.y < bottomY && topY === Number.MAX_SAFE_VALUE) {
+            const val = this.parseUniversalFloat(l.text, l.text);
+            if (val !== null && !this.dateRegex.test(l.text) && !this.timeRegex.test(l.text) && !/(?:tel|phone|zip|id)/i.test(l.text)) {
+              topY = l.y - (l.maxHeight || 15);
+            }
+          }
+        });
+
+        if (topY === Number.MAX_SAFE_VALUE) topY = 0;
+        if (bottomY === Number.MAX_SAFE_VALUE) bottomY = lines.length > 0 ? lines[lines.length - 1].y + 50 : 999999;
+
+        return { topY, bottomY };
+      }
+
+      estimatePhysicalTableLines(lines) {
+        let topY = 0, bottomY = Number.MAX_SAFE_VALUE;
+        lines.forEach(l => {
+          if (/(?:item|description|qty|quantity)\b.*\b(?:rate|price|amount|cost|subtotal|amt)\b/i.test(l.text)) topY = l.y;
+          if (bottomY === Number.MAX_SAFE_VALUE && /^(?:sub\s*total|\bsubtotal\b|total\s*:|payment\s*details|bank\s*code|total\s*in\s*words|thanks\s*for)/i.test(l.text)) {
+            if (l.y > topY + 20) bottomY = l.y;
+          }
+        });
+
+        let count = 0;
+        lines.forEach(l => {
+          if (l.y > topY && l.y < bottomY) {
+            if (!/total|subtotal|tax|discount|cash|change|due|balance|thank/i.test(l.text) && l.text.length > 2 && !/\b\d{6,}\b/.test(l.text)) {
+              count++;
+            }
+          }
+        });
+        return Math.max(count, 1);
+      }
+
+      detectSpatialVoids(items, lines) {
+        if (items.length <= 1) return 0;
+        const heights = lines.map(l => l.maxHeight).filter(h => h > 0);
+        const medianHeight = heights.length > 0 ? heights.sort((a, b) => a - b)[Math.floor(heights.length / 2)] : 20;
+        const voidThreshold = Math.max(medianHeight * 2.8, 45);
+
+        let voids = 0;
+        const sortedItems = [...items].sort((a, b) => (a.rowRef ? a.rowRef.y : 0) - (b.rowRef ? b.rowRef.y : 0));
+        for (let i = 1; i < sortedItems.length; i++) {
+          const prevY = sortedItems[i - 1].rowRef ? sortedItems[i - 1].rowRef.y : 0;
+          const currY = sortedItems[i].rowRef ? sortedItems[i].rowRef.y : 0;
+          if (prevY > 0 && currY > 0 && (currY - prevY) > voidThreshold) {
+            voids++;
+          }
+        }
+        return voids;
+      }
+
       runConsensus(rawOcrItems) {
         const docWidth = Math.max(...rawOcrItems.map(i => {
-          const pts = i.poly || i.points || i.box || [];
+          const pts = i.poly || i.points || i.box || (Array.isArray(i) ? i[0] : []);
           return Array.isArray(pts[0]) ? Math.max(...pts.map(p => p[0])) : (pts[2] || 1000);
         }), 1000);
 
         const lines = this.clusterSpatialLines(rawOcrItems);
-        const { anchorItemCount, hasExplicitAnchor } = this.estimateUpstreamAnchors(lines, rawOcrItems);
-        anchorItemsLabel.textContent = anchorItemCount + (hasExplicitAnchor ? " (Explicit)" : " (Density)");
+        const physicalLineCount = this.estimatePhysicalTableLines(lines);
+        physicalLinesLabel.textContent = `${physicalLineCount} physical rows`;
 
         const trials = [
           this.executeTrial(rawOcrItems, "Trial 0: Raw Unmasked Baseline (No Pruning)", (l) => this.strategyRawBaseline(l)),
@@ -553,7 +666,6 @@
           this.executeTrial(rawOcrItems, "Trial 9: Sub-Token Price Column Alignment", (l) => this.strategySubTokenColumn(l, docWidth))
         ];
 
-        // TRIAL 10: CROSS-BRANCH CANDIDATE SYNTHESIS & UNMASKED RE-VALIDATION
         const synthesizedTrial = this.executeTrial(rawOcrItems, "Trial 10: Cross-Branch Pooled Consensus", () => this.strategySynthesizedPool(trials, lines));
         trials.push(synthesizedTrial);
 
@@ -570,38 +682,26 @@
         });
         modeTotalLabel.textContent = `$${modeGrandTotal.toFixed(2)}`;
 
-        // THE DEFINITIVE CONTINUOUS DISCREPANCY & ITEM GRAVITY SCORING MODEL
         let bestTrial = trials[0];
         let maxScore = -999999;
 
         trials.forEach(t => {
+          t.recall_ratio = Number((t.items.length / physicalLineCount).toFixed(2));
+          t.spatial_voids = this.detectSpatialVoids(t.items, lines);
+
           let score = 0;
-
-          // 1. ITEM DENSITY GRAVITY (+100 pts per valid item extracted!)
-          if (t.items.length > 0) {
-            score += Math.min(3500, t.items.length * 100);
-          } else if (!["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
-            score -= 4000; // Nuclear penalty for extracting 0 items on an itemized bill
-          }
-
-          // 2. CONTINUOUS FINANCIAL DISCREPANCY PENALTY (Replaces binary math dominance!)
           const diff = Math.abs(t.audit.discrepancy);
-          if (t.audit.is_mathematically_valid) {
-            score += 400; // Modest verification bonus for perfect math
-          } else if (diff <= 1.00) {
-            score -= diff * 150; // Smooth continuous penalty for minor OCR rounding drift
-          } else {
-            score -= 400 + (diff * 30); // Scaling penalty for major accounting mismatch
+          score += Math.round(1500 * Math.exp(-0.5 * diff)); // Exponential decay
+          score += Math.min(3500, t.items.length * 100); // Item density
+
+          if (!["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
+            if (t.items.length === 0) score -= 5000;
+            else if (t.recall_ratio < 0.35 && physicalLineCount >= 5) score -= 2500;
           }
 
-          // 3. UPSTREAM ANCHOR DEVIATION PENALTY (-80 pts per missing item!)
-          const countDiff = anchorItemCount - t.items.length;
-          if (countDiff > 0 && !["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
-            score -= countDiff * 80;
-          }
-
-          // 4. GLOBAL TOTAL CONSENSUS VOTING (+500 pts for matching global mode Total!)
-          if (t.financials.grand_total === modeGrandTotal && modeGrandTotal !== 0) score += 500;
+          score -= t.spatial_voids * 250;
+          if (t.financials.grand_total === modeGrandTotal && modeGrandTotal !== 0) score += 600;
+          if (t.was_decimal_recovered) score += 300;
 
           t.convergence_score = Math.round(score);
           if (t.convergence_score > maxScore) { maxScore = t.convergence_score; bestTrial = t; }
@@ -640,13 +740,12 @@
         return meta;
       }
 
-      // STRATEGIES
       strategyRawBaseline(lines) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
         lines.forEach(l => {
           this.extractTotals(l.text, totals);
-          const parsed = this.parseLineItem(l.text);
+          const parsed = this.parseLineItem(l.text, l);
           if (parsed) items.push(parsed);
         });
         return { items, totals, type: "RAW_UNMASKED_BASELINE" };
@@ -655,20 +754,43 @@
       strategyTableWindow(lines) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
-        let topY = 0, bottomY = Number.MAX_SAFE_VALUE;
+        
+        let topY = Number.MAX_SAFE_VALUE;
+        let bottomY = Number.MAX_SAFE_VALUE;
 
+        // 1. Identify the Bottom Y Anchor (First Subtotal/Total)
         lines.forEach(l => {
-          if (/(?:item|description|qty|quantity)\b.*\b(?:rate|price|amount|cost|subtotal|amt)\b/i.test(l.text)) topY = l.y;
-          if (bottomY === Number.MAX_SAFE_VALUE && /^(?:sub\s*total|\bsubtotal\b|total\s*:|payment\s*details|bank\s*code|total\s*in\s*words|thanks\s*for)/i.test(l.text)) {
-            if (l.y > topY + 20) bottomY = l.y;
+          if (bottomY === Number.MAX_SAFE_VALUE && /(?:sub\s*total|\bsubtotal\b|^total|amount\s*due|balance)/i.test(l.text) && !/item|number/i.test(l.text)) {
+            // Ensure this line actually contains a number before calling it the bottom anchor
+            if (this.parseUniversalFloat(l.text, l.text) !== null) {
+              bottomY = l.y;
+            }
           }
         });
 
+        // 2. Identify the Top Y Anchor (First valid price above the bottom line)
+        lines.forEach(l => {
+          if (l.y < bottomY && topY === Number.MAX_SAFE_VALUE) {
+            const val = this.parseUniversalFloat(l.text, l.text);
+            // If it has a price, and isn't a date, time, or phone number
+            if (val !== null && !this.dateRegex.test(l.text) && !this.timeRegex.test(l.text) && !/(?:tel|phone|zip|id)/i.test(l.text)) {
+              topY = l.y - (l.maxHeight || 15); // Add a small padding above it
+            }
+          }
+        });
+
+        // Fallbacks if bounds were not found
+        if (topY === Number.MAX_SAFE_VALUE) topY = 0;
+        if (bottomY === Number.MAX_SAFE_VALUE) bottomY = 999999;
+
+        // 3. Extract items strictly within the spatial window
         lines.forEach(l => {
           if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
           this.extractTotals(l.text, totals);
-          if (l.y <= topY || l.y >= bottomY) return;
-          const parsed = this.parseLineItem(l.text);
+          
+          if (l.y < topY || l.y >= bottomY) return; // SPATIAL QUARANTINE
+          
+          const parsed = this.parseLineItem(l.text, l);
           if (parsed) items.push(parsed);
         });
 
@@ -678,7 +800,7 @@
       strategyRightMargin(lines, docWidth) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
-        const splitX = docWidth * 0.58;
+        const splitX = this.calculateDynamicSplitX(lines, docWidth); // Phase 5 dynamic split
 
         lines.forEach(l => {
           if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
@@ -688,33 +810,33 @@
           const price = this.parseUniversalFloat(rightTokens, l.text);
           
           if (price !== null && leftTokens.length > 2 && !/total|subtotal|tax|discount|cash|change/i.test(leftTokens)) {
-            items.push({ name: leftTokens.replace(/\d+$/, '').trim(), quantity: 1, unit_price: price, total_price: price });
+            items.push({ name: leftTokens.replace(/\d+$/, '').trim(), quantity: 1, unit_price: price, total_price: price, rowRef: l });
           }
         });
-
         return { items, totals, type: "RIGHT_MARGIN_ISOLATED" };
       }
 
       strategyStackedMultiColumn(lines) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
-        let lastUnpricedLine = null;
+        let lastUnpricedLine = null, lastUnpricedRef = null;
 
         lines.forEach(l => {
           if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
           let cleanText = l.text.replace(/\b\d{6,}\b/g, '').trim();
           const val = this.parseUniversalFloat(cleanText, cleanText);
-
           this.extractTotals(cleanText, totals);
           if (/(?:\/\s*(?:kg|lb|gm|oz|l|ml)|net\s*wt|@\s*\$?\d|\bea\b|saved\s+\$?\d|mfrcpn|loyalty)/i.test(cleanText)) return;
 
           if (val === null) {
-            if (cleanText.length > 2 && !/total|subtotal|tax|discount|cash|change/i.test(cleanText)) lastUnpricedLine = cleanText;
+            if (cleanText.length > 2 && !/total|subtotal|tax|discount|cash|change/i.test(cleanText)) {
+              lastUnpricedLine = cleanText; lastUnpricedRef = l;
+            }
             return;
           }
 
           cleanText = cleanText.replace(/^\d+\s+/, '').trim();
-          let qty = 1, unitPrice = val, totalPrice = val, rawName = cleanText;
+          let qty = 1, unitPrice = val, totalPrice = val, rawName = cleanText, ref = l;
 
           const numPrices = [];
           cleanText.split(/\s+/).forEach(tok => { const v = this.parseUniversalFloat(tok, cleanText); if (v !== null) numPrices.push(v); });
@@ -723,18 +845,28 @@
             const lastF = numPrices[numPrices.length - 1], firstF = numPrices[0], secondF = numPrices[1];
             if (firstF < 100 && secondF > 0 && Math.abs((firstF * secondF) - lastF) <= (lastF * 0.25)) {
               qty = Math.round(firstF); unitPrice = secondF; totalPrice = lastF;
-            } else if (lastUnpricedLine) { rawName = lastUnpricedLine; unitPrice = firstF; totalPrice = lastF; }
-          } else if (lastUnpricedLine && !/total|subtotal|tax|discount|cash|change/i.test(cleanText)) {
-            rawName = lastUnpricedLine; unitPrice = val; totalPrice = val;
+            } else if (lastUnpricedLine && lastUnpricedRef) {
+              const yDistance = Math.abs(l.y - lastUnpricedRef.y);
+              const maxAllowedGap = Math.max(l.maxHeight, lastUnpricedRef.maxHeight) * 2.5;
+              if (yDistance <= maxAllowedGap) {
+                rawName = lastUnpricedLine; unitPrice = firstF; totalPrice = lastF; ref = lastUnpricedRef || l;
+              }
+            }
+          } else if (lastUnpricedLine && lastUnpricedRef && !/total|subtotal|tax|discount|cash|change/i.test(cleanText)) {
+            // PHASE 5: Geographic Tethering for Orphaned Prices
+            const yDistance = Math.abs(l.y - lastUnpricedRef.y);
+            const maxAllowedGap = Math.max(l.maxHeight, lastUnpricedRef.maxHeight) * 2.5;
+            if (yDistance <= maxAllowedGap) {
+              rawName = lastUnpricedLine; unitPrice = val; totalPrice = val; ref = lastUnpricedRef || l;
+            }
           }
 
           const cleanName = rawName.replace(/(?:\d+[\.,]\d{2})/g, '').replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').replace(/[\$€£₹@xX\-\.]+\s*$/, '').trim();
           if (cleanName.length > 1 && !/^\d+$/.test(cleanName) && !/^(?:pcs|kgs|nos|box|ml|gm)$/i.test(cleanName)) {
-            items.push({ name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice });
-            lastUnpricedLine = null;
+            items.push({ name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice, rowRef: ref });
+            lastUnpricedLine = null; lastUnpricedRef = null;
           }
         });
-
         return { items, totals, type: "STACKED_MULTI_COLUMN" };
       }
 
@@ -771,7 +903,7 @@
         lines.forEach(l => {
           if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
           this.extractTotals(l.text, totals);
-          const parsed = this.parseLineItem(l.text);
+          const parsed = this.parseLineItem(l.text, l);
           if (parsed) items.push(parsed);
         });
         return { items, totals, type: "PERMISSIVE_ALGEBRAIC" };
@@ -789,7 +921,7 @@
           if (val !== null && val > 0 && !/total|subtotal|cash|change|due|balance/i.test(l.text)) {
             const cleanName = l.text.replace(/(?:\d+[\.,]\d{2})/g, '').replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').trim();
             if (cleanName.length > 1) {
-              items.push({ name: cleanName, quantity: 1, unit_price: val, total_price: val });
+              items.push({ name: cleanName, quantity: 1, unit_price: val, total_price: val, rowRef: l });
             }
           }
         });
@@ -804,13 +936,11 @@
         return this.strategyRightMargin(lines, docWidth);
       }
 
-      // STRATEGY 10: CROSS-BRANCH CANDIDATE SYNTHESIS & BASELINE RE-VALIDATION
       strategySynthesizedPool(existingTrials, baselineLines) {
         const pooledItems = [];
         const seenKeys = new Set();
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
 
-        // Harvest unique items from Trials 0 through 9
         existingTrials.forEach(t => {
           if (t.financials.grand_total !== null && totals.grandTotal === null) totals.grandTotal = t.financials.grand_total;
           if (t.financials.extracted_subtotal !== null && totals.subtotal === null) totals.subtotal = t.financials.extracted_subtotal;
@@ -825,13 +955,11 @@
           });
         });
 
-        // Re-validate pooled candidates against Original Unmasked Baseline (Trial 0)
         const validatedItems = [];
         pooledItems.forEach(item => {
           if (item.total_price <= 0 || /total|subtotal|tax|discount|cash|change/i.test(item.name)) return;
           if (this.contactAndIdShield.test(item.name) && item.total_price >= 100) return;
 
-          // If aggressive masking chopped off the name, restore full text from Baseline!
           if (item.name.length <= 3) {
             baselineLines.forEach(l => {
               if (l.text.includes(String(item.total_price))) {
@@ -842,7 +970,6 @@
           }
           validatedItems.push(item);
         });
-
         return { items: validatedItems, totals, type: "SYNTHESIZED_MASTER_POOL" };
       }
 
@@ -857,7 +984,7 @@
         else if (/discount|promo|off|coupon|voucher|saved\s+\d|cartwheel|loyalty/i.test(text)) totalsBlock.discount += Math.abs(val);
       }
 
-      parseLineItem(text) {
+      parseLineItem(text, refRow = null) {
         const numPrices = [];
         text.split(/\s+/).forEach(tok => { const v = this.parseUniversalFloat(tok, text); if (v !== null) numPrices.push(v); });
         const lastPrice = numPrices.length > 0 ? numPrices[numPrices.length - 1] : null;
@@ -879,7 +1006,7 @@
 
         const cleanName = rawName.replace(/(?:\d+[\.,]\d{2})/g, '').replace(/(?:CHF|EUR|RM\$?|USD\$?|INR|Rs\.?|₹|天|<|¥|\$)/ig, '').replace(/[\$€£₹@xX\-\.]+\s*$/, '').trim();
         if (cleanName.length < 2 || /^\d+$/.test(cleanName) || /^(?:pcs|kgs|nos|box|ml|gm)$/i.test(cleanName)) return null;
-        return { name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice };
+        return { name: cleanName, quantity: qty, unit_price: unitPrice, total_price: totalPrice, rowRef: refRow };
       }
 
       recoverMissingDecimals(items, totals) {
@@ -935,8 +1062,64 @@
       }
     }
 
-    const consensusEngine = new ContinuousConsensusEngine();
+    const consensusEngine = new PhysicallyGatedConsensusEngine();
 
+    // --- VISUAL DEBUGGER ---
+    function drawVisualDebugger(rawOcrItems, lines, docWidth, splitX, tableBounds) {
+        const canvas = document.getElementById('cropCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        
+        // 1. Draw Raw OCR Tokens (Faint Red)
+        ctx.lineWidth = 1;
+        rawOcrItems.forEach(item => {
+            let left = 0, top = 0, right = 0, bottom = 0;
+            const pts = item.poly || item.points || item.box || (Array.isArray(item) ? item[0] : []);
+            if (Array.isArray(pts) && pts.length > 0) {
+            if (Array.isArray(pts[0])) {
+                const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+                left = Math.min(...xs); right = Math.max(...xs);
+                top = Math.min(...ys); bottom = Math.max(...ys);
+            } else if (typeof pts[0] === 'number') { left = pts[0]; top = pts[1]; right = pts[2]; bottom = pts[3]; }
+            }
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)'; // Faint red
+            ctx.strokeRect(left, top, right - left, bottom - top);
+        });
+
+        // 2. Draw the Table Quarantine Window (Bright Green Box)
+        const actualBottom = tableBounds.bottomY === 999999 ? canvas.height : tableBounds.bottomY;
+        ctx.fillStyle = 'rgba(74, 222, 128, 0.1)'; // Transparent green fill
+        ctx.fillRect(0, tableBounds.topY, canvas.width, actualBottom - tableBounds.topY);
+        
+        ctx.strokeStyle = 'rgba(74, 222, 128, 0.9)'; // Solid green borders
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, tableBounds.topY); ctx.lineTo(canvas.width, tableBounds.topY); // Top boundary
+        ctx.moveTo(0, actualBottom); ctx.lineTo(canvas.width, actualBottom); // Bottom boundary
+        ctx.stroke();
+
+        // 3. Draw the Row Clusters inside the Table (Purple Lines)
+        ctx.strokeStyle = 'rgba(168, 85, 247, 0.6)';
+        ctx.lineWidth = 1;
+        lines.forEach(l => {
+            if (l.y >= tableBounds.topY && l.y <= actualBottom) {
+            ctx.beginPath();
+            ctx.moveTo(0, l.y);
+            ctx.lineTo(canvas.width, l.y);
+            ctx.stroke();
+            }
+        });
+
+        // 4. Draw the Dynamic Price Column (Blue Dashed Line)
+        ctx.beginPath();
+        ctx.moveTo(splitX, tableBounds.topY);
+        ctx.lineTo(splitX, actualBottom);
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.9)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([10, 10]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
     // -------------------------------------------------------------
     // 6. PIPELINE EXECUTION WITH STRICT MUTEX LOCK
     // -------------------------------------------------------------
@@ -972,6 +1155,11 @@
         ocrTimeElem.textContent = `${(performance.now() - t0).toFixed(0)} ms`;
         ocrOutput.textContent = sortedLines.map(l => l.text).join('\n');
 
+        const docWidth = Math.max(...rawOcrItems.map(i => { const pts = i.poly || i.points || i.box || (Array.isArray(i) ? i[0] : []); return Array.isArray(pts[0]) ? Math.max(...pts.map(p => p[0])) : (pts[2] || 1000); }), 1000);
+        const splitX = consensusEngine.calculateDynamicSplitX(sortedLines, docWidth);
+        const tableBounds = consensusEngine.calculateTableBounds(sortedLines);
+        drawVisualDebugger(rawOcrItems, sortedLines, docWidth, splitX, tableBounds);
+
         jsonOutput.textContent = `Running Stage 2: ${activeEngineLabel.textContent}...`;
         const t1 = performance.now();
         let finalJson = null;
@@ -993,7 +1181,7 @@
         }
 
         if (!finalJson || currentMode === 'consensus') {
-          if (currentMode !== 'consensus') console.warn('AI Parsing failed syntax check. Executing 11-Trial Consensus Matrix Auto-Fallback...');
+          if (currentMode !== 'consensus') console.warn('AI Parsing failed syntax check. Executing Physically Gated Consensus Matrix Auto-Fallback...');
           const consensusResult = consensusEngine.runConsensus(rawOcrItems);
           finalJson = consensusResult.winner;
           winnerLabel.textContent = finalJson.hypothesis_name.split(':')[0];
@@ -1006,9 +1194,10 @@
             row.innerHTML = `
               <td>${t.is_consensus_winner ? '🏆 ' : ''}${t.hypothesis_name}</td>
               <td>${t.items.length}</td>
+              <td style="color: ${t.recall_ratio < 0.35 && !["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type) ? '#f87171' : '#4ade80'}; font-weight: bold;">${t.recall_ratio * 100}%</td>
+              <td style="color: ${t.spatial_voids > 0 ? '#facc15' : '#94a3b8'}">${t.spatial_voids} voids</td>
               <td>$${t.financials.calculated_subtotal}</td>
               <td>$${t.financials.discount}</td>
-              <td>$${Number((t.financials.tax + t.financials.tip + t.financials.delivery_charges + t.financials.surge_charges).toFixed(2))}</td>
               <td>$${t.financials.grand_total}</td>
               <td style="color: ${t.audit.is_mathematically_valid ? '#4ade80' : '#f87171'}">$${t.audit.discrepancy}</td>
               <td><strong>${t.convergence_score} pts</strong></td>
