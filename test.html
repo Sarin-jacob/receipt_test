@@ -43,7 +43,7 @@
   </div>
 
   <h2>Physically Gated 11-Trial POS & Digital Cart Consensus Engine</h2>
-  <p style="color: var(--muted);">Phase 5: Powered by Physical Line Ceilings, Dynamic Density Columns, Exponential Math Decay, and WASM VRAM Sweeping.</p>
+  <p style="color: var(--muted);">Phase 6: Visual Debugging, Dynamic Height-Aware Clustering, and Anchored Table Boundaries.</p>
 
   <!-- CONTROL PANEL -->
   <div class="card">
@@ -114,7 +114,7 @@
     <h3>2. Upload Receipt Photo or Cart Screenshot</h3>
     <input type="file" id="receiptInput" accept="image/*" disabled />
     <div id="canvasContainer" style="display: none; margin-top: 1rem;">
-      <label>OpenCV Perspective Warp Output:</label>
+      <label>Visual Debugger Overlay:</label>
       <canvas id="cropCanvas"></canvas>
     </div>
   </div>
@@ -305,9 +305,6 @@
       }
     });
 
-    // -------------------------------------------------------------
-    // 3. AUTO-RECOVERING PREDICTION WRAPPER
-    // -------------------------------------------------------------
     async function safePredict(imageInput) {
       try {
         return await ocrEngine.predict(imageInput);
@@ -331,14 +328,10 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // 4. OPENCV AUTO-CROP (PHASE 5: STRICT WASM MEMORY SWEEP)
-    // -------------------------------------------------------------
     async function applyOpenCvAutoCrop(imageElement) {
       if (!cvReady || !autoCropCheck.checked) return imageElement;
       const t0 = performance.now();
       
-      // Declare all variables upfront so `finally` block can sweep them safely
       let src, dst, gray, blurred, edges, contours, hierarchy;
       let srcTri, dstTri, M, approx;
 
@@ -399,7 +392,6 @@
       } catch (err) { 
         console.warn("OpenCV Auto-Crop bypassed due to layout error:", err); 
       } finally {
-        // STRICT VRAM SWEEPING (Phase 5)
         if (src) try { src.delete(); } catch(e){}
         if (dst) try { dst.delete(); } catch(e){}
         if (gray) try { gray.delete(); } catch(e){}
@@ -418,9 +410,63 @@
       return imageElement;
     }
 
-    // -------------------------------------------------------------
-    // 5. THE PHYSICALLY GATED 11-TRIAL CONSENSUS MATRIX
-    // -------------------------------------------------------------
+    // --- UPGRADED VISUAL DEBUGGER ---
+    function drawVisualDebugger(rawOcrItems, lines, docWidth, splitX, tableBounds) {
+      const canvas = document.getElementById('cropCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      
+      // 1. Draw Raw OCR Tokens (Faint Red)
+      ctx.lineWidth = 1;
+      rawOcrItems.forEach(item => {
+        let left = 0, top = 0, right = 0, bottom = 0;
+        const pts = item.poly || item.points || item.box || (Array.isArray(item) ? item[0] : []);
+        if (Array.isArray(pts) && pts.length > 0) {
+          if (Array.isArray(pts[0])) {
+            const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+            left = Math.min(...xs); right = Math.max(...xs);
+            top = Math.min(...ys); bottom = Math.max(...ys);
+          } else if (typeof pts[0] === 'number') { left = pts[0]; top = pts[1]; right = pts[2]; bottom = pts[3]; }
+        }
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+        ctx.strokeRect(left, top, right - left, bottom - top);
+      });
+
+      // 2. Draw the Table Quarantine Window (Bright Green Box)
+      const actualBottom = tableBounds.bottomY === 999999 ? canvas.height : tableBounds.bottomY;
+      ctx.fillStyle = 'rgba(74, 222, 128, 0.1)';
+      ctx.fillRect(0, tableBounds.topY, canvas.width, actualBottom - tableBounds.topY);
+      
+      ctx.strokeStyle = 'rgba(74, 222, 128, 0.9)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, tableBounds.topY); ctx.lineTo(canvas.width, tableBounds.topY);
+      ctx.moveTo(0, actualBottom); ctx.lineTo(canvas.width, actualBottom);
+      ctx.stroke();
+
+      // 3. Draw the Row Clusters (Purple Lines)
+      ctx.strokeStyle = 'rgba(168, 85, 247, 0.6)';
+      ctx.lineWidth = 1;
+      lines.forEach(l => {
+        if (l.y >= tableBounds.topY && l.y <= actualBottom) {
+          ctx.beginPath();
+          ctx.moveTo(0, l.y);
+          ctx.lineTo(canvas.width, l.y);
+          ctx.stroke();
+        }
+      });
+
+      // 4. Draw the Dynamic Price Column (Blue Dashed Line)
+      ctx.beginPath();
+      ctx.moveTo(splitX, tableBounds.topY);
+      ctx.lineTo(splitX, actualBottom);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.9)';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([10, 10]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
     class FuzzyLexiconNormalizer {
       static levenshtein(a, b) {
         const m = [];
@@ -435,11 +481,8 @@
         return m[b.length][a.length];
       }
 
-      // PHASE 5: Confidence-Weighted Normalizer
       static normalizeLine(textLine, confidence = 0.0) {
         if (!fuzzyCheck.checked) return textLine;
-        
-        // Trust the OCR if it is highly confident (>88%) to avoid false-positive auto-corrects
         if (confidence > 0.88) return textLine;
 
         const tokens = textLine.split(/\s+/);
@@ -470,7 +513,8 @@
     class PhysicallyGatedConsensusEngine {
       constructor() {
         this.dateRegex = /\b(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[\s,:\.-]+)?(\d{1,4}[/\.-]\d{1,2}[/\.-]\d{1,4}|\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{2,4})\b/i;
-        this.timeRegex = /\b((?:2[0-3]|[01]?[0-9]|O|l)[:\.][0-5O][0-9O](?:[:\.][0-5O][0-9O])?(?:\s*[AP]M)?)\b/i;
+        // Phase 6 Fix: Enforce AM/PM if a dot is used for time to prevent eating prices
+        this.timeRegex = /\b(?:(?:2[0-3]|[01]?[0-9]|O|l):[0-5O][0-9O](?::[0-5O][0-9O])?(?:\s*[AP]M)?|(?:2[0-3]|[01]?[0-9]|O|l)\.[0-5O][0-9O]\s*[AP]M)\b/i;
         this.contactAndIdShield = /(?:\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b|\+\d{1,3}[-.\s]\d+|\b(?:fax|tel|phone|ph|mob|cell|pin|zip|po|p\.o\.|box|nr\.|no\.|id|table|tisch|st|ave|rd|dr|blvd|lane|colony|nagar)\b.?\s*\d+|\b\d{4,6}\b\s*(?:Grindelwald|Any\s*City|Tamil|India|NY|CA|MA|ST|TX|FL|WA|UK|USA|CHF|EUR)?)/i;
       }
 
@@ -506,7 +550,6 @@
           let rawText = '';
           let conf = 0.0;
 
-          // Parse PaddleOCR native outputs correctly for geometry, text, and confidence
           const pts = item.poly || item.points || item.box || (Array.isArray(item) ? item[0] : []);
           if (Array.isArray(pts) && pts.length > 0) {
             if (Array.isArray(pts[0])) {
@@ -525,7 +568,6 @@
 
           if (item.confidence !== undefined) conf = item.confidence;
 
-          // Pass confidence into normalizer
           const text = FuzzyLexiconNormalizer.normalizeLine(rawText.trim(), conf);
           return { text, box: { top, left, right, bottom, width: right - left, height: bottom - top }, rawItem: item };
         }).filter(i => i.text.length > 0);
@@ -534,14 +576,25 @@
 
         items.sort((a, b) => a.box.top - b.box.top);
         const lines = [];
+        
+        // Phase 6 Fix: Height-Aware Dynamic Row Clustering
         items.forEach(item => {
           const lastLine = lines[lines.length - 1];
-          const overlapThreshold = Math.max(8, item.box.height * 0.55);
-          if (lastLine && Math.abs(lastLine.y - item.box.top) < overlapThreshold) {
-            lastLine.items.push(item);
-            lastLine.maxHeight = Math.max(lastLine.maxHeight, item.box.height);
-            lastLine.right = Math.max(lastLine.right, item.box.right);
-          } else { lines.push({ y: item.box.top, maxHeight: item.box.height, right: item.box.right, items: [item] }); }
+          if (lastLine) {
+            // Allows merging if the vertical gap is less than 60% of the tallest box in the line.
+            // This prevents slightly misaligned baseline items from splitting into too many rows.
+            const overlapThreshold = Math.max(10, Math.max(item.box.height, lastLine.maxHeight) * 0.60);
+            const yDiff = Math.abs(lastLine.y - item.box.top);
+            
+            if (yDiff < overlapThreshold) {
+              lastLine.items.push(item);
+              lastLine.maxHeight = Math.max(lastLine.maxHeight, item.box.height);
+              lastLine.right = Math.max(lastLine.right, item.box.right);
+              lastLine.y = Math.min(lastLine.y, item.box.top);
+              return;
+            }
+          }
+          lines.push({ y: item.box.top, maxHeight: item.box.height, right: item.box.right, items: [item] });
         });
 
         lines.forEach(line => {
@@ -551,7 +604,6 @@
         return lines;
       }
 
-      // PHASE 5: DYNAMIC COLUMN DETECTION (Right-Biased Median Filter)
       calculateDynamicSplitX(lines, docWidth) {
         const priceLeftCoords = [];
         lines.forEach(l => {
@@ -575,12 +627,10 @@
         return Math.max(docWidth * 0.40, Math.min(splitX, docWidth * 0.85));
       }
 
-      // NEW METHOD: Find the Table Y-Boundaries
       calculateTableBounds(lines) {
         let topY = Number.MAX_SAFE_VALUE;
         let bottomY = Number.MAX_SAFE_VALUE;
 
-        // 1. Bottom Anchor (First Subtotal/Total)
         lines.forEach(l => {
           if (bottomY === Number.MAX_SAFE_VALUE && /(?:sub\s*total|\bsubtotal\b|^total|amount\s*due|balance)/i.test(l.text) && !/item|number/i.test(l.text)) {
             if (this.parseUniversalFloat(l.text, l.text) !== null) {
@@ -589,7 +639,6 @@
           }
         });
 
-        // 2. Top Anchor (First valid price)
         lines.forEach(l => {
           if (l.y < bottomY && topY === Number.MAX_SAFE_VALUE) {
             const val = this.parseUniversalFloat(l.text, l.text);
@@ -606,17 +655,11 @@
       }
 
       estimatePhysicalTableLines(lines) {
-        let topY = 0, bottomY = Number.MAX_SAFE_VALUE;
-        lines.forEach(l => {
-          if (/(?:item|description|qty|quantity)\b.*\b(?:rate|price|amount|cost|subtotal|amt)\b/i.test(l.text)) topY = l.y;
-          if (bottomY === Number.MAX_SAFE_VALUE && /^(?:sub\s*total|\bsubtotal\b|total\s*:|payment\s*details|bank\s*code|total\s*in\s*words|thanks\s*for)/i.test(l.text)) {
-            if (l.y > topY + 20) bottomY = l.y;
-          }
-        });
-
+        const bounds = this.calculateTableBounds(lines);
         let count = 0;
+        
         lines.forEach(l => {
-          if (l.y > topY && l.y < bottomY) {
+          if (l.y >= bounds.topY && l.y <= bounds.bottomY) {
             if (!/total|subtotal|tax|discount|cash|change|due|balance|thank/i.test(l.text) && l.text.length > 2 && !/\b\d{6,}\b/.test(l.text)) {
               count++;
             }
@@ -691,8 +734,8 @@
 
           let score = 0;
           const diff = Math.abs(t.audit.discrepancy);
-          score += Math.round(1500 * Math.exp(-0.5 * diff)); // Exponential decay
-          score += Math.min(3500, t.items.length * 100); // Item density
+          score += Math.round(1500 * Math.exp(-0.5 * diff)); 
+          score += Math.min(3500, t.items.length * 100); 
 
           if (!["DIGITAL_APP_CART", "CHARGE_SLIP"].includes(t.receipt_type)) {
             if (t.items.length === 0) score -= 5000;
@@ -754,53 +797,24 @@
       strategyTableWindow(lines) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
-        
-        let topY = Number.MAX_SAFE_VALUE;
-        let bottomY = Number.MAX_SAFE_VALUE;
+        const bounds = this.calculateTableBounds(lines);
 
-        // 1. Identify the Bottom Y Anchor (First Subtotal/Total)
-        lines.forEach(l => {
-          if (bottomY === Number.MAX_SAFE_VALUE && /(?:sub\s*total|\bsubtotal\b|^total|amount\s*due|balance)/i.test(l.text) && !/item|number/i.test(l.text)) {
-            // Ensure this line actually contains a number before calling it the bottom anchor
-            if (this.parseUniversalFloat(l.text, l.text) !== null) {
-              bottomY = l.y;
-            }
-          }
-        });
-
-        // 2. Identify the Top Y Anchor (First valid price above the bottom line)
-        lines.forEach(l => {
-          if (l.y < bottomY && topY === Number.MAX_SAFE_VALUE) {
-            const val = this.parseUniversalFloat(l.text, l.text);
-            // If it has a price, and isn't a date, time, or phone number
-            if (val !== null && !this.dateRegex.test(l.text) && !this.timeRegex.test(l.text) && !/(?:tel|phone|zip|id)/i.test(l.text)) {
-              topY = l.y - (l.maxHeight || 15); // Add a small padding above it
-            }
-          }
-        });
-
-        // Fallbacks if bounds were not found
-        if (topY === Number.MAX_SAFE_VALUE) topY = 0;
-        if (bottomY === Number.MAX_SAFE_VALUE) bottomY = 999999;
-
-        // 3. Extract items strictly within the spatial window
         lines.forEach(l => {
           if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
           this.extractTotals(l.text, totals);
           
-          if (l.y < topY || l.y >= bottomY) return; // SPATIAL QUARANTINE
+          if (l.y < bounds.topY || l.y >= bounds.bottomY) return;
           
           const parsed = this.parseLineItem(l.text, l);
           if (parsed) items.push(parsed);
         });
-
         return { items, totals, type: "ITEMIZED_STANDARD" };
       }
 
       strategyRightMargin(lines, docWidth) {
         const items = [];
         const totals = { subtotal: null, tax: 0, tip: 0, discount: 0, rounding: 0, delivery: 0, surge: 0, grandTotal: null };
-        const splitX = this.calculateDynamicSplitX(lines, docWidth); // Phase 5 dynamic split
+        const splitX = this.calculateDynamicSplitX(lines, docWidth); 
 
         lines.forEach(l => {
           if (/entspricht|equivalent|in\s*(?:euro|eur|usd|gbp)/i.test(l.text)) return;
@@ -853,7 +867,6 @@
               }
             }
           } else if (lastUnpricedLine && lastUnpricedRef && !/total|subtotal|tax|discount|cash|change/i.test(cleanText)) {
-            // PHASE 5: Geographic Tethering for Orphaned Prices
             const yDistance = Math.abs(l.y - lastUnpricedRef.y);
             const maxAllowedGap = Math.max(l.maxHeight, lastUnpricedRef.maxHeight) * 2.5;
             if (yDistance <= maxAllowedGap) {
@@ -1064,62 +1077,6 @@
 
     const consensusEngine = new PhysicallyGatedConsensusEngine();
 
-    // --- VISUAL DEBUGGER ---
-    function drawVisualDebugger(rawOcrItems, lines, docWidth, splitX, tableBounds) {
-        const canvas = document.getElementById('cropCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        
-        // 1. Draw Raw OCR Tokens (Faint Red)
-        ctx.lineWidth = 1;
-        rawOcrItems.forEach(item => {
-            let left = 0, top = 0, right = 0, bottom = 0;
-            const pts = item.poly || item.points || item.box || (Array.isArray(item) ? item[0] : []);
-            if (Array.isArray(pts) && pts.length > 0) {
-            if (Array.isArray(pts[0])) {
-                const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
-                left = Math.min(...xs); right = Math.max(...xs);
-                top = Math.min(...ys); bottom = Math.max(...ys);
-            } else if (typeof pts[0] === 'number') { left = pts[0]; top = pts[1]; right = pts[2]; bottom = pts[3]; }
-            }
-            ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)'; // Faint red
-            ctx.strokeRect(left, top, right - left, bottom - top);
-        });
-
-        // 2. Draw the Table Quarantine Window (Bright Green Box)
-        const actualBottom = tableBounds.bottomY === 999999 ? canvas.height : tableBounds.bottomY;
-        ctx.fillStyle = 'rgba(74, 222, 128, 0.1)'; // Transparent green fill
-        ctx.fillRect(0, tableBounds.topY, canvas.width, actualBottom - tableBounds.topY);
-        
-        ctx.strokeStyle = 'rgba(74, 222, 128, 0.9)'; // Solid green borders
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(0, tableBounds.topY); ctx.lineTo(canvas.width, tableBounds.topY); // Top boundary
-        ctx.moveTo(0, actualBottom); ctx.lineTo(canvas.width, actualBottom); // Bottom boundary
-        ctx.stroke();
-
-        // 3. Draw the Row Clusters inside the Table (Purple Lines)
-        ctx.strokeStyle = 'rgba(168, 85, 247, 0.6)';
-        ctx.lineWidth = 1;
-        lines.forEach(l => {
-            if (l.y >= tableBounds.topY && l.y <= actualBottom) {
-            ctx.beginPath();
-            ctx.moveTo(0, l.y);
-            ctx.lineTo(canvas.width, l.y);
-            ctx.stroke();
-            }
-        });
-
-        // 4. Draw the Dynamic Price Column (Blue Dashed Line)
-        ctx.beginPath();
-        ctx.moveTo(splitX, tableBounds.topY);
-        ctx.lineTo(splitX, actualBottom);
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.9)';
-        ctx.lineWidth = 3;
-        ctx.setLineDash([10, 10]);
-        ctx.stroke();
-        ctx.setLineDash([]);
-    }
     // -------------------------------------------------------------
     // 6. PIPELINE EXECUTION WITH STRICT MUTEX LOCK
     // -------------------------------------------------------------
@@ -1155,6 +1112,7 @@
         ocrTimeElem.textContent = `${(performance.now() - t0).toFixed(0)} ms`;
         ocrOutput.textContent = sortedLines.map(l => l.text).join('\n');
 
+        // --- VISUAL DEBUGGER TRIGGER ---
         const docWidth = Math.max(...rawOcrItems.map(i => { const pts = i.poly || i.points || i.box || (Array.isArray(i) ? i[0] : []); return Array.isArray(pts[0]) ? Math.max(...pts.map(p => p[0])) : (pts[2] || 1000); }), 1000);
         const splitX = consensusEngine.calculateDynamicSplitX(sortedLines, docWidth);
         const tableBounds = consensusEngine.calculateTableBounds(sortedLines);
@@ -1186,7 +1144,6 @@
           finalJson = consensusResult.winner;
           winnerLabel.textContent = finalJson.hypothesis_name.split(':')[0];
 
-          // Render Experimental Leaderboard Table
           leaderboardBody.innerHTML = '';
           consensusResult.all_trials.forEach(t => {
             const row = document.createElement('tr');
