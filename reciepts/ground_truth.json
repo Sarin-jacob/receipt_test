@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "conventions": {
+    "money": "plain numbers in the receipt's currency, no thousands separators, discounts as negative numbers",
+    "date": "ISO YYYY-MM-DD; date_raw keeps the printed string when it's ambiguous",
+    "items.total": "line amount as printed (after any per-line discount)",
+    "items.unit_price": "price per unit/kg as printed; null when not printed",
+    "taxes[].inclusive": "true when the tax is already inside the total (VAT/MwSt style), false when added on top",
+    "null": "field not present or not readable on the receipt",
+    "notes": "quirks a parser is likely to trip on; also used to explain where the receipt's own math doesn't add up"
+  },
+  "receipts": [
+    {
+      "file": "receipt.jpg",
+      "source_type": "photo_thermal_clean",
+      "difficulty": 1,
+      "merchant": {"name": "Green Supermarket", "address": null, "phone": null, "tax_id": null},
+      "document": {"number": null, "date": null, "date_raw": null, "time": null, "currency": null},
+      "items": [
+        {"name": "APPLE", "qty": 2, "unit": null, "unit_price": null, "discount": null, "total": 1.0},
+        {"name": "BANANA", "qty": 3, "unit": null, "unit_price": null, "discount": null, "total": 1.5},
+        {"name": "ORANGE", "qty": 2, "unit": null, "unit_price": null, "discount": null, "total": 1.2},
+        {"name": "PEAR", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 0.75},
+        {"name": "GRAPES", "qty": 2, "unit": null, "unit_price": null, "discount": null, "total": 3.0},
+        {"name": "STRAWBERRY", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.5},
+        {"name": "BLUEBERRY", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.0},
+        {"name": "KIWI", "qty": 2, "unit": null, "unit_price": null, "discount": null, "total": 1.8},
+        {"name": "WATERMELON", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 4.5},
+        {"name": "LEMON", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 0.6},
+        {"name": "RASPBERRY", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 3.0},
+        {"name": "MILK", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.5},
+        {"name": "CHEESE", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.8},
+        {"name": "YOGURT", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.2}
+      ],
+      "subtotal": null,
+      "discounts": [],
+      "charges": [],
+      "taxes": [],
+      "total": 27.35,
+      "payment": {"method": "cash", "tendered": 30.0, "change": 2.65},
+      "notes": [
+        "Qty is a leading integer glued to the item name ('2 APPLE').",
+        "Merchant name is a script font; OCR often fails on it.",
+        "Barcode digits '123456 789012' at the bottom are not an amount."
+      ]
+    },
+    {
+      "file": "receipt.png",
+      "source_type": "digital_invoice",
+      "difficulty": 1,
+      "merchant": {"name": "East Repair Inc.", "address": "1912 Harvest Lane, New York, NY 12210", "phone": null, "tax_id": null},
+      "document": {"number": "US-001", "date": "2019-02-11", "date_raw": "11/02/2019", "time": null, "currency": "USD"},
+      "items": [
+        {"name": "Front and rear brake cables", "qty": 1, "unit": null, "unit_price": 100.0, "discount": null, "total": 100.0},
+        {"name": "New set of pedal arms", "qty": 2, "unit": null, "unit_price": 15.0, "discount": null, "total": 30.0},
+        {"name": "Labor 3hrs", "qty": 3, "unit": null, "unit_price": 5.0, "discount": null, "total": 15.0}
+      ],
+      "subtotal": 145.0,
+      "discounts": [],
+      "charges": [],
+      "taxes": [
+        {"label": "Sales Tax", "rate": 6.25, "amount": 9.06, "inclusive": false}
+      ],
+      "total": 154.06,
+      "payment": {"method": null, "tendered": null, "change": null},
+      "notes": [
+        "Total ('Receipt Total $154.06') is printed ABOVE the line items.",
+        "Date is DD/MM/YYYY (due date 26/02/2019 proves it).",
+        "Bill-to / ship-to addresses (John Smith) must not be taken as the merchant.",
+        "P.O.# '2312/2019' looks like a date but isn't."
+      ]
+    },
+    {
+      "file": "invoice.webp",
+      "source_type": "digital_invoice_designed",
+      "difficulty": 3,
+      "merchant": {"name": "Touch & Touch", "address": "123 Anywhere St., Any City, ST 12345", "phone": "+123-456-7890", "tax_id": null},
+      "document": {"number": "1234", "date": "2023-05-17", "date_raw": "17th May, 2023", "time": null, "currency": "USD"},
+      "items": [
+        {"name": "Initial Consultation", "qty": 5, "unit": null, "unit_price": 300.0, "discount": null, "total": 15000.0},
+        {"name": "Project Draft", "qty": 2, "unit": null, "unit_price": 500.0, "discount": null, "total": 1000.0},
+        {"name": "Implementation", "qty": 1, "unit": null, "unit_price": 12000.0, "discount": null, "total": 12000.0},
+        {"name": "Foundation Labor", "qty": 30, "unit": null, "unit_price": 60.0, "discount": null, "total": 1800.0}
+      ],
+      "subtotal": 29800.0,
+      "discounts": [],
+      "charges": [],
+      "taxes": [
+        {"label": "Tax", "rate": null, "amount": 250.0, "inclusive": false}
+      ],
+      "total": 30050.0,
+      "payment": {"method": "bank", "tendered": null, "change": null},
+      "notes": [
+        "Mixed number formats in one document: '$15.000' / '$1.800' / '$29.800' use '.' as THOUSANDS separator, while '$300.00' / '$250.00' use '.' as decimal.",
+        "Template error on the receipt itself: 5 x $300.00 = 1500, but the line says $15.000 (15000). Subtotal 29800 only works with 15000, so ground truth follows the printed line total.",
+        "'Steve Smith' is the customer, not the merchant. 'happay' logo at the bottom is the template source, not the merchant.",
+        "Bank code 123-456-7890 is not an amount."
+      ]
+    },
+    {
+      "file": "receipt1.jpg",
+      "source_type": "photo_thermal_lowres",
+      "difficulty": 2,
+      "merchant": {"name": null, "address": null, "phone": null, "tax_id": null},
+      "document": {"number": "301904", "date": null, "date_raw": null, "time": "14:05:51", "currency": "MYR"},
+      "items": [
+        {"name": "MATCHA GELATO SINGLE", "qty": 1, "unit": null, "unit_price": 15.0, "discount": -3.0, "total": 12.0}
+      ],
+      "subtotal": 12.0,
+      "discounts": [
+        {"label": "Discount (20.00%)", "amount": -3.0}
+      ],
+      "charges": [
+        {"label": "Rounding", "amount": 0.0}
+      ],
+      "taxes": [
+        {"label": "@ 0%", "rate": 0, "amount": 0.0, "inclusive": false}
+      ],
+      "total": 12.0,
+      "payment": {"method": "cash", "tendered": 12.0, "change": 0.0},
+      "notes": [
+        "Only 395x612 px: tiny text.",
+        "Item name wraps across two lines ('MATCHA GELATO' / 'SINGLE').",
+        "Discount is a separate indented line that belongs to the item above, not a new item.",
+        "'Table 1047' is large and bold but not an amount. Currency only appears in the header 'Price(RM)'.",
+        "Grand total (12.00) has no label."
+      ]
+    },
+    {
+      "file": "receipt2.JPG",
+      "source_type": "photo_thermal_card_slip",
+      "difficulty": 2,
+      "merchant": {"name": "Main Street Restaurant", "address": "6332 Business Drive, Suite 528, Palo Alto, California 94301", "phone": "575-1628095", "tax_id": null},
+      "document": {"number": "#e6d598ef", "date": "2017-04-07", "date_raw": "Fri 04/07/2017", "time": "11:36", "currency": "USD"},
+      "items": [],
+      "subtotal": 25.23,
+      "discounts": [],
+      "charges": [
+        {"label": "Tip", "amount": 3.78}
+      ],
+      "taxes": [],
+      "total": 29.01,
+      "payment": {"method": "card", "card_type": "DISCOVER", "card_last4": "0041", "tendered": null, "change": null},
+      "notes": [
+        "Card slip with no line items: the parser must return an empty items list, not invent items from Merchant ID / Terminal ID / Approval Code.",
+        "Numbers like 11111, 819543 and 94301 are IDs/ZIP, not amounts.",
+        "Large image (2577x3001), slightly rotated."
+      ]
+    },
+    {
+      "file": "receipt3.JPG",
+      "source_type": "photo_thermal_lowres_german",
+      "difficulty": 3,
+      "merchant": {"name": "Berghotel Grosse Scheidegg", "address": "3818 Grindelwald", "phone": "033 853 67 16", "tax_id": "430 234"},
+      "document": {"number": "4572", "date": "2007-07-30", "date_raw": "30.07.2007/13:29:17", "time": "13:29:17", "currency": "CHF"},
+      "items": [
+        {"name": "Latte Macchiato", "qty": 2, "unit": null, "unit_price": 4.5, "discount": null, "total": 9.0},
+        {"name": "Gloki", "qty": 1, "unit": null, "unit_price": 5.0, "discount": null, "total": 5.0},
+        {"name": "Schweinschnitzel", "qty": 1, "unit": null, "unit_price": 22.0, "discount": null, "total": 22.0},
+        {"name": "Chässpätzli", "qty": 1, "unit": null, "unit_price": 18.5, "discount": null, "total": 18.5}
+      ],
+      "subtotal": null,
+      "discounts": [],
+      "charges": [],
+      "taxes": [
+        {"label": "MwSt", "rate": 7.6, "amount": 3.85, "inclusive": true}
+      ],
+      "total": 54.5,
+      "payment": {"method": null, "tendered": null, "change": null},
+      "notes": [
+        "German: 'Total', 'Incl. 7.6% MwSt', 'Rech.Nr.' (invoice no.), 'Tisch' (table).",
+        "Qty format '2xLatte Macchiato' with 'à 4.50' unit price.",
+        "Tax is INCLUSIVE; adding 3.85 to 54.50 is wrong.",
+        "'Entspricht in Euro 36.33 EUR' is a currency conversion, not the total.",
+        "'Familie R.Müller' is the owner line; 'Ursula' is the server.",
+        "Umlaut in 'Chässpätzli'."
+      ]
+    },
+    {
+      "file": "receipt4.JPG",
+      "source_type": "photo_thermal_weighed_items",
+      "difficulty": 3,
+      "merchant": {"name": null, "address": null, "phone": null, "tax_id": null},
+      "document": {"number": null, "date": null, "date_raw": "06/01/2016 WED", "time": null, "currency": null},
+      "items": [
+        {"name": "ZUCCHINI GREEN", "qty": 0.778, "unit": "kg", "unit_price": 5.99, "discount": null, "total": 4.66},
+        {"name": "BANANA CAVENDISH", "qty": 0.442, "unit": "kg", "unit_price": 2.99, "discount": null, "total": 1.32},
+        {"name": "SPECIAL", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 0.99},
+        {"name": "SPECIAL", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.5},
+        {"name": "POTATOES BRUSHED", "qty": 1.328, "unit": "kg", "unit_price": 2.99, "discount": null, "total": 3.97},
+        {"name": "BROCCOLI", "qty": 0.808, "unit": "kg", "unit_price": 5.99, "discount": null, "total": 4.84},
+        {"name": "BRUSSEL SPROUTS", "qty": 0.322, "unit": "kg", "unit_price": 15.99, "discount": null, "total": 5.15},
+        {"name": "SPECIAL", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 0.99},
+        {"name": "GRAPES GREEN", "qty": 1.174, "unit": "kg", "unit_price": 5.99, "discount": null, "total": 7.03},
+        {"name": "PEAS SNOW", "qty": 0.218, "unit": "kg", "unit_price": 14.99, "discount": null, "total": 3.27},
+        {"name": "TOMATOES GRAPE", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.99},
+        {"name": "LETTUCE ICEBERG", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.49}
+      ],
+      "subtotal": 39.2,
+      "discounts": [
+        {"label": "LOYALTY", "amount": -15.0}
+      ],
+      "charges": [],
+      "taxes": [],
+      "total": 24.2,
+      "payment": {"method": "cash", "tendered": 50.0, "change": 25.8},
+      "notes": [
+        "Weight lines ('0.778kg NET @ $5.99/kg') belong to the item above and are not items themselves.",
+        "Some prices (BROCCOLI, BRUSSEL SPROUTS, GRAPES, PEAS) float between the name line and the weight line; OCR row grouping can attach them to the wrong item.",
+        "Three different SUBTOTAL lines (39.20, 24.20, 24.20, 24.20); the pre-discount subtotal is 39.20.",
+        "Date 06/01/2016 is ambiguous (1 Jun or 6 Jan; both were Wednesdays). Merchant header is cropped off.",
+        "Currency printed only as '$' (likely AUD/NZD from '/kg' format), left null."
+      ]
+    },
+    {
+      "file": "receipt5.JPG",
+      "source_type": "photo_thermal_long_dense",
+      "difficulty": 5,
+      "merchant": {"name": "Target", "address": null, "phone": null, "tax_id": null},
+      "document": {"number": null, "date": "2016-03-06", "date_raw": "03/06/2016 05:25 PM", "time": "17:25", "currency": "USD"},
+      "items": [
+        {"name": "UPUP HOUSEH", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.94, "category": "CLEANING SUPPLIES", "tax_code": "T"},
+        {"name": "OREO COOKIE", "qty": 2, "unit": null, "unit_price": 2.99, "discount": null, "total": 5.98, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "NATVAL ENER", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 5.89, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "MOTTS FRTSN", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.5, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "Cartwheel MfrCpn", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": -0.5, "category": "GROCERY", "tax_code": null},
+        {"name": "MOTTS FRTSN", "qty": 3, "unit": null, "unit_price": 1.5, "discount": null, "total": 4.5, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "V8", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 4.19, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "OSCAR MAYER", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.5, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "OSCAR MAYER", "qty": 1, "unit": null, "unit_price": 3.62, "discount": -0.55, "total": 3.07, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "NAKED", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.5, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "TOMATO", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 0.99, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "LETTUCE", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.49, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "KC MASTERPC", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 3.39, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "MARKET PANT", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 3.29, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "BC SDNLY SL", "qty": 1, "unit": null, "unit_price": 1.92, "discount": -0.2, "total": 1.72, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "PEPPERIDGE", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.99, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "SMUCKERS", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.09, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "JENNIE-O", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.99, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "LEAN CUISIN", "qty": 1, "unit": null, "unit_price": 2.89, "discount": -0.44, "total": 2.45, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "LEAN CUISIN", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.14, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "LEAN CUISIN", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 2.89, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "LEAN CUISIN", "qty": 1, "unit": null, "unit_price": 2.89, "discount": -0.44, "total": 2.45, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "EVOL", "qty": 1, "unit": null, "unit_price": 7.99, "discount": -2.4, "total": 5.59, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "BIRD SUBB H", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 4.09, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "MP EGGS", "qty": 1, "unit": null, "unit_price": 1.99, "discount": -0.1, "total": 1.89, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "REDDI WIP", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 3.72, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "MP H AND H", "qty": 1, "unit": null, "unit_price": 1.49, "discount": -0.08, "total": 1.41, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "CHOBANI", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.0, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "CHOBANI", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.0, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "CHOBANI", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 1.0, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "CHOBANI", "qty": 2, "unit": null, "unit_price": 1.0, "discount": null, "total": 2.0, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "BREYERS", "qty": 1, "unit": null, "unit_price": 4.09, "discount": -0.6, "total": 3.49, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "BREYERS", "qty": 1, "unit": null, "unit_price": 4.09, "discount": -0.6, "total": 3.49, "category": "GROCERY", "tax_code": "FC"},
+        {"name": "AQUAF 2PK", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 4.89, "category": "HEALTH-BEAUTY-COSMETICS", "tax_code": "T"},
+        {"name": "SONICARE", "qty": 1, "unit": null, "unit_price": null, "discount": null, "total": 21.99, "category": "HEALTH-BEAUTY-COSMETICS", "tax_code": "T"},
+        {"name": "BISSELL", "qty": 1, "unit": null, "unit_price": 149.99, "discount": -20.0, "total": 129.99, "category": "HOME", "tax_code": "T"}
+      ],
+      "subtotal": 246.0,
+      "discounts": [
+        {"label": "Your REDcard Savings", "amount": -11.55}
+      ],
+      "charges": [],
+      "taxes": [
+        {"label": "T = MO TAX", "rate": 8.475, "base": 151.37, "amount": 12.83, "inclusive": false},
+        {"label": "C = MO TAX", "rate": 5.475, "base": 83.08, "amount": 4.55, "inclusive": false}
+      ],
+      "total": 251.83,
+      "payment": {"method": null, "tendered": null, "change": null},
+      "notes": [
+        "36 lines; verified: sum of printed line totals = 246.00 = SUBTOTAL.",
+        "9-digit DPCI codes on the left (071090012 etc.) are SKUs, not prices.",
+        "'2 @ $2.99 ea', 'Saved $X off $Y', 'Cartwheel N% off $Y' are sub-lines of the item ABOVE, never items. 'Saved $1.71 off $6.21' under MOTTS is an informational summary of the two MOTTS lines + coupon.",
+        "The negative 'Cartwheel MfrCpn $0.50-' has a TRAILING minus sign; it is counted inside the subtotal so it is kept as an item line.",
+        "Per-line discount (e.g. EVOL 7.99 -> 5.59) is already applied in the printed line total.",
+        "Department headers (GROCERY, HOME...) are not items. Tax flags T / FC and down-arrows are column noise.",
+        "Bottom section is curled/skewed; '$11.55-' has a trailing minus."
+      ]
+    },
+    {
+      "file": "receipt6.JPG",
+      "source_type": "photo_thermal_handheld_blurry",
+      "difficulty": 5,
+      "merchant": {"name": "Sapphire", "address": "14-A Gulgasht Colony, Pizza Hut Road, Multan, PAK", "phone": "+92 61 6521685-86", "tax_id": "NTN 4278583-9"},
+      "document": {"number": "MULT06103512", "date": "2026-01-31", "date_raw": "1/31/2026 06:13 PM", "time": "18:13", "currency": "PKR"},
+      "items": [
+        {"name": "PES26HMV205S-MDM-999", "sku": "PES26HMV205S", "qty": 1, "unit": null, "unit_price": 5923.72, "discount": null, "tax": 1066.28, "tax_rate": 18, "total": 6990.0},
+        {"name": "PES26HMV205T-MDM-999", "sku": "PES26HMV205T", "qty": 1, "unit": null, "unit_price": 2533.9, "discount": null, "tax": 456.1, "tax_rate": 18, "total": 2990.0},
+        {"name": "PES26HMV205D", "sku": "PES26HMV205D", "qty": 1, "unit": null, "unit_price": 3381.36, "discount": null, "tax": 608.64, "tax_rate": 18, "total": 3990.0},
+        {"name": "SHOPBAGOWS25-MDM-999", "sku": "SHOPBAGOWS25", "qty": 1, "unit": null, "unit_price": 33.9, "discount": null, "tax": 6.1, "tax_rate": 18, "total": 40.0}
+      ],
+      "subtotal": 14010.0,
+      "discounts": [],
+      "charges": [
+        {"label": "FBR POS Service Fee", "amount": 1.0}
+      ],
+      "taxes": [
+        {"label": "GST", "rate": 18, "amount": 2137.12, "inclusive": true}
+      ],
+      "total": 14011.0,
+      "payment": {"method": "card", "bank": "Bank Al-Falah", "tendered": 14011.0, "change": null},
+      "notes": [
+        "Only 335x597 px, held in hand, perspective + curl.",
+        "Each item is two lines: SKU + description, then 'PRICE QTY GST% GST TOTAL'. PRICE is ex-tax, TOTAL is tax-inclusive (5923.72 + 1066.28 = 6990.00).",
+        "Footer labels and values are vertically misaligned: 'Total tax' sits next to 2,137.12's row offset, 'Total' next to 14,011.00, 'Total qty' next to 4. A naive same-line pairing gets these wrong.",
+        "Commas are thousands separators.",
+        "'Quart Ul Ain' watermark at the bottom is a chat-app overlay, not receipt content."
+      ]
+    },
+    {
+      "file": "receipt1.png",
+      "source_type": "screenshot_web_invoice_gst",
+      "difficulty": 4,
+      "merchant": {"name": "ss Super Market", "address": "Tamil Nadu 834y53, India", "phone": null, "tax_id": "GSTIN 33AABCU9603R1ZM"},
+      "document": {"number": "SI3-0272", "date": "2023-04-04", "date_raw": "04/04/2023", "time": null, "currency": "INR"},
+      "items": [
+        {"name": "AVT Coffee Powder", "qty": 2, "unit": "pcs", "unit_price": 50.01, "discount": -5.0, "discount_raw": "5.00%", "tax": 4.76, "total": 95.02},
+        {"name": "Himalayas Shampoo 75ml", "qty": 1, "unit": "pcs", "unit_price": 75.0, "discount": -5.0, "tax": 3.5, "total": 70.0},
+        {"name": "Apple iPhone 8 plus", "qty": 1, "unit": "pcs", "unit_price": 42000.0, "discount": 0, "tax": 2100.0, "total": 42000.0},
+        {"name": "maggi noodles", "qty": 1, "unit": "pcs", "unit_price": 40.0, "discount": 0, "tax": 2.0, "total": 40.0}
+      ],
+      "subtotal": 42205.02,
+      "discounts": [],
+      "charges": [
+        {"label": "Total Adjustment", "amount": -0.28}
+      ],
+      "taxes": [
+        {"label": "CGST2.5", "rate": 2.5, "amount": 1055.13, "inclusive": false},
+        {"label": "SGST2.5", "rate": 2.5, "amount": 1055.13, "inclusive": false}
+      ],
+      "total": 44315.0,
+      "payment": {"method": null, "tendered": null, "change": null},
+      "notes": [
+        "Numeric grand total is cut off at the bottom; it is only present in words: 'Forty-Four Thousand Three Hundred Fifteen Only'. 42205.02 + 2110.26 - 0.28 = 44315.00 confirms it.",
+        "Item 'tax' = CGST + SGST amounts for that line.",
+        "The CGST/SGST amount '1,050.00' for the iPhone wraps as '1,05' / '0.00' over two lines.",
+        "Every qty has a 'pcs' on the next line; 'special offer' is a sub-description of the shampoo.",
+        "App chrome (Edit, Send Mail, PDF/Print, 'Paid' ribbon, '15' badge) is not receipt content.",
+        "Bill-to 'JD' is the customer."
+      ]
+    },
+    {
+      "file": "blinkit.jpg",
+      "source_type": "screenshot_app_cart",
+      "difficulty": 4,
+      "merchant": {"name": null, "address": null, "phone": null, "tax_id": null},
+      "document": {"number": null, "date": null, "date_raw": null, "time": null, "currency": "INR"},
+      "items": [],
+      "item_count": 3,
+      "subtotal": 423,
+      "discounts": [
+        {"label": "product discount", "amount": -29},
+        {"label": "coupon discount (BLINK75)", "amount": -75}
+      ],
+      "charges": [
+        {"label": "packaging charge", "amount": 0},
+        {"label": "delivery charges", "amount": 0, "original_amount": 25},
+        {"label": "high demand surge charges", "amount": 30}
+      ],
+      "taxes": [],
+      "total": 424,
+      "payment": {"method": null, "tendered": null, "change": null},
+      "notes": [
+        "Merchant (Blinkit) is not printed anywhere in the screenshot, so merchant is null; recognising the app from its design is out of scope.",
+        "The four products shown (Cadbury 144, Mango 202, Lay's 20, Lay's 20) are 'before you checkout' SUGGESTIONS, not cart items. The actual 3 cart items are not visible, so items must be empty.",
+        "Struck-through prices (149, 245, 25) are original prices.",
+        "The screenshot's own math doesn't add up: 423 - 29 - 75 + 30 = 349, but bill total is 424 (= 423 - 29 + 30). Ground truth keeps the printed 424. A good parser should flag the mismatch.",
+        "Tip buttons (+10, +25, +50) and status bar (9:17, 96%) are not amounts.",
+        "'subtotal' here is the MRP line."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,926 @@
+{
+ "schema_version": 1,
+ "source": "ICDAR2019 SROIE via Voxel51/scanned_receipts (CC-BY-4.0), 40 random samples, disjoint from sroie40, seed 7. Final test set: never tune on it.",
+ "receipts": [
+  {
+   "file": "X51007846393.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MOONLIGHT CAKE HOUSE SDN BHD"
+   },
+   "document": {
+    "date": "2018-06-20",
+    "date_raw": "20/06/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 14.2,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006328919.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "B & BEST RESTAURANT"
+   },
+   "document": {
+    "date": "2017-02-10",
+    "date_raw": "10/02/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 7.4,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006619341.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MR. D.I.Y. (M) SDN BHD"
+   },
+   "document": {
+    "date": "2016-04-06",
+    "date_raw": "06-04-16",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 8.6,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51007339658.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "AIK HUAT HARDWARE ENTERPRISE (SETIA ALAM) SDN BHD"
+   },
+   "document": {
+    "date": "2017-09-04",
+    "date_raw": "04/09/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 28.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005361907.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "TED HENG STATIONERY & BOOKS"
+   },
+   "document": {
+    "date": "2018-02-12",
+    "date_raw": "12/02/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 153.35,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51008164999.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "ONE ONE THREE SEAFOOD RESTAURANT SDN BHD"
+   },
+   "document": {
+    "date": "2018-06-23",
+    "date_raw": "23-06-2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 179.5,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006867435.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "GUARDIAN HEALTH AND BEAUTY SDN BHD"
+   },
+   "document": {
+    "date": "2018-05-18",
+    "date_raw": "18/05/18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 2.28,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006311779.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "ANZEL ADVERTISING (M) SDN BHD"
+   },
+   "document": {
+    "date": "2018-03-27",
+    "date_raw": "27/03/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 8.5,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006913074.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "DOMINO'S PIZZA TAMAN UNIVERSITI"
+   },
+   "document": {
+    "date": "2018-05-08",
+    "date_raw": "08/05/18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 6.7,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51008114282.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "99 SPEED MART S/B"
+   },
+   "document": {
+    "date": "2018-06-04",
+    "date_raw": "04-06-18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 20.9,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51007339656.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "AIK HUAT HARDWARE ENTERPRISE (SETIA ALAM) SDN BHD"
+   },
+   "document": {
+    "date": "2017-05-10",
+    "date_raw": "10/05/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 16.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51008114284.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MR. D.I.Y. (KUCHAI) SDN BHD"
+   },
+   "document": {
+    "date": "2018-06-25",
+    "date_raw": "25-06-18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 17.45,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51008030560.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "RESTORAN DE COFFEE O"
+   },
+   "document": {
+    "date": "2018-04-03",
+    "date_raw": "03/04/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 11.6,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006441474.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "TF VALUE-MART SDN BHD"
+   },
+   "document": {
+    "date": "2018-05-19",
+    "date_raw": "19/05/18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 52.8,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005677334(2).jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SYARIKAT PERNIAGAAN GIN KEE"
+   },
+   "document": {
+    "date": "2018-01-31",
+    "date_raw": "31/01/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 82.68,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51008142058.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "KEDAI PAPAN YEW CHUAN"
+   },
+   "document": {
+    "date": "2018-04-20",
+    "date_raw": "20/04/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 87.45,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51007339118(1).jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SANYU STATIONERY SHOP"
+   },
+   "document": {
+    "date": "2017-11-07",
+    "date_raw": "07/11/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 2.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51007103639.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MR. D.I.Y. (M) SDN BHD"
+   },
+   "document": {
+    "date": "2018-04-19",
+    "date_raw": "19-04-18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 15.4,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005441408.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "32 PUB & BISTRO OWN BY CNU TRADING"
+   },
+   "document": {
+    "date": "2018-03-10",
+    "date_raw": "10-03-2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 190.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005705722.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "ASO ELECTRICAL TRADING SDN BHD"
+   },
+   "document": {
+    "date": "2017-09-27",
+    "date_raw": "27/09/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 248.05,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006008074.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "PRINT EXPERT SDN BHD"
+   },
+   "document": {
+    "date": "2018-01-12",
+    "date_raw": "12/01/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 4.25,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006912972.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "UNIHAKKA INTERNATIONAL SDN BHD"
+   },
+   "document": {
+    "date": "2018-05-15",
+    "date_raw": "15 MAY 2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 8.2,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51007339118.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SANYU STATIONERY SHOP"
+   },
+   "document": {
+    "date": "2017-11-07",
+    "date_raw": "07/11/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 2.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005442392.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "UNIHAKKA INTERNATIONAL SDN BHD"
+   },
+   "document": {
+    "date": "2018-03-29",
+    "date_raw": "29 MAR 2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 7.1,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006311780(1).jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MR. D.I.Y. (KUCHAI) SDN BHD"
+   },
+   "document": {
+    "date": "2018-03-15",
+    "date_raw": "15-03-18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 119.7,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005676539(1).jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SYARIKAT PERNIAGAAN GIN KEE"
+   },
+   "document": {
+    "date": "2018-01-10",
+    "date_raw": "10/01/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 23.32,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005663293.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SWEET FOREST CAFE"
+   },
+   "document": {
+    "date": "2018-02-14",
+    "date_raw": "14-02-2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 30.3,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005361883.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "TEO HENG STATIONERY & BOOKS"
+   },
+   "document": {
+    "date": "2018-01-18",
+    "date_raw": "18/01/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 4.9,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51008042778.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "RESTORAN WAN SHENG"
+   },
+   "document": {
+    "date": "2018-05-05",
+    "date_raw": "05-05-2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 19.4,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006328913.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "BEMED (SP) SDN BHD"
+   },
+   "document": {
+    "date": "2017-01-02",
+    "date_raw": "02/JAN/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 165.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006620161.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SIN THYE & COMPANY"
+   },
+   "document": {
+    "date": "2016-02-28",
+    "date_raw": "28/02/2016",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 110.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51007339167.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SANYU STATIONERY SHOP"
+   },
+   "document": {
+    "date": "2017-12-11",
+    "date_raw": "11/12/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 7.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005746140.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "YONG CEN ENTERPRISE"
+   },
+   "document": {
+    "date": "2018-03-02",
+    "date_raw": "02/03/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 63.35,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X00016469672.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SOON HUAT MACHINERY ENTERPRISE"
+   },
+   "document": {
+    "date": "2019-01-11",
+    "date_raw": "11/01/2019",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 327.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006392313.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SUPER.SEVEN CASH & CARRY SDN BHD"
+   },
+   "document": {
+    "date": "2017-06-22",
+    "date_raw": "22-06-2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 28.05,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51005757290.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MR. D.I.Y. (M) SDN BHD"
+   },
+   "document": {
+    "date": "2018-03-17",
+    "date_raw": "17-03-18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 42.9,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51008123586.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MYNEWS RETAIL SB"
+   },
+   "document": {
+    "date": "2018-06-29",
+    "date_raw": "29/06/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 7.7,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51007846353.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "THE TOAST F&B SDN BHD"
+   },
+   "document": {
+    "date": "2018-06-16",
+    "date_raw": "16/06/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 28.15,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51007339639.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "AIK HUAT HARDWARE ENTERPRISE (SETIA ALAM) SDN BHD"
+   },
+   "document": {
+    "date": "2017-07-13",
+    "date_raw": "13/07/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 4.0,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  },
+  {
+   "file": "X51006414713.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "YHM AEON TEBRAU CITY"
+   },
+   "document": {
+    "date": "2018-04-17",
+    "date_raw": "17/04/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 81.8,
+   "notes": [
+    "SROIE label: company/date/total only. FINAL TEST SET: do not tune on these."
+   ]
+  }
+ ]
+}

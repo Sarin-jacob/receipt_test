@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Receipt Parser Bench</title>
+  <style>
+    :root {
+      --bg: #f6f7f9; --panel: #fff; --text: #16181d; --muted: #667085; --border: #e3e6eb;
+      --good: #12805c; --good-bg: #e6f4ee; --mid: #a15c00; --mid-bg: #fdf1df; --bad: #b42318; --bad-bg: #fde8e7;
+      --accent: #3557d6; --code: #f1f3f6;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111317; --panel: #1a1d23; --text: #e8eaee; --muted: #9aa3b2; --border: #2c313a;
+        --good: #4cc38a; --good-bg: #173326; --mid: #f0b44c; --mid-bg: #3a2c12; --bad: #f97066; --bad-bg: #3b1a18;
+        --accent: #8aa4ff; --code: #22262e;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; background: var(--bg); color: var(--text); }
+    header { padding: 16px; border-bottom: 1px solid var(--border); background: var(--panel); display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+    h1 { font-size: 18px; margin: 0; }
+    main { padding: 16px; display: grid; gap: 16px; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; overflow: auto; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+    label { color: var(--muted); font-size: 13px; }
+    select, button { font: inherit; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); color: var(--text); }
+    button.primary { background: var(--accent); color: #fff; border-color: transparent; }
+    button:disabled { opacity: .5; }
+    #status { color: var(--muted); font-size: 13px; white-space: pre-wrap; }
+    .engines { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 4px 16px; margin-top: 10px; }
+    .engines label { color: var(--text); display: flex; gap: 6px; align-items: baseline; }
+    .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; white-space: nowrap; }
+    .tag.over { color: var(--mid); border-color: var(--mid); }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border-bottom: 1px solid var(--border); padding: 5px 8px; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--panel); }
+    #matrix th.eng { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; height: 190px; font-weight: 500; }
+    #matrix td.cell { text-align: center; cursor: pointer; font-variant-numeric: tabular-nums; min-width: 54px; }
+    #matrix td.cell:hover { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .g { background: var(--good-bg); color: var(--good); } .m { background: var(--mid-bg); color: var(--mid); } .b { background: var(--bad-bg); color: var(--bad); }
+    .running { animation: pulse 1s infinite; } @keyframes pulse { 50% { opacity: .4; } }
+    tr.summary td { font-weight: 600; border-top: 2px solid var(--border); }
+    .detail { display: grid; grid-template-columns: minmax(200px, 340px) 1fr; gap: 16px; }
+    @media (max-width: 800px) { .detail { grid-template-columns: 1fr; } }
+    .detail img { width: 100%; border-radius: 6px; border: 1px solid var(--border); }
+    pre { background: var(--code); padding: 10px; border-radius: 6px; overflow: auto; max-height: 360px; font-size: 12px; white-space: pre; }
+    details summary { cursor: pointer; color: var(--muted); margin: 8px 0; }
+    .ok { color: var(--good); } .no { color: var(--bad); }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Receipt Parser Bench</h1>
+    <div class="controls">
+      <label>Dataset <select id="dataset"><option value="dev">Your receipts (dev, 11)</option><option value="sroie">SROIE tuning (40)</option><option value="final">SROIE final test (40)</option><option value="mine">Your photos (31)</option></select></label>
+      <label>Device <select id="device"></select></label>
+      <label>OCR <select id="ocrModel"></select></label>
+      <label>Preprocess <select id="prep"><option value="crop+contrast">crop + contrast</option><option value="crop">crop to receipt</option><option value="none">none</option></select></label>
+      <button id="runBtn" class="primary">Run selected engines</button>
+      <button id="stopBtn" disabled>Stop after current</button>
+      <button id="exportBtn">Export results</button>
+      <button id="clearBtn">Clear results</button>
+    </div>
+    <div id="status">Loading…</div>
+  </header>
+  <main>
+    <section class="panel">
+      <strong>Engines</strong> <span class="muted">(download size incl. OCR; orange = over the 0.5 GB target)</span>
+      <div id="engineList" class="engines"></div>
+    </section>
+    <section class="panel"><table id="matrix"></table></section>
+    <section class="panel" id="detail"><span class="muted">Click a cell to see ground truth vs. output.</span></section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

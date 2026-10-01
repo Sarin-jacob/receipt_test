@@ -1,0 +1,926 @@
+{
+ "schema_version": 1,
+ "source": "ICDAR2019 SROIE via Voxel51/scanned_receipts (CC-BY-4.0), 40 random samples, seed 42",
+ "receipts": [
+  {
+   "file": "X51006619694.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "GUARDIAN HEALTH AND BEAUTY SDN BHD"
+   },
+   "document": {
+    "date": "2016-02-11",
+    "date_raw": "11/02/16",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 2.56,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51007339647.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "AIK HUAT HARDWARE ENTERPRISE (SETIA ALAM) SDN BHD"
+   },
+   "document": {
+    "date": "2017-11-15",
+    "date_raw": "15/11/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 16.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51008114266.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "99 SPEED MART S/B"
+   },
+   "document": {
+    "date": "2018-05-13",
+    "date_raw": "13-05-18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 22.9,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51008099085.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "RESTORAN WAN SHENG"
+   },
+   "document": {
+    "date": "2018-06-26",
+    "date_raw": "26-06-2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 4.1,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006619765.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MR. D.I.Y. (M) SDN BHD"
+   },
+   "document": {
+    "date": "2016-01-08",
+    "date_raw": "08-01-16",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 64.7,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005806685.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "ADVANCO COMPANY"
+   },
+   "document": {
+    "date": "2018-01-17",
+    "date_raw": "17/01/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 29.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006327976.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "PREMIO STATIONERY SDN BHD"
+   },
+   "document": {
+    "date": "2017-02-08",
+    "date_raw": "08/02/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 25.45,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006619854.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "99 SPEED MART S/B"
+   },
+   "document": {
+    "date": "2016-06-04",
+    "date_raw": "04-06-16",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 2.1,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006329399.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "OLIVE9 PHARMACY SDN BHD"
+   },
+   "document": {
+    "date": "2017-03-31",
+    "date_raw": "31/03/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 12.15,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005711403.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "RESTORAN WAN SHENG"
+   },
+   "document": {
+    "date": "2018-03-19",
+    "date_raw": "19-03-2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 9.1,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005568827.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "BANH MI CAFE SDN BHD"
+   },
+   "document": {
+    "date": "2017-10-29",
+    "date_raw": "29-10-2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 23.25,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005676538.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SYARIKAT PERNIAGAAN GIN KEE"
+   },
+   "document": {
+    "date": "2018-01-04",
+    "date_raw": "04/01/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 44.73,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51007843145.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "ESJAY FUEL ENTERPRISE"
+   },
+   "document": {
+    "date": "2018-06-30",
+    "date_raw": "30-06-2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 50.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51008164420.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "POPULAR BOOK CO. (M) SDN BHD"
+   },
+   "document": {
+    "date": "2018-04-03",
+    "date_raw": "03/04/18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 7.3,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006414703.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "AEON CO. (M) BHD"
+   },
+   "document": {
+    "date": "2018-04-22",
+    "date_raw": "22/04/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 98.35,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51007339643.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "AIK HUAT HARDWARE ENTERPRISE (SETIA ALAM) SDN BHD"
+   },
+   "document": {
+    "date": "2017-03-30",
+    "date_raw": "30/03/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 6.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51007339151.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SANYU STATIONERY SHOP"
+   },
+   "document": {
+    "date": "2017-07-15",
+    "date_raw": "15/07/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 8.7,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006389963.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "ELKEN SERVICE SDN BHD"
+   },
+   "document": {
+    "date": "2017-10-10",
+    "date_raw": "10 OCT 2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 250.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005361907(1).jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "TED HENG STATIONERY & BOOKS"
+   },
+   "document": {
+    "date": "2018-02-12",
+    "date_raw": "12/02/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 153.35,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006414679.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "DE MAXIMUM THAI EXPRESS SDN BHD"
+   },
+   "document": {
+    "date": "2018-04-14",
+    "date_raw": "14/04/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 21.8,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006556726.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "GARDENIA BAKERIES (KL) SDN BHD"
+   },
+   "document": {
+    "date": "2017-08-06",
+    "date_raw": "06/08/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 68.41,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005453729.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "LIAN HING STATIONERY SDN BHD"
+   },
+   "document": {
+    "date": "2018-03-27",
+    "date_raw": "27/03/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 79.5,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51007339150.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SANYU STATIONERY SHOP"
+   },
+   "document": {
+    "date": "2017-07-18",
+    "date_raw": "18/07/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 35.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51007846307.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "UNIHAKKA INTERNATIONAL SDN BHD"
+   },
+   "document": {
+    "date": "2018-06-12",
+    "date_raw": "12 JUN 2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 7.7,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51008142060.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "KEDAI PAPAN YEW CHUAN"
+   },
+   "document": {
+    "date": "2018-05-26",
+    "date_raw": "26/05/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 121.9,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005719814.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "TK DIVISION KITCHEN SDN BHD"
+   },
+   "document": {
+    "date": "2018-01-17",
+    "date_raw": "17/1/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 29.7,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005722668.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MY HAPPY PHARMACY PLT"
+   },
+   "document": {
+    "date": "2018-02-01",
+    "date_raw": "01/02/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 20.5,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005442376(1).jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "UNIHAKKA INTERNATIONAL SDN BHD"
+   },
+   "document": {
+    "date": "2018-03-22",
+    "date_raw": "22 MAR 2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 7.6,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005745188.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "SLF CASH & CARRY"
+   },
+   "document": {
+    "date": "2018-02-02",
+    "date_raw": "02/02/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 48.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005719862.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "99 SPEED MART S/B"
+   },
+   "document": {
+    "date": "2018-02-03",
+    "date_raw": "03-02-18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 3.7,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005200938.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "PERNIAGAAN ZHENG HUI"
+   },
+   "document": {
+    "date": "2018-02-12",
+    "date_raw": "12/02/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 112.45,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005568881.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "HON HWA HARDWARE TRADING"
+   },
+   "document": {
+    "date": "2017-09-21",
+    "date_raw": "21/09/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 10.4,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006557164.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "GARDENIA BAKERIES (KL) SDN BHD"
+   },
+   "document": {
+    "date": "2017-10-18",
+    "date_raw": "18/10/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 31.05,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51006555072.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "DIGI TELECOMMUNICATIONS SDN BHD"
+   },
+   "document": {
+    "date": "2017-10-13",
+    "date_raw": "13/10/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 234.4,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51008123446.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "DION REALTIES SDN BHD"
+   },
+   "document": {
+    "date": "2018-05-30",
+    "date_raw": "30/05/18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 5.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51007339657.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "AIK HUAT HARDWARE ENTERPRISE (SETIA ALAM) SDN BHD"
+   },
+   "document": {
+    "date": "2017-12-25",
+    "date_raw": "25/12/2017",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 2.5,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005757353.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "MR. D.I.Y. (M) SDN BHD"
+   },
+   "document": {
+    "date": "2018-03-24",
+    "date_raw": "24-03-18",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 12.3,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005605285.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "AEON CO. (M) BHD."
+   },
+   "document": {
+    "date": "2018-03-22",
+    "date_raw": "22/03/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 5.9,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005568913.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "IKANO HANDEL SDN BHD"
+   },
+   "document": {
+    "date": "2017-07-27",
+    "date_raw": "27/07/17",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 538.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  },
+  {
+   "file": "X51005712039.jpg",
+   "source_type": "sroie_scan",
+   "difficulty": 2,
+   "items_unlabeled": true,
+   "merchant": {
+    "name": "L TWO FLORIST & HANDICRAFT"
+   },
+   "document": {
+    "date": "2018-03-21",
+    "date_raw": "21/03/2018",
+    "currency": "MYR"
+   },
+   "items": [],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 9.0,
+   "notes": [
+    "SROIE label: company/date/total only"
+   ]
+  }
+ ]
+}

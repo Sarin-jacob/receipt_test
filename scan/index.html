@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Receipt Scan</title>
+  <style>
+    :root {
+      --bg: #f6f7f9; --panel: #fff; --text: #16181d; --muted: #667085; --border: #e3e6eb;
+      --accent: #3557d6; --accent-text: #fff; --good: #12805c; --good-bg: #e6f4ee; --warn: #a15c00; --warn-bg: #fdf1df;
+      --handle: #3557d6; --stage: #22262e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111317; --panel: #1a1d23; --text: #e8eaee; --muted: #9aa3b2; --border: #2c313a;
+        --accent: #8aa4ff; --accent-text: #0d1117; --good: #4cc38a; --good-bg: #173326; --warn: #f0b44c; --warn-bg: #3a2c12;
+        --handle: #8aa4ff; --stage: #0b0c0f;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 16px; display: grid; gap: 14px; }
+    h1 { font-size: 20px; margin: 4px 0 0; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    button, .file { font: inherit; border-radius: 8px; padding: 9px 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text); cursor: pointer; }
+    button.primary, .file.primary { background: var(--accent); color: var(--accent-text); border-color: transparent; font-weight: 600; }
+    button:disabled { opacity: .5; cursor: default; }
+    .file input { display: none; }
+    .muted { color: var(--muted); font-size: 13px; }
+    #stage { position: relative; background: var(--stage); border-radius: 10px; overflow: hidden; touch-action: none; user-select: none; }
+    #stage canvas { display: block; width: 100%; height: auto; }
+    #stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #stage polygon { fill: rgba(53, 87, 214, .12); stroke: var(--handle); stroke-width: 2; }
+    #stage circle { fill: var(--panel); stroke: var(--handle); stroke-width: 3; cursor: grab; }
+    label.slider { display: grid; grid-template-columns: 90px 1fr 44px; gap: 8px; align-items: center; font-size: 14px; }
+    input[type=range] { width: 100%; accent-color: var(--accent); }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+    .badge.good { background: var(--good-bg); color: var(--good); }
+    .badge.warn { background: var(--warn-bg); color: var(--warn); }
+    .total { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+    td, th { padding: 6px 4px; border-bottom: 1px solid var(--border); text-align: left; }
+    td.n, th.n { text-align: right; }
+    dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 8px 0; }
+    dt { color: var(--muted); }
+    dd { margin: 0; }
+    pre { background: var(--bg); padding: 10px; border-radius: 8px; overflow: auto; font-size: 12px; max-height: 300px; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Receipt scan</h1>
+
+    <section class="panel" id="pick">
+      <div class="row">
+        <label class="file primary">Take / choose photo<input type="file" id="file" accept="image/*" capture="environment" /></label>
+        <span class="muted" id="status">Runs fully on this device. First scan downloads the OCR model (~31 MB).</span>
+      </div>
+    </section>
+
+    <section class="panel" id="edit" hidden>
+      <p class="muted" style="margin-top:0">Drag the corners onto the receipt's edges. Use the sliders if it's dark or faded.</p>
+      <div id="stage">
+        <canvas id="view"></canvas>
+        <svg id="overlay"><polygon id="poly"></polygon></svg>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="rotL" title="Rotate left">⟲ Rotate</button>
+        <button id="rotR" title="Rotate right">⟳ Rotate</button>
+        <button id="autoCrop">Auto corners</button>
+        <button id="fullCrop">Whole photo</button>
+      </div>
+      <div style="display:grid;gap:8px;margin-top:12px">
+        <label class="slider">Brightness <input type="range" id="bright" min="-60" max="60" value="0" /><span id="brightV">0</span></label>
+        <label class="slider">Contrast <input type="range" id="contrast" min="-40" max="100" value="0" /><span id="contrastV">0</span></label>
+        <div class="row">
+          <label><input type="checkbox" id="gray" /> Black &amp; white</label>
+          <label><input type="checkbox" id="autoLevels" checked /> Auto-fix dark / faded</label>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="primary" id="scan">Scan receipt</button>
+        <button id="reset">Start over</button>
+      </div>
+    </section>
+
+    <section class="panel" id="result" hidden>
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <div class="muted" id="rMerchant"></div>
+          <div class="total" id="rTotal"></div>
+        </div>
+        <span id="rCheck" class="badge"></span>
+      </div>
+      <dl id="rMeta"></dl>
+      <table id="rItems"></table>
+      <dl id="rSummary"></dl>
+      <div class="row" style="margin-top:10px">
+        <button id="adjust">Adjust crop &amp; scan again</button>
+        <button id="again">New receipt</button>
+      </div>
+      <details style="margin-top:10px"><summary class="muted">What the scanner read</summary><pre id="rLines"></pre></details>
+      <details><summary class="muted">Cleaned-up image</summary><canvas id="outPreview" style="max-width:100%;margin-top:8px;border-radius:8px"></canvas></details>
+    </section>
+  </main>
+  <script type="module" src="scan.js"></script>
+</body>
+</html>

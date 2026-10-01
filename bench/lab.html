@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Preprocessing Lab</title>
+  <style>
+    :root { --bg: #f6f7f9; --text: #16181d; --code: #fff; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #111317; --text: #e8eaee; --code: #1a1d23; } }
+    body { margin: 16px; font: 13px/1.45 system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    pre { background: var(--code); padding: 12px; border-radius: 8px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h2>Preprocessing lab</h2>
+  <p>Console harness for OCR preprocessing experiments. From the console:</p>
+  <pre>await lab.run('A', { crop: false, contrast: false }, 'mine')
+await lab.run('B', { crop: true }, 'mine')
+await lab.report('A', 'mine')</pre>
+  <pre id="out"></pre>
+  <script type="module">
+    import { ocrPhoto } from './lib/preprocess.js';
+    import { solveReceipt } from './lib/solver.js';
+    import { normalize } from './lib/schema.js';
+    import { score } from './lib/score.js';
+    import { audit } from './lib/audit.js';
+
+    const DIRS = { dev: '../reciepts/', sroie: '../datasets/sroie40/', final: '../datasets/sroie-final40/', mine: '../reciepts-uploaded/reciepts/' };
+    const gtCache = {};
+    const gtFor = async ds => (gtCache[ds] ??= (await (await fetch(DIRS[ds] + 'ground_truth.json')).json()).receipts);
+
+    const lab = {
+      ocr: {}, // `${name}|${ds}` → { file → { boxes, ms } }
+      progress: '',
+      async run(name, opts, ds = 'mine', files) {
+        const key = `${name}|${ds}`;
+        const store = (this.ocr[key] ??= {});
+        for (const g of await gtFor(ds)) {
+          if (files && !files.includes(g.file)) continue;
+          if (store[g.file]) continue;
+          this.progress = `${key} ${g.file}`;
+          const t = performance.now();
+          const bmp = await createImageBitmap(await (await fetch(DIRS[ds] + encodeURIComponent(g.file))).blob());
+          try { store[g.file] = { boxes: await ocrPhoto(bmp, opts), ms: performance.now() - t }; }
+          catch (e) { store[g.file] = { err: String(e) }; }
+        }
+        this.progress = `${key} done`;
+        await this.save();
+      },
+      // Scores the solver on stored OCR output, plus OCR-only "amount recall":
+      // share of ground-truth amounts that appear anywhere in the OCR text.
+      async report(name, ds = 'mine', solver = solveReceipt) {
+        const store = this.ocr[`${name}|${ds}`] ?? {};
+        let F = 0, N = 0, S = 0, T = 0, TN = 0, n = 0, selfOk = 0, selfRight = 0;
+        const rows = [], fc = {}, misses = [];
+        this.misses = misses;
+        for (const [i, g] of (await gtFor(ds)).entries()) {
+          const r = store[g.file];
+          if (!r || r.err) continue;
+          n++;
+          const nums = r.boxes.flatMap(b => [...b.text.matchAll(/\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:[.,]\d+)?/g)]
+            .map(m => +(/,\d{3}/.test(m[0]) ? m[0].replace(/,/g, '') : m[0].replace(',', '.'))));
+          const want = [...g.items.map(x => x.total), g.subtotal, g.total, ...g.taxes.map(t => t.amount)].filter(v => v != null && v !== 0);
+          const pool = [...nums];
+          let f = 0;
+          for (const w of want) { const k = pool.findIndex(v => Math.abs(v - w) < 0.011); if (k >= 0) { f++; pool.splice(k, 1); } }
+          F += f; N += want.length;
+          const { _lines, _debug, ...res } = solver(r.boxes);
+          const p = normalize(res), sc = score(g, p), a = audit(p);
+          S += sc.score;
+          if (sc.fields.total) { TN++; T += sc.fields.total.ok; }
+          for (const f of ['date', 'time', 'merchant']) if (sc.fields[f]) { fc[f] = fc[f] ?? [0, 0]; fc[f][0] += sc.fields[f].ok; fc[f][1]++; if (!sc.fields[f].ok) misses.push(`${String(i).padStart(2)} ${f}: ${sc.fields[f].pred} (gt ${sc.fields[f].gt})`); }
+          if (a.ok) { selfOk++; selfRight += sc.fields.total?.ok ? 1 : 0; }
+          rows.push(`${String(i).padStart(2)} ${String(Math.round(sc.score * 100)).padStart(3)} T:${sc.fields.total ? (sc.fields.total.ok ? 'ok' : `X ${p.total}/${g.total}`) : '-'} amts ${f}/${want.length} items ${sc.fields.items ? `${sc.fields.items.matched}/${sc.fields.items.gt}` : '-'} skew ${r.boxes.skewDeg} pass ${r.boxes.info?.passes} self ${a.ok ? '✓' : '✗'} ${(r.ms / 1000).toFixed(1)}s ${g.source_type}`);
+        }
+        const fieldStats = Object.entries(fc).map(([f, [ok, all]]) => `${f} ${ok}/${all}`).join('  ');
+        return `${name}/${ds}: n ${n}  score ${(S / n).toFixed(3)}  totals ${T}/${TN}  ${fieldStats}  amountRecall ${(F / N).toFixed(3)}  selfcheck✓ ${selfOk} (total right ${selfRight})\n` + rows.join('\n');
+      },
+      lines(name, ds, file, solver = solveReceipt) { return solver(this.ocr[`${name}|${ds}`][file].boxes)._lines; },
+      // OCR results survive reloads (IndexedDB), so changing solver code doesn't mean re-running OCR.
+      async save() {
+        const plain = {};
+        for (const [k, store] of Object.entries(this.ocr)) {
+          plain[k] = {};
+          for (const [f, v] of Object.entries(store)) plain[k][f] = v.err ? v : { ms: v.ms, boxes: { list: [...v.boxes], skewDeg: v.boxes.skewDeg, info: v.boxes.info } };
+        }
+        await idb('readwrite', st => st.put(plain, 'ocr'));
+      },
+      async load() {
+        const plain = await idb('readonly', st => st.get('ocr'));
+        for (const [k, store] of Object.entries(plain ?? {})) {
+          this.ocr[k] = {};
+          for (const [f, v] of Object.entries(store)) {
+            if (v.err) { this.ocr[k][f] = v; continue; }
+            const boxes = Object.assign([...v.boxes.list], { skewDeg: v.boxes.skewDeg, info: v.boxes.info });
+            this.ocr[k][f] = { ms: v.ms, boxes };
+          }
+        }
+        return Object.keys(this.ocr);
+      },
+    };
+    function idb(mode, fn) {
+      return new Promise((res, rej) => {
+        const r = indexedDB.open('lab', 1);
+        r.onupgradeneeded = () => r.result.createObjectStore('kv');
+        r.onsuccess = () => {
+          const tx = r.result.transaction('kv', mode), q = fn(tx.objectStore('kv'));
+          tx.oncomplete = () => res(q?.result);
+          tx.onerror = () => rej(tx.error);
+        };
+        r.onerror = () => rej(r.error);
+      });
+    }
+    window.lab = lab;
+    lab.load().then(keys => { document.getElementById('out').textContent = `lab ready; cached OCR: ${keys.join(', ') || 'none'}`; });
+  </script>
+</body>
+</html>

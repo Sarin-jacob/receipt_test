@@ -1,0 +1,13 @@
+# Downloaded images: SROIE via datasets/fetch_sroie.py, web images via datasets/collect_web.py (not ours to redistribute)
+datasets/**/*.jpg
+datasets/**/*.jpeg
+datasets/**/*.png
+datasets/**/*.webp
+datasets/web/manifest.json
+# Personal receipt photos: keep local
+reciepts-uploaded/
+.claude
+reciepts/**/*.jpg
+reciepts/**/*.jpeg
+reciepts/**/*.png
+reciepts/**/*.webp
