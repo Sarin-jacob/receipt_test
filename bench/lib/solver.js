@@ -140,7 +140,7 @@ function tag(line) {
 // words within one edit of a summary keyword back to the keyword.
 const FIX_WORDS = ['total', 'subtotal', 'amount', 'round', 'cash', 'change', 'grand', 'payable', 'discount', 'balance', 'tender', 'items'];
 // Real words one edit away from a keyword: never "correct" these.
-const REAL_WORDS = new Set(['charge', 'charges', 'brand', 'mount', 'rounds', 'totals', 'chance', 'tenders', 'render', 'fender', 'grant']);
+const REAL_WORDS = new Set(['item', 'charge', 'charges', 'brand', 'mount', 'rounds', 'totals', 'chance', 'tenders', 'render', 'fender', 'grant']);
 function editDistance1(a, b) {
   if (Math.abs(a.length - b.length) > 1) return false;
   let i = 0, j = 0, edits = 0;
