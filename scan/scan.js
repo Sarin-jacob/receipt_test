@@ -342,6 +342,34 @@ function niceTime(t) {
   return m ? new Date(2000, 0, 1, +m[1], +m[2]).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : null;
 }
 
+// Everything else printed on the receipt: document number, merchant contact and
+// registration numbers, staff / table, payment details, repeated items, printed counts.
+function renderDetails(r) {
+  const d = r.details ?? {};
+  const pay = d.payment ?? {};
+  const counts = d.counts ?? {};
+  const rows = [
+    ['Bill / invoice no.', r.invoice_number],
+    ['Table', d.document?.table],
+    ['Terminal', d.document?.terminal],
+    ['Staff', d.staff],
+    ['Registered name', d.legal_name],
+    ['Address', d.address],
+    ['Phone', r.phones?.join(', ')],
+    ['Email', d.email],
+    ['Website', d.website],
+    ...(d.ids ?? []).map(id => [id.type, id.value]),
+    ['Payment', [pay.method, pay.card_type, pay.card_last4 && `•••• ${pay.card_last4}`, pay.upi_id].filter(Boolean).join(' · ')],
+    ['Payment ref.', pay.reference],
+    ['Tendered', pay.tendered != null ? money(pay.tendered, r.currency) : null],
+    ['Change', pay.change != null ? money(pay.change, r.currency) : null],
+    ['Items read', `${counts.items ?? r.items.length} lines, qty ${counts.qty ?? ''}${counts.printed_items != null || counts.printed_qty != null ? ` (receipt says ${[counts.printed_items != null && `${counts.printed_items} items`, counts.printed_qty != null && `qty ${counts.printed_qty}`].filter(Boolean).join(', ')})` : ''}`],
+    ...(d.repeated_items ?? []).map(g => [`${g.name} ×${g.rows} rows`, `qty ${g.qty}, ${money(g.total, r.currency)}`]),
+  ].filter(([, v]) => v != null && v !== '');
+  $('rDetails').innerHTML = rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
+  $('rJson').textContent = JSON.stringify(r, null, 2);
+}
+
 function renderResult(r, check, lines, ms) {
   $('rMerchant').textContent = r.merchant || 'Unknown merchant';
   $('rTotal').textContent = r.total == null ? 'No total found' : money(r.total, r.currency);
@@ -352,8 +380,13 @@ function renderResult(r, check, lines, ms) {
   $('rMeta').innerHTML = [['Date', niceDate(r.date)], ['Time', niceTime(r.time)], ['Paid by', r.payment_method], ['Read in', `${(ms / 1000).toFixed(1)} s`]]
     .filter(([, v]) => v).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
   $('rItems').innerHTML = r.items.length
-    ? `<tr><th>Item</th><th class="n">Qty</th><th class="n">Amount</th></tr>` + r.items.map(i => `<tr><td>${esc(i.name)}</td><td class="n">${i.qty ?? ''}</td><td class="n">${money(i.total, r.currency)}</td></tr>`).join('')
+    ? `<tr><th>Item</th><th class="n">Qty</th><th class="n">Rate</th><th class="n">Amount</th></tr>` + r.items.map(i => `<tr>
+        <td>${esc(i.name)}${i.description ? `<div class="muted">${i.description.map(esc).join('<br>')}</div>` : ''}${i.discount ? `<div class="muted">discount ${money(i.discount, r.currency)}</div>` : ''}</td>
+        <td class="n">${i.qty ?? ''}${i.unit ? ' ' + esc(i.unit) : ''}</td>
+        <td class="n">${i.unit_price != null ? money(i.unit_price, r.currency) : ''}</td>
+        <td class="n">${money(i.total, r.currency)}</td></tr>`).join('')
     : '';
+  renderDetails(r);
   $('rSummary').innerHTML = [
     ['Subtotal', r.subtotal],
     ...r.discounts.map(d => [d.label || 'Discount', d.amount]),
@@ -363,3 +396,9 @@ function renderResult(r, check, lines, ms) {
     + (failed.length ? `<dt>Check</dt><dd class="muted">${failed.map(c => esc(`${c.name}: ${c.detail}`)).join('<br>')}</dd>` : '');
   $('rLines').textContent = lines;
 }
+
+$('copyJson').onclick = async () => {
+  try { await navigator.clipboard.writeText($('rJson').textContent); $('copyJson').textContent = 'Copied ✓'; }
+  catch { $('copyJson').textContent = 'Copy failed'; }
+  setTimeout(() => { $('copyJson').textContent = 'Copy JSON'; }, 1500);
+};

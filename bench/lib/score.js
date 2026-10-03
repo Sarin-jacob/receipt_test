@@ -18,7 +18,7 @@ export function similarity(a, b) {
 }
 
 function matchItems(gtItems, predItems) {
-  const used = new Set();
+  const used = new Set(), pairs = [];
   let matched = 0, amountOnly = 0;
   for (const g of gtItems) {
     let best = -1, bestSim = -1;
@@ -30,12 +30,16 @@ function matchItems(gtItems, predItems) {
     if (best === -1) continue;
     used.add(best);
     amountOnly++;
-    if (bestSim >= 0.45) matched++;
+    if (bestSim >= 0.45) { matched++; pairs.push([g, predItems[best]]); }
   }
-  return { matched, amountOnly };
+  return { matched, amountOnly, pairs, used };
 }
 
-const WEIGHTS = { total: 3, items: 3, subtotal: 1, tax: 1, date: 1, merchant: 1 };
+const digits = s => String(s ?? '').replace(/\D/g, '');
+const alnum = s => String(s ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+// Metadata fields are reported but weigh 0, so scores stay comparable with earlier runs.
+const WEIGHTS = { total: 3, items: 3, subtotal: 1, tax: 1, date: 1, merchant: 1, number: 0, tax_id: 0, phone: 0 };
 
 export function score(gt, pred) {
   const fields = {};
@@ -66,20 +70,41 @@ export function score(gt, pred) {
     fields.merchant = { ok: sim >= 0.6, gt: gt.merchant.name, pred: pred.merchant, sim: +sim.toFixed(2) };
   }
 
+  // Metadata: invoice/bill number, GSTIN/VAT id, merchant phone.
+  if (gt.document.number) {
+    fields.number = { ok: !!pred.invoice_number && alnum(pred.invoice_number) === alnum(gt.document.number), gt: gt.document.number, pred: pred.invoice_number };
+  }
+  if (gt.merchant.tax_id) {
+    const want = alnum(gt.merchant.tax_id).replace(/^(GSTIN|GST|NTN|VAT)/, '');
+    fields.tax_id = { ok: (pred.tax_ids ?? []).some(t => alnum(t).includes(want)), gt: gt.merchant.tax_id, pred: (pred.tax_ids ?? []).join(', ') };
+  }
+  if (gt.merchant.phone) {
+    const want = digits(gt.merchant.phone).slice(-8);
+    fields.phone = { ok: (pred.phones ?? []).some(p => digits(p).endsWith(want)), gt: gt.merchant.phone, pred: (pred.phones ?? []).join(', ') };
+  }
+
   // Items: F1 over (amount equal AND name similar). Empty-vs-empty counts as perfect,
   // anything invented on a receipt with no visible items scores 0.
   if (gt.items_unlabeled) return finish(fields); // e.g. SROIE: only company/date/total are labelled
 
   const g = gt.items, p = pred.items;
-  let f1, precision, recall, matched = 0, amountOnly = 0;
+  let f1, precision, recall, matched = 0, amountOnly = 0, pairs = [], used = new Set();
   if (!g.length) { f1 = p.length ? 0 : 1; precision = f1; recall = 1; }
   else {
-    ({ matched, amountOnly } = matchItems(g, p));
+    ({ matched, amountOnly, pairs, used } = matchItems(g, p));
     precision = p.length ? matched / p.length : 0;
     recall = matched / g.length;
     f1 = precision + recall ? (2 * precision * recall) / (precision + recall) : 0;
   }
-  fields.items = { ok: f1 >= 0.999, value: +f1.toFixed(3), precision: +precision.toFixed(3), recall: +recall.toFixed(3), gt: g.length, pred: p.length, matched, amountOnly };
+  // Quantity right on matched items (missing qty counts as 1).
+  const withQty = pairs.filter(([gi]) => gi.qty != null);
+  const qtyOk = withQty.filter(([gi, pi]) => close(pi.qty ?? 1, gi.qty)).length;
+  // "Leaks": extra items whose amount is really a subtotal / total / tax / charge on this receipt.
+  const summaryAmounts = [gt.subtotal, gt.total, ...gt.taxes.map(t => t.amount), gt.taxes.reduce((s, t) => s + t.amount, 0),
+    ...gt.charges.map(c => c.amount), ...gt.discounts.map(d => Math.abs(d.amount))].filter(v => v != null && v !== 0);
+  const leaks = p.filter((pi, i) => !used.has(i) && summaryAmounts.some(v => close(Math.abs(pi.total ?? NaN), v)));
+  fields.items = { ok: f1 >= 0.999, value: +f1.toFixed(3), precision: +precision.toFixed(3), recall: +recall.toFixed(3), gt: g.length, pred: p.length, matched, amountOnly,
+    qtyOk, qtyN: withQty.length, leaks: leaks.map(l => `${l.name} ${l.total}`) };
   return finish(fields);
 }
 

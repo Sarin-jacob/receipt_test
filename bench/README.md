@@ -25,6 +25,7 @@ WebGPU needs Chrome/Edge (or Safari 26+). `localhost` counts as a secure context
 | `datasets/sroie40` (40) | SROIE scans, used while tuning | company, date, total |
 | `datasets/sroie-final40` (40) | SROIE scans, **never tune on these** | company, date, total |
 | `reciepts-uploaded/reciepts` (31) | your own phone photos & screenshots (git-ignored) | full breakdown; `make_ground_truth.py` |
+| `datasets/web` (13) | web images labelled "receipt" in `review.html` (images git-ignored) | full breakdown + invoice no., GSTIN, phone; `make_ground_truth.py` |
 
 `python datasets/fetch_sroie.py` re-downloads the SROIE images (git-ignored).
 
@@ -51,6 +52,9 @@ bench/
   lib/ocr.js             PaddleOCR (v6 small/tiny, v5), deskew, row grouping, layout text
   lib/preprocess.js      crop-to-content second pass, adaptive contrast
   lib/solver.js          OCR lines → tags → items/totals, chosen by arithmetic
+  lib/rows.js            item rows: name vs. numbers, qty / rate / amount from qty × rate = amount or the column headings
+  lib/datetime.js        receipt date + time (labels, OCR glue, day/month order)
+  lib/meta.js            invoice no., GSTIN/VAT/PAN/FSSAI, phones, address, table, staff, payment, printed counts
   lib/schema.js          output schema, prompt schema, normalisation
   lib/score.js           scoring vs. ground truth
   lib/audit.js           self-check (no ground truth needed; usable in production)

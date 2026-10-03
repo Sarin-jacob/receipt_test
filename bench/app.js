@@ -11,6 +11,7 @@ const DATASETS = {
   sroie: { label: 'SROIE tuning (40)', dir: '../datasets/sroie40/' },
   final: { label: 'SROIE final test (40, never tune on it)', dir: '../datasets/sroie-final40/' },
   mine: { label: 'Your photos (31, private)', dir: '../reciepts-uploaded/reciepts/' },
+  web: { label: 'Web receipts (13)', dir: '../datasets/web/' },
 };
 const dataset = () => DATASETS[$('dataset').value];
 const STORE_KEY = 'receipt-bench-results-v1';

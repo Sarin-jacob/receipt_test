@@ -25,7 +25,7 @@ await lab.report('A', 'mine')</pre>
     import { score } from './lib/score.js';
     import { audit } from './lib/audit.js';
 
-    const DIRS = { dev: '../reciepts/', sroie: '../datasets/sroie40/', final: '../datasets/sroie-final40/', mine: '../reciepts-uploaded/reciepts/' };
+    const DIRS = { dev: '../reciepts/', sroie: '../datasets/sroie40/', final: '../datasets/sroie-final40/', mine: '../reciepts-uploaded/reciepts/', web: '../datasets/web/' };
     const gtCache = {};
     const gtFor = async ds => (gtCache[ds] ??= (await (await fetch(DIRS[ds] + 'ground_truth.json')).json()).receipts);
 
@@ -49,10 +49,23 @@ await lab.report('A', 'mine')</pre>
       },
       // Scores the solver on stored OCR output, plus OCR-only "amount recall":
       // share of ground-truth amounts that appear anywhere in the OCR text.
-      async report(name, ds = 'mine', solver = solveReceipt) {
+      // Fresh copies of the solver and scoring modules, so code edits apply without a reload.
+      async fresh() {
+        const bust = Date.now(), base = new URL('./lib/', location.href).href;
+        const load = async f => {
+          let src = await (await fetch(`./lib/${f}.js?${bust}`)).text();
+          src = src.replace(/from '\.\/([\w-]+)\.js'/g, (m, dep) => `from '${base}${dep}.js?${bust}'`);
+          return import(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+        };
+        const [sv, sc, sch, au] = await Promise.all(['solver', 'score', 'schema', 'audit'].map(load));
+        return { solve: sv.solveReceipt, score: sc.score, normalize: sch.normalize, audit: au.audit };
+      },
+      async report(name, ds = 'mine', mods = null) {
+        const m = mods ?? await this.fresh();
+        const solver = m.solve, normalize = m.normalize, score = m.score, audit = m.audit;
         const store = this.ocr[`${name}|${ds}`] ?? {};
         let F = 0, N = 0, S = 0, T = 0, TN = 0, n = 0, selfOk = 0, selfRight = 0;
-        const rows = [], fc = {}, misses = [];
+        const rows = [], fc = {}, misses = [], itemStat = { m: 0, g: 0, p: 0, qOk: 0, qN: 0, leaks: 0 };
         this.misses = misses;
         for (const [i, g] of (await gtFor(ds)).entries()) {
           const r = store[g.file];
@@ -69,14 +82,28 @@ await lab.report('A', 'mine')</pre>
           const p = normalize(res), sc = score(g, p), a = audit(p);
           S += sc.score;
           if (sc.fields.total) { TN++; T += sc.fields.total.ok; }
-          for (const f of ['date', 'time', 'merchant']) if (sc.fields[f]) { fc[f] = fc[f] ?? [0, 0]; fc[f][0] += sc.fields[f].ok; fc[f][1]++; if (!sc.fields[f].ok) misses.push(`${String(i).padStart(2)} ${f}: ${sc.fields[f].pred} (gt ${sc.fields[f].gt})`); }
+          for (const f of ['date', 'time', 'merchant', 'number', 'tax_id', 'phone']) if (sc.fields[f]) { fc[f] = fc[f] ?? [0, 0]; fc[f][0] += sc.fields[f].ok; fc[f][1]++; if (!sc.fields[f].ok) misses.push(`${String(i).padStart(2)} ${f}: ${sc.fields[f].pred} (gt ${sc.fields[f].gt})`); }
           if (a.ok) { selfOk++; selfRight += sc.fields.total?.ok ? 1 : 0; }
+          if (sc.fields.items) {
+            const it = sc.fields.items;
+            itemStat.m += it.matched; itemStat.g += it.gt; itemStat.p += it.pred; itemStat.qOk += it.qtyOk; itemStat.qN += it.qtyN; itemStat.leaks += it.leaks.length;
+            it.leaks.forEach(l => misses.push(`${String(i).padStart(2)} leak: ${l}`));
+          }
           rows.push(`${String(i).padStart(2)} ${String(Math.round(sc.score * 100)).padStart(3)} T:${sc.fields.total ? (sc.fields.total.ok ? 'ok' : `X ${p.total}/${g.total}`) : '-'} amts ${f}/${want.length} items ${sc.fields.items ? `${sc.fields.items.matched}/${sc.fields.items.gt}` : '-'} skew ${r.boxes.skewDeg} pass ${r.boxes.info?.passes} self ${a.ok ? '✓' : '✗'} ${(r.ms / 1000).toFixed(1)}s ${g.source_type}`);
         }
-        const fieldStats = Object.entries(fc).map(([f, [ok, all]]) => `${f} ${ok}/${all}`).join('  ');
+        const fieldStats = Object.entries(fc).map(([f, [ok, all]]) => `${f} ${ok}/${all}`).join('  ')
+          + (itemStat.g ? `  items ${itemStat.m}/${itemStat.g} (pred ${itemStat.p}, leaks ${itemStat.leaks})  qty ${itemStat.qOk}/${itemStat.qN}` : '');
         return `${name}/${ds}: n ${n}  score ${(S / n).toFixed(3)}  totals ${T}/${TN}  ${fieldStats}  amountRecall ${(F / N).toFixed(3)}  selfcheck✓ ${selfOk} (total right ${selfRight})\n` + rows.join('\n');
       },
       lines(name, ds, file, solver = solveReceipt) { return solver(this.ocr[`${name}|${ds}`][file].boxes)._lines; },
+      // Ground-truth items next to what the solver produced, for one receipt.
+      async items(name, ds, idx) {
+        const m = await this.fresh();
+        const g = (await gtFor(ds))[idx];
+        const r = m.normalize(m.solve(this.ocr[`${name}|${ds}`][g.file].boxes));
+        const fmt = i => `${i.name} | q${i.qty ?? '-'} × ${i.unit_price ?? '-'} = ${i.total}`;
+        return `GT:\n  ${g.items.map(fmt).join('\n  ')}\nOUT:\n  ${r.items.map(fmt).join('\n  ')}\nsub ${r.subtotal} (gt ${g.subtotal}) total ${r.total} (gt ${g.total})`;
+      },
       // OCR results survive reloads (IndexedDB), so changing solver code doesn't mean re-running OCR.
       async save() {
         const plain = {};

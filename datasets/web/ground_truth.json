@@ -1,0 +1,968 @@
+{
+ "schema_version": 1,
+ "source": "Web images (DuckDuckGo search) labelled 'receipt' in labels.json; not ours to redistribute.",
+ "receipts": [
+  {
+   "file": "indian_gst/1408bd610f86.jpg",
+   "source_type": "photo_thermal_restaurant",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Sri Krishna Veg Restaurant",
+    "phone": "23867544",
+    "tax_id": "27AADFH5037M1Z6"
+   },
+   "document": {
+    "number": "3/T/3",
+    "date": "2017-07-01",
+    "time": "06:56",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "MEDU WADA",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 65,
+     "discount": null,
+     "total": 65
+    }
+   ],
+   "subtotal": 65,
+   "discounts": [
+    {
+     "label": "Dis: @10%",
+     "amount": -6.0
+    }
+   ],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "CGST @9%",
+     "rate": 9,
+     "amount": 5.31,
+     "inclusive": false
+    },
+    {
+     "label": "SGST @9%",
+     "rate": 9,
+     "amount": 5.31,
+     "inclusive": false
+    }
+   ],
+   "total": 70,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Item amounts are integers ('65'), summary amounts have decimals.",
+    "Grand total 70 is rounded (69.62); no rounding line printed.",
+    "'Net Total 59.00' is subtotal after discount, not the total.",
+    "'1/1' = items/qty count."
+   ]
+  },
+  {
+   "file": "indian_gst/7754afcef908.jpg",
+   "source_type": "photo_thermal_handheld_thumb",
+   "difficulty": 3,
+   "merchant": {
+    "name": "Sukhdev Vaishno Dhaba",
+    "phone": "0130-2475585",
+    "tax_id": "06ABIFS3901K1Z3"
+   },
+   "document": {
+    "number": "140",
+    "date": "2017-07-01",
+    "time": "00:36:22",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "PRANTHA (SEASONAL)",
+     "qty": 3,
+     "unit": null,
+     "unit_price": 60,
+     "discount": null,
+     "total": 180
+    },
+    {
+     "name": "ALOO PYAAZ PRANTHA",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 55,
+     "discount": null,
+     "total": 55
+    },
+    {
+     "name": "ALU PRANTHA",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 55,
+     "discount": null,
+     "total": 55
+    },
+    {
+     "name": "DAL MAKHNI",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 150,
+     "discount": null,
+     "total": 150
+    },
+    {
+     "name": "SWEET LASSI",
+     "qty": 2,
+     "unit": null,
+     "unit_price": 60,
+     "discount": null,
+     "total": 120
+    },
+    {
+     "name": "KINLEY WATER",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 22.1,
+     "discount": null,
+     "total": 22.1
+    },
+    {
+     "name": "PLAIN ROTI",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 18,
+     "discount": null,
+     "total": 18
+    },
+    {
+     "name": "KULLAD CHAI",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 35,
+     "discount": null,
+     "total": 35
+    }
+   ],
+   "subtotal": 635.1,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "Add S GST(9.000%)",
+     "rate": 9,
+     "amount": 57.16,
+     "inclusive": false
+    },
+    {
+     "label": "Add C GST(9.000%)",
+     "rate": 9,
+     "amount": 57.16,
+     "inclusive": false
+    }
+   ],
+   "total": 749,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "First item name is half under a thumb; its numbers sit on the line ABOVE the name.",
+    "Total 749.00 is rounded from 749.42 (no rounding line).",
+    "Qty printed as '3.00'."
+   ]
+  },
+  {
+   "file": "indian_gst/b9467cf059da.jpg",
+   "source_type": "scan_thermal_small",
+   "difficulty": 2,
+   "merchant": {
+    "name": null,
+    "phone": null,
+    "tax_id": "27ADWPS9536J1ZF"
+   },
+   "document": {
+    "number": "459",
+    "date": "2017-07-01",
+    "time": "13:46",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "FRESH COFFEE",
+     "qty": 2,
+     "unit": null,
+     "unit_price": 40,
+     "discount": null,
+     "total": 80
+    }
+   ],
+   "subtotal": 80,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "CGST @ 6.00",
+     "rate": 6,
+     "amount": 4.8,
+     "inclusive": false
+    },
+    {
+     "label": "SGST @ 6.00",
+     "rate": 6,
+     "amount": 4.8,
+     "inclusive": false
+    }
+   ],
+   "total": 89.6,
+   "payment": {
+    "method": "cash"
+   },
+   "notes": [
+    "No merchant name printed (just 'Bill').",
+    "'Net Food Amt Rs. 89.60' is the bill total; 'CASH 90.00' is the rounded amount paid.",
+    "'CGST @ 6.00 on 80.00 4.80': the tax base 80.00 sits in the middle of the line.",
+    "Rate printed as '40.0' (one decimal)."
+   ]
+  },
+  {
+   "file": "indian_gst/6b984c2136c8.jpg",
+   "source_type": "scan_thermal_large",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Liquor Street",
+    "phone": "0129-4360377",
+    "tax_id": "06AACCO6344G1ZJ"
+   },
+   "document": {
+    "number": "IN001001259",
+    "date": "2018-05-20",
+    "time": "22:55",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Tandoori chicken",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 295,
+     "discount": null,
+     "total": 309.75
+    },
+    {
+     "name": "Lasooni Dal Tadka",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 275,
+     "discount": null,
+     "total": 288.75
+    },
+    {
+     "name": "HYDERABADI MURG BIRYANI",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 375,
+     "discount": null,
+     "total": 393.75
+    },
+    {
+     "name": "Tandoori Roti all food less spicy",
+     "qty": 2,
+     "unit": null,
+     "unit_price": 30,
+     "discount": null,
+     "total": 63
+    },
+    {
+     "name": "Tandoori Roti",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 30,
+     "discount": null,
+     "total": 31.5
+    }
+   ],
+   "subtotal": 1035,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "CGST@2.5",
+     "rate": 2.5,
+     "amount": 25.89,
+     "inclusive": false
+    },
+    {
+     "label": "SGST@2.5",
+     "rate": 2.5,
+     "amount": 25.89,
+     "inclusive": false
+    },
+    {
+     "label": "S.Tax",
+     "rate": null,
+     "amount": 51.75,
+     "inclusive": false
+    }
+   ],
+   "total": 1139,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Line totals include 5% tax (295 → 309.75), so items don't add up to the subtotal (1035 = sum of qty × rate).",
+    "'S.Tax 51.75' is an extra (questionable) tax line; it is in the total.",
+    "'Total Qty: 6' printed above the subtotal.",
+    "Registered name '(ODVJH Private Limited)' under the trade name."
+   ]
+  },
+  {
+   "file": "indian_gst/83f5bcc55fd4.jpg",
+   "source_type": "photo_thermal_lowres",
+   "difficulty": 3,
+   "merchant": {
+    "name": "Murugan Idli Shop",
+    "phone": null,
+    "tax_id": "33AITPM1981H1ZW"
+   },
+   "document": {
+    "number": "1",
+    "date": "2017-07-01",
+    "time": "07:19",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "GHEE PONGAL",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 50,
+     "discount": null,
+     "total": 50
+    },
+    {
+     "name": "COFFEE",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 25,
+     "discount": null,
+     "total": 25
+    }
+   ],
+   "subtotal": 75,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "CGST 9 9%",
+     "rate": 9,
+     "amount": 6.75,
+     "inclusive": false
+    },
+    {
+     "label": "SGST 9 9%",
+     "rate": 9,
+     "amount": 6.75,
+     "inclusive": false
+    }
+   ],
+   "total": 88.5,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Qty glued to rate: '1 50.00'.",
+    "'Ticket Total' = subtotal.",
+    "'TOTAL ITEMS:2' printed after the total."
+   ]
+  },
+  {
+   "file": "indian_gst/ab9dd292e74f.jpg",
+   "source_type": "photo_thermal_stamped",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Classic Fast Food",
+    "phone": "24096599",
+    "tax_id": "27ABEPS5356E2ZH"
+   },
+   "document": {
+    "number": "25966",
+    "date": "2023-06-09",
+    "time": "22:01",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "ONION RAVA SADA",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 145,
+     "discount": null,
+     "total": 145
+    },
+    {
+     "name": "GARLIC CHATNI",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 85,
+     "discount": null,
+     "total": 85
+    },
+    {
+     "name": "PAV BHAJI",
+     "qty": 4,
+     "unit": null,
+     "unit_price": 200,
+     "discount": null,
+     "total": 800
+    },
+    {
+     "name": "CHEESE PAV BHAJI",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 235,
+     "discount": null,
+     "total": 235
+    },
+    {
+     "name": "PAV (1PC)",
+     "qty": 8,
+     "unit": null,
+     "unit_price": 20,
+     "discount": null,
+     "total": 160
+    },
+    {
+     "name": "VEG PULAV",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 215,
+     "discount": null,
+     "total": 215
+    },
+    {
+     "name": "FRESH LIME SODA",
+     "qty": 2,
+     "unit": null,
+     "unit_price": 70,
+     "discount": null,
+     "total": 140
+    },
+    {
+     "name": "CHAAS",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 50,
+     "discount": null,
+     "total": 50
+    }
+   ],
+   "subtotal": 1830,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "CGST @2.5% On 1830",
+     "rate": 2.5,
+     "amount": 45.75,
+     "inclusive": false
+    },
+    {
+     "label": "SGST @2.5% On 1830",
+     "rate": 2.5,
+     "amount": 45.75,
+     "inclusive": false
+    }
+   ],
+   "total": 1921,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "All item amounts are integers ('145'); summary has decimals.",
+    "'Food Total 1921.50' then 'Total 1921' (rounded): the total is 1921.",
+    "'8/19' = 8 items, 19 qty.",
+    "Rubber stamp over the qty/rate columns."
+   ]
+  },
+  {
+   "file": "indian_gst/3026029de20e.jpg",
+   "source_type": "photo_thermal_long",
+   "difficulty": 3,
+   "merchant": {
+    "name": "The Bikers Cafe",
+    "phone": null,
+    "tax_id": "06AAECT3668A1ZJ"
+   },
+   "document": {
+    "number": "T3--1402",
+    "date": "2018-05-10",
+    "time": "23:00:27",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "LADIES NIGHT SANGRIA",
+     "qty": 2,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 0
+    },
+    {
+     "name": "THAI GRILLED FISH",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 375
+    },
+    {
+     "name": "100 PIPERS (30 ML)",
+     "qty": 5,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 1275
+    },
+    {
+     "name": "EAGLE RIDERS TENDER LAMB CHOP",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 499
+    }
+   ],
+   "subtotal": 2149,
+   "discounts": [],
+   "charges": [
+    {
+     "label": "Service Charge@10",
+     "amount": 214.9
+    },
+    {
+     "label": "Round Off",
+     "amount": 0.05
+    }
+   ],
+   "taxes": [
+    {
+     "label": "VAT @18.9%",
+     "rate": 18.9,
+     "amount": 240.97,
+     "inclusive": false
+    },
+    {
+     "label": "CGST @2.5",
+     "rate": 2.5,
+     "amount": 24.04,
+     "inclusive": false
+    },
+    {
+     "label": "SGST @2.5",
+     "rate": 2.5,
+     "amount": 24.04,
+     "inclusive": false
+    }
+   ],
+   "total": 2653,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Names wrap over 2-3 lines and split mid-word ('LADIES NIGH' / 'T SANGRIA').",
+    "Only Qty and Amt columns (no rate).",
+    "'GST@5% 48.08' is the sum of the CGST/SGST lines under it.",
+    "'Total Qty: 9' above the subtotal.",
+    "Tin No / S.Tax No are other registration numbers."
+   ]
+  },
+  {
+   "file": "indian_gst/a5fbdd484e07.jpg",
+   "source_type": "digital_invoice_a4",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Happy Holidays",
+    "phone": "+91 878 8789 8789",
+    "tax_id": "26CORPP3939N1ZA"
+   },
+   "document": {
+    "number": "45",
+    "date": "2024-01-19",
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Train Ticket Booking",
+     "qty": 5,
+     "unit": null,
+     "unit_price": 1200,
+     "discount": null,
+     "total": 6300
+    },
+    {
+     "name": "Hotel Booking",
+     "qty": 3,
+     "unit": null,
+     "unit_price": 6500,
+     "discount": null,
+     "total": 23010
+    }
+   ],
+   "subtotal": 25500,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "IGST",
+     "rate": null,
+     "amount": 3810,
+     "inclusive": false
+    }
+   ],
+   "total": 29310,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "'Journey Date 10-Apr-2024' and check-in/out dates are not the invoice date.",
+    "Customer phone 8769856787 is not the merchant's.",
+    "Item descriptions continue over many lines (passengers, booking IDs)."
+   ]
+  },
+  {
+   "file": "indian_gst/b84518cf263d.png",
+   "source_type": "digital_invoice_annotated_lowres",
+   "difficulty": 5,
+   "merchant": {
+    "name": "Mascot",
+    "phone": "+91 9891887754",
+    "tax_id": "789456321"
+   },
+   "document": {
+    "number": "#1012",
+    "date": "2024-01-23",
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Origami Crane Necklace",
+     "qty": 2,
+     "unit": null,
+     "unit_price": 75.99,
+     "discount": null,
+     "total": 170.22
+    },
+    {
+     "name": "Bangle Bracelet",
+     "qty": 2,
+     "unit": null,
+     "unit_price": 39.99,
+     "discount": null,
+     "total": 89.58
+    },
+    {
+     "name": "Choker with Bead",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 14.54,
+     "discount": null,
+     "total": 15.7
+    },
+    {
+     "name": "Choker with Gold Pendant",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 29.1,
+     "discount": null,
+     "total": 31.43
+    }
+   ],
+   "subtotal": 276.94,
+   "discounts": [
+    {
+     "label": "Discount",
+     "amount": -1.34
+    }
+   ],
+   "charges": [
+    {
+     "label": "Shipping",
+     "amount": 50
+    },
+    {
+     "label": "CGST On Shipping",
+     "amount": 4.5
+    },
+    {
+     "label": "SGST On Shipping",
+     "amount": 4.5
+    }
+   ],
+   "taxes": [
+    {
+     "label": "CGST",
+     "rate": null,
+     "amount": 15.66,
+     "inclusive": false
+    },
+    {
+     "label": "SGST",
+     "rate": null,
+     "amount": 15.66,
+     "inclusive": false
+    }
+   ],
+   "total": 365.93,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Marketing illustration: tiny text with callout boxes over it.",
+    "Template numbers don't add up (item amounts 306.93 vs Sub Total 276.94).",
+    "'BILLED TO John Doe' is the customer."
+   ]
+  },
+  {
+   "file": "indian_gst/43aff1786790.jpg",
+   "source_type": "digital_invoice_fake",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Kerala Mega Jackpot Lottery",
+    "phone": null,
+    "tax_id": null
+   },
+   "document": {
+    "number": "99663H / 2024-25",
+    "date": "2024-12-31",
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Series no",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 1,
+     "discount": null,
+     "total": 0
+    },
+    {
+     "name": "Ref. No",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 1,
+     "discount": null,
+     "total": 0
+    },
+    {
+     "name": "Ticket no",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 500000,
+     "discount": null,
+     "total": 500000
+    }
+   ],
+   "subtotal": 500000,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "SGST @ 0.5%",
+     "rate": 0.5,
+     "amount": 2500,
+     "inclusive": false
+    },
+    {
+     "label": "CG8ST @ 0.5%",
+     "rate": 0.5,
+     "amount": 2500,
+     "inclusive": false
+    }
+   ],
+   "total": 505000,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "A scam 'lottery winner' document styled as a GST invoice; still a fine parsing test.",
+    "Amounts like '00.00' and '500000' (no decimals) in totals.",
+    "'Payable Amount by Winner 5000.00/-' is not the total."
+   ]
+  },
+  {
+   "file": "indian_gst/f30cd4bb7fe6.png",
+   "source_type": "digital_invoice_a4_dense",
+   "difficulty": 4,
+   "merchant": {
+    "name": "BRAND NAME (VASYERP)",
+    "phone": "+91-8780234389",
+    "tax_id": "24AAGCC8118G2ZS"
+   },
+   "document": {
+    "number": "GRE2024072100059",
+    "date": "2024-09-06",
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "VFD",
+     "qty": 20,
+     "unit": null,
+     "unit_price": 22321.43,
+     "discount": null,
+     "total": 400500.13
+    },
+    {
+     "name": "black cake",
+     "qty": 20,
+     "unit": null,
+     "unit_price": 190.48,
+     "discount": null,
+     "total": 4000.08
+    },
+    {
+     "name": "cakeqewewqE56fgcgc",
+     "qty": 20,
+     "unit": null,
+     "unit_price": 2678.57,
+     "discount": null,
+     "total": 59999.97
+    },
+    {
+     "name": "transportation",
+     "qty": null,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 2000
+    }
+   ],
+   "subtotal": 416970.42,
+   "discounts": [],
+   "charges": [
+    {
+     "label": "Round Off",
+     "amount": -0.18
+    }
+   ],
+   "taxes": [
+    {
+     "label": "Tax Amount",
+     "rate": null,
+     "amount": 49529.76,
+     "inclusive": false
+    }
+   ],
+   "total": 466500,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Line totals include tax; subtotal is the taxable amount.",
+    "Due date 06/10/2024 is not the invoice date (06/09/2024).",
+    "A tax summary table repeats the tax amounts after the total.",
+    "Customer mobile +91-9822507144 is not the merchant's."
+   ]
+  },
+  {
+   "file": "indian_gst/d4cd312be15b.png",
+   "source_type": "digital_receipt_monospace",
+   "difficulty": 1,
+   "merchant": {
+    "name": null,
+    "phone": null,
+    "tax_id": "07AEVPG9380C1Z7"
+   },
+   "document": {
+    "number": "DELHI-DELHI-1-123",
+    "date": "2020-01-25",
+    "time": "19:50",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Wiring Harness",
+     "qty": 1,
+     "unit": null,
+     "unit_price": 10000,
+     "discount": null,
+     "total": 10000
+    }
+   ],
+   "subtotal": 8130.08,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "Tax",
+     "rate": null,
+     "amount": 1869.92,
+     "inclusive": false
+    }
+   ],
+   "total": 10000,
+   "payment": {
+    "method": "cash"
+   },
+   "notes": [
+    "Item price is tax-inclusive (10,000 = 8,130.08 + 1,869.92).",
+    "'Tax components' table after the total breaks the tax into CGST/SGST.",
+    "Date '25-01-20' (D-M-Y)."
+   ]
+  },
+  {
+   "file": "indian_gst/a5024437e42b.jpg",
+   "source_type": "digital_invoice_a4_table",
+   "difficulty": 2,
+   "merchant": {
+    "name": "YOU Broadband India Limited",
+    "phone": "+91 22 71134100",
+    "tax_id": "24AABCB6062F1Z2"
+   },
+   "document": {
+    "number": "BVR-20-21-070734",
+    "date": "2021-01-25",
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Plan Subscription Charges",
+     "qty": null,
+     "unit": null,
+     "unit_price": 719,
+     "discount": null,
+     "total": 848
+    }
+   ],
+   "subtotal": 719,
+   "discounts": [],
+   "charges": [],
+   "taxes": [
+    {
+     "label": "CGST 9%",
+     "rate": 9,
+     "amount": 64.5,
+     "inclusive": false
+    },
+    {
+     "label": "SGST 9%",
+     "rate": 9,
+     "amount": 64.5,
+     "inclusive": false
+    }
+   ],
+   "total": 848,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Merchant is on the right under 'From:'; the customer is on the left.",
+    "Wide table: Basic Amt, Disc, Net Basic, CGST %/Amt, SGST %/Amt, IGST, Total Tax, Total Amount.",
+    "Amount in words: 'Eight Hundred and Fourty Eight Rs.'"
+   ]
+  }
+ ]
+}
