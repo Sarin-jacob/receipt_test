@@ -3,7 +3,7 @@
 Stable releases of the receipt scanner. `npm run release` adds a section here
 from the commit subjects; edit it before confirming.
 
-## v1.0.0
+## v1.0.0 (2026-10-05)
 
 First release of the scanner. Everything runs in the browser and photos are
 never uploaded.
