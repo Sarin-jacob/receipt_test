@@ -11,3 +11,6 @@ reciepts/**/*.jpg
 reciepts/**/*.jpeg
 reciepts/**/*.png
 reciepts/**/*.webp
+# Build output (scripts/build.mjs)
+dist/
+node_modules/

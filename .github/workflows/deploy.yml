@@ -1,0 +1,68 @@
+# Release channels on GitHub Pages (gh-pages branch):
+#   push to main that touches the scanner → beta   (<site>/beta/)
+#   push of a vX.Y.Z tag (npm run release) → stable (<site>/) + GitHub release
+#   "Run workflow" button                  → either; stable needs a tag selected as the ref
+name: Deploy scanner
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    # Path filters are ignored for tag pushes, so releases always deploy.
+    paths:
+      - 'scan/**'
+      - 'bench/lib/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'LICENSE'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Channel (stable needs a release tag picked in "Use workflow from")
+        type: choice
+        options: [beta, stable]
+        default: beta
+
+permissions:
+  contents: write
+
+# One deploy at a time: each one commits on top of gh-pages.
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # tags and history, for the version number
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Pick channel
+        id: channel
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "name=${{ inputs.channel }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then echo "name=stable" >> "$GITHUB_OUTPUT"
+          else echo "name=beta" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Deploy to gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          node scripts/deploy.mjs --channel ${{ steps.channel.outputs.name }}
+
+      - name: GitHub release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release view "$TAG" > /dev/null 2>&1 && exit 0
+          node scripts/release.mjs notes "$TAG" > "$RUNNER_TEMP/notes.md"
+          gh release create "$TAG" --verify-tag --title "$TAG" --notes-file "$RUNNER_TEMP/notes.md"

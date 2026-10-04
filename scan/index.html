@@ -46,6 +46,8 @@
     dt { color: var(--muted); }
     dd { margin: 0; }
     pre { background: var(--bg); padding: 10px; border-radius: 8px; overflow: auto; font-size: 12px; max-height: 300px; }
+    a { color: var(--accent); }
+    footer { text-align: center; padding: 4px 0 20px; }
     [hidden] { display: none !important; }
   </style>
 </head>
@@ -106,6 +108,12 @@
       <details><summary class="muted">What the scanner read</summary><pre id="rLines"></pre></details>
       <details><summary class="muted">Cleaned-up image</summary><canvas id="outPreview" style="max-width:100%;margin-top:8px;border-radius:8px"></canvas></details>
     </section>
+
+    <footer class="muted">
+      Photos are read on this device and never uploaded.<br />
+      Free for personal and non-commercial use (<a href="../LICENSE">license</a>).
+      <span id="appVersion">Dev build.</span> <a id="appChannel" hidden></a>
+    </footer>
   </main>
   <script type="module" src="scan.js"></script>
 </body>

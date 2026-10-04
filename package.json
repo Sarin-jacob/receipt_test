@@ -1,0 +1,18 @@
+{
+  "name": "receipt-scan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scan receipts in the browser: items, totals, taxes, date and GST details, parsed on-device.",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "repository": "github:Sarin-jacob/receipt_test",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs",
+    "release": "node scripts/release.mjs",
+    "deploy:beta": "node scripts/deploy.mjs --channel beta",
+    "deploy:stable": "node scripts/deploy.mjs --channel stable"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
