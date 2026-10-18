@@ -1,4 +1,4 @@
-/*! Receipt Scan (beta) v1.0.0+dev.063d9a1 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+3.71b8e01 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // The output shape every engine must return, plus helpers to coerce
 // whatever a model produced into it.
 
