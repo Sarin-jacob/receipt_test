@@ -14,3 +14,6 @@ reciepts/**/*.webp
 # Build output (scripts/build.mjs)
 dist/
 node_modules/
+
+# OCR output saved by bench/fixtures.html (scripts/lab-server.mjs); regenerate locally
+fixtures/

@@ -2,6 +2,7 @@
   "name": "receipt-scan",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Scan receipts in the browser: items, totals, taxes, date and GST details, parsed on-device.",
   "license": "PolyForm-Noncommercial-1.0.0",
   "repository": "github:Sarin-jacob/receipt_test",

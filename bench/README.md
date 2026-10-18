@@ -26,8 +26,34 @@ WebGPU needs Chrome/Edge (or Safari 26+). `localhost` counts as a secure context
 | `datasets/sroie-final40` (40) | SROIE scans, **never tune on these** | company, date, total |
 | `reciepts-uploaded/reciepts` (31) | your own phone photos & screenshots (git-ignored) | full breakdown; `make_ground_truth.py` |
 | `datasets/web` (13) | web images labelled "receipt" in `review.html` (images git-ignored) | full breakdown + invoice no., GSTIN, phone; `make_ground_truth.py` |
+| `datasets/apps` (13) | Blinkit / Swiggy / WhatsApp order screenshots (images git-ignored) | items as the app lists them, item total, charges, total; `make_ground_truth.py` |
 
 `python datasets/fetch_sroie.py` re-downloads the SROIE images (git-ignored).
+
+## Solver scores without a browser
+
+OCR is the slow part, and it doesn't change when only the solver does. Save the
+OCR output once, then score the solver on every dataset in a few seconds:
+
+```bash
+node scripts/lab-server.mjs          # serves the repo and saves fixtures
+```
+
+Open <http://localhost:8765/bench/fixtures.html> and press **all**. It
+runs the scanner's own pipeline (`scan/pipeline.js`: corners, warp, levels,
+then crop-to-content OCR) and writes `fixtures/ocr/<dataset>/<image>.json`
+(git-ignored). Tick **Redo** after changing preprocessing.
+
+```bash
+node scripts/score.mjs --save        # remember the current scores
+node scripts/score.mjs --diff        # after a solver change: every receipt that moved
+node scripts/score.mjs apps --rows   # one line per receipt
+node scripts/score.mjs --show apps:3 # OCR lines, ground truth vs. output
+```
+
+`--fixtures <dir>` scores another OCR run (e.g. before a preprocessing change),
+`--baseline <file>` compares with another baseline. Check `--diff` on all
+datasets before committing a solver change, and never tune on `final`.
 
 ## Preprocessing (OCR engines)
 
@@ -58,7 +84,14 @@ bench/
   lib/schema.js          output schema, prompt schema, normalisation
   lib/score.js           scoring vs. ground truth
   lib/audit.js           self-check (no ground truth needed; usable in production)
+  fixtures.html          saves OCR output for scripts/score.mjs
   engines/*.js           one plug-in per approach: { load(ctx), run(input, ctx), unload() }
+scan/
+  pipeline.js            the scanner's image steps: corners, perspective warp, adjustments
+  scan.js                scanner UI
+scripts/
+  lab-server.mjs         static server that also saves OCR fixtures
+  score.mjs              solver scores / regressions on saved OCR output
 ```
 
 Adding an engine: write `{ id, label, family, approxMB, load, run, unload }`

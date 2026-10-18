@@ -1,0 +1,930 @@
+{
+ "schema_version": 1,
+ "source": "Personal Blinkit / Swiggy app screenshots (images git-ignored).",
+ "receipts": [
+  {
+   "file": "blinkit-2025-10-16-22-59-45.jpg",
+   "source_type": "app_order_summary_dark",
+   "difficulty": 2,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": "22:47",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Nestle Munch Max Choco Coated Crunchy Wafer Bar - Pack of 2",
+     "qty": 2,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 60
+    },
+    {
+     "name": "Nestle Munch Bites Coated Crunchy Wafer Bars",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 61
+    },
+    {
+     "name": "epigamia Everyday Yogurt - Strawberry",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 25
+    },
+    {
+     "name": "Vadilal Matka Kulfi",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 55
+    }
+   ],
+   "subtotal": 201,
+   "discounts": [
+    {
+     "label": "Flat ₹50 OFF",
+     "amount": -50
+    }
+   ],
+   "charges": [
+    {
+     "label": "Handling charge",
+     "amount": 2
+    },
+    {
+     "label": "Delivery charges",
+     "amount": 0
+    }
+   ],
+   "taxes": [],
+   "total": null,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Bill total is below the fold.",
+    "'2 x 38 g x 2': pack of 2x38 g, qty 2.",
+    "MRP 260 - product discount 59 = item total 201."
+   ]
+  },
+  {
+   "file": "blinkit-2025-10-19-19-10-38.jpg",
+   "source_type": "app_order_summary_dark",
+   "difficulty": 2,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Moreish Classic White Bread",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 45
+    },
+    {
+     "name": "Amul Yummy Plain Cheese Spread",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 104
+    },
+    {
+     "name": "Nestle Munch Bites Coated Crunchy Wafer Bars",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 61
+    },
+    {
+     "name": "Britannia Treat Croissant - Cocoa Creme + Croissant with Vanilla Cr...",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 35
+    },
+    {
+     "name": "On1y Pizza Oregano Mix",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 84
+    },
+    {
+     "name": "epigamia Mishti Doi",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 35
+    }
+   ],
+   "subtotal": 364,
+   "discounts": [],
+   "charges": [
+    {
+     "label": "Handling charge",
+     "amount": 5
+    },
+    {
+     "label": "Delivery charges",
+     "amount": 0
+    }
+   ],
+   "taxes": [],
+   "total": 369,
+   "payment": {
+    "method": null
+   },
+   "notes": []
+  },
+  {
+   "file": "blinkit-2025-11-11-20-08-35.jpg",
+   "source_type": "app_checkout_dark",
+   "difficulty": 3,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Bajaj Almond Drops Non-Sticky Hair Oil 95 ml",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 80
+    },
+    {
+     "name": "GM Surge Protector Power Strip, Type-C USB Extensio...",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 799
+    },
+    {
+     "name": "Ambrane Twistand Mobile Stand (Black)",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 199
+    },
+    {
+     "name": "Lifelong Men's Exercise Gym Gloves (Black)",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 218
+    },
+    {
+     "name": "epigamia Everyday Yogurt - Strawberry",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 25
+    },
+    {
+     "name": "Nestle Munch Max Choco Coated Crunchy Wafer Cho...",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 30
+    }
+   ],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 1391,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Cart of 7 items, 6 visible; fees not shown. Total is on the Place Order button."
+   ]
+  },
+  {
+   "file": "blinkit-2025-11-24-19-17-05.jpg",
+   "source_type": "app_checkout_dark",
+   "difficulty": 2,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Chheda's Bhakarwadi Namkeen",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 48
+    },
+    {
+     "name": "Wai Wai Chinese Hakka Egg Noodles",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 39
+    },
+    {
+     "name": "Bikano Classic Salted Peanuts",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 57
+    },
+    {
+     "name": "Sunfeast Farmlite Oats with Chocolate Cookies",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 58
+    },
+    {
+     "name": "Haldiram's Prabhuji Moong Dal Namkeen",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 56
+    },
+    {
+     "name": "Haldiram's Prabhuji Aloo Bhujia",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 112
+    }
+   ],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 377,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Items 370 + fees 7 = 377 (fees not shown)."
+   ]
+  },
+  {
+   "file": "blinkit-2026-03-05-21-09-31.jpg",
+   "source_type": "app_checkout_dark",
+   "difficulty": 2,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Sweet Karam Coffee Tapioca Chips - No Palm Oi...",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 114
+    },
+    {
+     "name": "Dermatouch Kojic Acid 1% Syndet Soap",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 135
+    },
+    {
+     "name": "Scotch Brite Sponge Scrub",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 74
+    },
+    {
+     "name": "Pass Pass Minty Mix Mouth Freshener",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 92
+    },
+    {
+     "name": "Godrej Fab Top Load Liquid Detergent Refill Pouch",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 94
+    },
+    {
+     "name": "Colgate Total Anti-Tartar Toothpaste",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 220
+    }
+   ],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 734,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Items 729 + fees 5 = 734 (fees not shown)."
+   ]
+  },
+  {
+   "file": "blinkit-2026-03-05-21-32-49.jpg",
+   "source_type": "app_checkout_dark",
+   "difficulty": 3,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Godrej Aer Room Air Freshener Spray (Sandal Bl...",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 99
+    },
+    {
+     "name": "Vim Lemon Dishwash Gel (900 ml)",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 190
+    },
+    {
+     "name": "Santoor Classic Hand Wash with Sandalwood",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 90
+    },
+    {
+     "name": "Freedom Refined Sunflower Oil",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 169
+    },
+    {
+     "name": "Bajaj Almond Drops Non-Sticky Hair Oil 185 ml -...",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 327
+    },
+    {
+     "name": "Clinic Plus Strong & Long Health Shampoo",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 254
+    },
+    {
+     "name": "Saffola Classic-Masala Oats x 2 + Masala Veggie Twist ...",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 69
+    }
+   ],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 2160,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "List scrolled: more items above / below. Total on the Place Order button."
+   ]
+  },
+  {
+   "file": "swiggy-2024-04-04-15-17-29.jpg",
+   "source_type": "app_bill_light",
+   "difficulty": 2,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [],
+   "subtotal": 399,
+   "discounts": [],
+   "charges": [
+    {
+     "label": "Delivery Partner Fee",
+     "amount": 0
+    },
+    {
+     "label": "Platform fee",
+     "amount": 4
+    }
+   ],
+   "taxes": [
+    {
+     "label": "GST and Restaurant Charges",
+     "rate": null,
+     "amount": 59.52,
+     "inclusive": false
+    }
+   ],
+   "total": 463,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Items are above the fold: none visible.",
+    "Struck-out 30.00 / 5.00 are old prices.",
+    "399 + 4 + 59.52 = 462.52, paid 463."
+   ]
+  },
+  {
+   "file": "swiggy-2025-09-30-19-35-32.jpg",
+   "source_type": "app_cart_light",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Spicy And Chilli Food Hub"
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Plain Rice Mini+2 pcs Chicken Masala+Bhaja+Salad",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 71
+    },
+    {
+     "name": "3Pcs Roti+Mix Veg+Dahi+Salad",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 62
+    }
+   ],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 155,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "'Complete your meal' (299 / 130 / 39 / 39) are suggestions, not items.",
+    "Fees not shown; Pay ₹155."
+   ]
+  },
+  {
+   "file": "swiggy-2025-12-11-20-18-59.jpg",
+   "source_type": "app_cart_light",
+   "difficulty": 2,
+   "merchant": {
+    "name": "The Chopsticks"
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Chicken Keema Paratha (2 Pieces)",
+     "qty": 2,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 213
+    }
+   ],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [
+    {
+     "label": "one extended at ₹1",
+     "amount": 1
+    }
+   ],
+   "taxes": [],
+   "total": 251,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Suggestions (269 / 149 / 129 / 248) are not items.",
+    "'₹125 saved with FLAT125' is a coupon row."
+   ]
+  },
+  {
+   "file": "swiggy-2025-12-20-19-53-05.jpg",
+   "source_type": "app_cart_light",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Tiffin House"
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": null,
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Dahi Papad Chat",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 49
+    },
+    {
+     "name": "Cholle Bhature",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 56
+    },
+    {
+     "name": "Veg Tikki Cheese Burger",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 78
+    }
+   ],
+   "subtotal": null,
+   "discounts": [],
+   "charges": [],
+   "taxes": [],
+   "total": 207,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "'To Pay ₹316.98 ₹207': struck-out pre-discount, then the amount."
+   ]
+  },
+  {
+   "file": "swiggy-2026-01-21-22-52-20.jpg",
+   "source_type": "app_bill_light",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Spicy And Chilli Food Hub"
+   },
+   "document": {
+    "number": "227983399518906",
+    "date": null,
+    "time": "22:31",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "2 Pcs Roti +2 pcs Chicken Hydrabadi+Salad",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 129
+    },
+    {
+     "name": "Chicken Tikka",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 230
+    },
+    {
+     "name": "Jira Rice Mini+2 pcs Chicken Kassa+Salad",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 139
+    }
+   ],
+   "subtotal": 498,
+   "discounts": [
+    {
+     "label": "Discount Applied",
+     "amount": -205
+    },
+    {
+     "label": "Extra 10% off (with Swiggy One)",
+     "amount": -29.29
+    }
+   ],
+   "charges": [
+    {
+     "label": "Platform Fee",
+     "amount": 14.99
+    },
+    {
+     "label": "Delivery Fee",
+     "amount": 0
+    }
+   ],
+   "taxes": [
+    {
+     "label": "Taxes",
+     "rate": null,
+     "amount": 13.19,
+     "inclusive": false
+    }
+   ],
+   "total": 292,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "'January 21' has no year.",
+    "291.89 rounded to 292."
+   ]
+  },
+  {
+   "file": "swiggy-2026-01-21-22-52-35.jpg",
+   "source_type": "app_bill_light",
+   "difficulty": 2,
+   "merchant": {
+    "name": "Spicy And Chilli Food Hub"
+   },
+   "document": {
+    "number": "227983399518906",
+    "date": null,
+    "time": "22:31",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "2 Pcs Roti +2 pcs Chicken Hydrabadi+Salad",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 129
+    },
+    {
+     "name": "Chicken Tikka",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 230
+    },
+    {
+     "name": "Jira Rice Mini+2 pcs Chicken Kassa+Salad",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 139
+    }
+   ],
+   "subtotal": 498,
+   "discounts": [
+    {
+     "label": "Discount Applied",
+     "amount": -205
+    },
+    {
+     "label": "Extra 10% off (with Swiggy One)",
+     "amount": -29.29
+    }
+   ],
+   "charges": [
+    {
+     "label": "Platform Fee",
+     "amount": 14.99
+    },
+    {
+     "label": "Delivery Fee",
+     "amount": 0
+    }
+   ],
+   "taxes": [
+    {
+     "label": "Taxes",
+     "rate": null,
+     "amount": 13.19,
+     "inclusive": false
+    }
+   ],
+   "total": 292,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Same bill scrolled: 'BILL DETAILS' heading half hidden."
+   ]
+  },
+  {
+   "file": "whatsapp-20250916.jpg",
+   "source_type": "app_order_summary_lowres",
+   "difficulty": 3,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": "22:09",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Pass Pass Minty Mix Mouth Freshener",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 64
+    },
+    {
+     "name": "Salad Mix with Cherry Tomatoes",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 57
+    },
+    {
+     "name": "Amul Taaza Toned Milk",
+     "qty": 6,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 102
+    },
+    {
+     "name": "Kenko by Ovo Farm Protein Rich Eggs",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 125
+    },
+    {
+     "name": "Link 65 mm New Steel Round Pad Lock with 3 Keys (Silver)",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 192
+    },
+    {
+     "name": "10on Lite Super Cocktail Napkins (1 Ply)",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 39
+    },
+    {
+     "name": "Origami Klassic Toilet Roll (2 Ply)",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 69
+    },
+    {
+     "name": "Jockey Men Cotton Crew length Socks (Jet Black, Foot Length(cm): ...",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 169
+    },
+    {
+     "name": "Amul Spicy Garlic Cheese Spread",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 114
+    },
+    {
+     "name": "Colgate Total Advanced Health Antibacterial Toothpaste",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 160
+    },
+    {
+     "name": "Saffola Classic-Masala Oats - Pack of 4",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 68
+    }
+   ],
+   "subtotal": 1159,
+   "discounts": [],
+   "charges": [
+    {
+     "label": "Handling charge",
+     "amount": 7
+    },
+    {
+     "label": "Delivery charges",
+     "amount": 0
+    }
+   ],
+   "taxes": [],
+   "total": 1166,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Downscaled by WhatsApp to 270x1276: tiny text.",
+    "'200 ml x 6' = qty 6 for ₹102.",
+    "Arrived at 10:09 pm; placed 'yesterday, 9:50 PM'."
+   ]
+  }
+ ]
+}

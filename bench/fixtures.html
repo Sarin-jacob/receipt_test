@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>OCR fixtures</title>
+  <style>body { font: 14px/1.5 system-ui, sans-serif; margin: 2rem; } pre { white-space: pre-wrap; } button { margin-right: .5rem; }</style>
+</head>
+<body>
+  <h1>OCR fixtures</h1>
+  <p>
+    Runs the scanner's OCR once per dataset image and saves the boxes to <code>fixtures/ocr/</code>
+    (needs <code>node scripts/lab-server.mjs</code>). Then <code>node scripts/score.mjs</code> scores
+    the solver in seconds, without a browser. Images go through the scanner's own pipeline
+    (auto corners, perspective, auto levels: <code>scan/pipeline.js</code>), then <code>ocrPhoto</code>.
+  </p>
+  <p id="buttons"></p>
+  <label><input type="checkbox" id="redo"> Redo images that already have fixtures</label>
+  <pre id="log"></pre>
+  <script type="module">
+    import { ocrPhoto } from './lib/preprocess.js';
+    import { prepare } from '../scan/pipeline.js';
+
+    // Keep in sync with scripts/score.mjs.
+    const DATASETS = {
+      dev: '../reciepts/',
+      sroie: '../datasets/sroie40/',
+      final: '../datasets/sroie-final40/',
+      mine: '../reciepts-uploaded/reciepts/',
+      web: '../datasets/web/',
+      apps: '../datasets/apps/',
+    };
+    const log = (s) => { document.getElementById('log').textContent += s + '\n'; };
+
+    async function run(ds) {
+      const dir = DATASETS[ds];
+      const gt = (await (await fetch(dir + 'ground_truth.json')).json()).receipts;
+      const redo = document.getElementById('redo').checked;
+      let done = 0, skipped = 0, failed = 0;
+      for (const g of gt) {
+        const url = `/__fixtures/${ds}/${g.file}.json`;
+        if (!redo && (await fetch(`../fixtures/ocr/${ds}/${encodeURIComponent(g.file)}.json`, { method: 'HEAD' })).ok) { skipped++; continue; }
+        const img = await fetch(dir + g.file.split('/').map(encodeURIComponent).join('/'));
+        if (!img.ok) { log(`${ds}/${g.file}: no image`); failed++; continue; }
+        const t = performance.now();
+        try {
+          const boxes = await ocrPhoto(await prepare(await img.blob()), { ocrModel: 'v6-small', crop: true, contrast: false });
+          const body = JSON.stringify({ file: g.file, ms: Math.round(performance.now() - t), skewDeg: boxes.skewDeg, info: boxes.info, boxes: [...boxes] });
+          await fetch(url, { method: 'PUT', body });
+          done++;
+          log(`${ds}/${g.file}: ${boxes.length} boxes, ${((performance.now() - t) / 1000).toFixed(1)}s`);
+        } catch (e) {
+          failed++;
+          log(`${ds}/${g.file}: ${e}`);
+        }
+      }
+      log(`== ${ds}: ${done} saved, ${skipped} already there, ${failed} failed`);
+      return { done, skipped, failed };
+    }
+
+    window.fixtures = { run, runAll: async () => { for (const ds of Object.keys(DATASETS)) await run(ds); log('== all done'); } };
+    for (const ds of [...Object.keys(DATASETS), 'all']) {
+      const b = document.createElement('button');
+      b.textContent = ds;
+      b.onclick = () => (ds === 'all' ? window.fixtures.runAll() : run(ds));
+      document.getElementById('buttons').append(b);
+    }
+  </script>
+</body>
+</html>
