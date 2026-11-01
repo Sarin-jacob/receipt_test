@@ -1,4 +1,4 @@
-/*! Receipt Scan (beta) v1.0.0+8.f245818 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.1.0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // App screenshots: food / grocery delivery and shopping apps (Blinkit, Swiggy, Zomato, Zepto…).
 // Which app and page it is, and the details those pages print their own way:
 //   "Order delivered on January 21, 10:31 PM", "Arrived at 10:47 pm", "placed yesterday, 9:50 PM"

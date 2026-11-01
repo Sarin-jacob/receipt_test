@@ -1,7 +1,7 @@
-/*! Receipt Scan (beta) v1.0.0+8.f245818 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.1.0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Image preprocessing for phone photos of receipts. Everything here is plain
 // canvas work (no extra downloads).
-import { runOcr } from './ocr.js?v=f245818';
+import { runOcr } from './ocr.js?v=87e3ad5';
 
 // Draws `source` (ImageBitmap/canvas) region into a new canvas, scaled so the
 // long side lands in [minLong, maxLong] (small images are upscaled up to 2.5×).
