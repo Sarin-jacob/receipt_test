@@ -1,10 +1,18 @@
-/*! Receipt Scan (beta) v1.0.0+5.46e67d0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+7.00cd50e | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Photo → flattened, cleaned-up receipt image, ready for OCR. Shared by the scanner page
 // (scan.js) and the OCR fixture runner (bench/fixtures.html), so both see the same pixels.
-import { enhance } from './lib/preprocess.js?v=46e67d0';
+import { enhance, TALL } from './lib/preprocess.js?v=00cd50e';
 
 export const MAX_SOURCE = 3000;   // working copy of the photo
 export const MAX_OUTPUT = 2400;   // flattened receipt sent to OCR
+// Long scrolling screenshots keep a readable width instead (OCR reads them in slices).
+export const TALL_WIDTH = 1280;
+export const TALL_HEIGHT = 12000;
+
+/** Scale for an image so it fits in `max` (long side), or for a tall one, TALL_WIDTH wide. */
+export function fitScale(w, h, max) {
+  return h / w > TALL ? Math.min(1, TALL_WIDTH / w, TALL_HEIGHT / h) : Math.min(1, max / Math.max(w, h));
+}
 
 export function canvasOf(w, h) {
   const c = document.createElement('canvas');
@@ -130,7 +138,7 @@ export function otsu(hist, n) {
 export function warp(src, q) {
   const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
   let W = Math.max(dist(q[0], q[1]), dist(q[3], q[2])), H = Math.max(dist(q[0], q[3]), dist(q[1], q[2]));
-  const s = Math.min(1, MAX_OUTPUT / Math.max(W, H));
+  const s = fitScale(W, H, MAX_OUTPUT);
   W = Math.max(1, Math.round(W * s)); H = Math.max(1, Math.round(H * s));
   const out = canvasOf(W, H);
   const Hm = homography([[0, 0], [W, 0], [W, H], [0, H]], q);
@@ -202,10 +210,10 @@ export function applyAdjustments(canvas, a) {
   return c;
 }
 
-/** A photo or screenshot (Blob / File) as a canvas no larger than MAX_SOURCE. */
+/** A photo or screenshot (Blob / File) as a canvas no larger than MAX_SOURCE (see fitScale). */
 export async function loadSource(blob) {
   const bmp = await createImageBitmap(blob, { imageOrientation: 'from-image' });
-  const s = Math.min(1, MAX_SOURCE / Math.max(bmp.width, bmp.height));
+  const s = fitScale(bmp.width, bmp.height, MAX_SOURCE);
   const c = canvasOf(Math.round(bmp.width * s), Math.round(bmp.height * s));
   c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
   return c;

@@ -1,4 +1,4 @@
-/*! Receipt Scan (beta) v1.0.0+5.46e67d0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+7.00cd50e | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Receipt structure from OCR boxes without a generative model.
 // 1. group boxes into lines, pull money values out of each line
 // 2. tag lines (total / subtotal / tax / discount / charge / payment / item)
@@ -8,11 +8,11 @@
 //
 // Keep vocabulary generic (multi-language receipt words), never tuned to a
 // specific test receipt.
-import { toLines } from './ocr.js?v=46e67d0';
-import { extractDateTime } from './datetime.js?v=46e67d0';
-import { appDetails, decodeOrderRows } from './apps.js?v=46e67d0';
-import { extractMeta } from './meta.js?v=46e67d0';
-import { parseRow, headerRoles, splitRow } from './rows.js?v=46e67d0';
+import { toLines } from './ocr.js?v=00cd50e';
+import { extractDateTime } from './datetime.js?v=00cd50e';
+import { appDetails, decodeOrderRows, reconcileBill } from './apps.js?v=00cd50e';
+import { extractMeta } from './meta.js?v=00cd50e';
+import { parseRow, headerRoles, splitRow } from './rows.js?v=00cd50e';
 
 // Word boundaries that still work when digits touch the word ("SGST2.5", "MwSt:").
 const kw = src => new RegExp(String.raw`(?<![a-z])(?:${src})(?![a-z])`, 'i');
@@ -393,6 +393,11 @@ function withApp(out, lines, hints) {
   if (!r.time && a.time) r.time = a.time;
   if (!r.invoice_number && a.orderId) r.invoice_number = a.orderId;
   if (a.printedItems != null && details.counts?.printed_items == null) details.counts = { ...details.counts, printed_items: a.printedItems };
+  // Bill figures with a misread ₹ ("Item total 71,535"): the readings that add up to the total.
+  if (a.page) {
+    const fixed = reconcileBill(r);
+    if (fixed) Object.assign(r, fixed);
+  }
   // Order rows whose prices OCR glued together ("79064"): split them so they add up to the item total.
   if (a.page === 'order' && r.subtotal > 0 && !close(sum(r.items.map(i => i.total)), r.subtotal, 0.02)) {
     const rows = decodeOrderRows(lines, r.subtotal);

@@ -1,12 +1,12 @@
-/*! Receipt Scan (beta) v1.0.0+5.46e67d0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+7.00cd50e | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Receipt scan: photo → user-adjustable crop (4 corners, perspective-corrected)
 // → optional brightness / contrast / B&W → PaddleOCR → line solver.
-import { getOcr } from './lib/ocr.js?v=46e67d0';
-import { ocrPhoto } from './lib/preprocess.js?v=46e67d0';
-import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE } from './pipeline.js?v=46e67d0';
-import { solveReceipt } from './lib/solver.js?v=46e67d0';
-import { normalize } from './lib/schema.js?v=46e67d0';
-import { audit } from './lib/audit.js?v=46e67d0';
+import { getOcr } from './lib/ocr.js?v=00cd50e';
+import { ocrPhoto } from './lib/preprocess.js?v=00cd50e';
+import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE, fitScale } from './pipeline.js?v=00cd50e';
+import { solveReceipt } from './lib/solver.js?v=00cd50e';
+import { normalize } from './lib/schema.js?v=00cd50e';
+import { audit } from './lib/audit.js?v=00cd50e';
 
 const $ = id => document.getElementById(id);
 
@@ -22,7 +22,7 @@ $('file').addEventListener('change', async e => {
   hints = { fileName: file.name, fileTime: file.lastModified };
   status('Opening photo…');
   const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
-  const s = Math.min(1, MAX_SOURCE / Math.max(bmp.width, bmp.height));
+  const s = fitScale(bmp.width, bmp.height, MAX_SOURCE);
   source = canvasOf(Math.round(bmp.width * s), Math.round(bmp.height * s));
   source.getContext('2d').drawImage(bmp, 0, 0, source.width, source.height);
   quad = autoQuad(source);
