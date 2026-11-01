@@ -57,7 +57,10 @@
 
     <section class="panel" id="pick">
       <div class="row">
-        <label class="file primary">Take / choose photo<input type="file" id="file" accept="image/*" capture="environment" /></label>
+        <!-- Two inputs: "capture" makes phones open the camera straight away, with no way to pick a
+             saved photo or screenshot, so the gallery gets its own. -->
+        <label class="file primary">Take photo<input type="file" id="camera" accept="image/*" capture="environment" /></label>
+        <label class="file">Choose photo or screenshot<input type="file" id="file" accept="image/*" /></label>
         <span class="muted" id="status">Runs fully on this device. First scan downloads the OCR model (~31 MB).</span>
       </div>
     </section>
