@@ -3,7 +3,7 @@
 Stable releases of the receipt scanner. `npm run release` adds a section here
 from the commit subjects; edit it before confirming.
 
-## v1.1.0
+## v1.1.0 (2026-11-02)
 
 Reads food and grocery app screenshots, and long scrolling ones.
 
