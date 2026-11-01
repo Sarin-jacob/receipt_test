@@ -136,6 +136,29 @@ R = [
         notes=["Downscaled by WhatsApp to 270x1276: tiny text.", "'200 ml x 6' = qty 6 for ₹102.", "Arrived at 10:09 pm; placed 'yesterday, 9:50 PM'."]),
 ]
 
+# Order dates. Screens print no year (or no date): carts are dated the day the screenshot was taken
+# (the order is placed then); order pages by their own line ("Arrived at 10:47 pm" on the
+# screenshot's day, "placed yesterday", "delivered on January 21"). The scanner reads the
+# screenshot's day from its file name (Android: Screenshot_2025-10-16-22-59-45…).
+DATES = {
+    "blinkit-2025-10-16-22-59-45.jpg": "2025-10-16",
+    "blinkit-2025-10-19-19-10-38.jpg": "2025-10-19",
+    "blinkit-2025-11-11-20-08-35.jpg": "2025-11-11",
+    "blinkit-2025-11-24-19-17-05.jpg": "2025-11-24",
+    "blinkit-2026-03-05-21-09-31.jpg": "2026-03-05",
+    "blinkit-2026-03-05-21-32-49.jpg": "2026-03-05",
+    "swiggy-2024-04-04-15-17-29.jpg": "2024-04-04",
+    "swiggy-2025-09-30-19-35-32.jpg": "2025-09-30",
+    "swiggy-2025-12-11-20-18-59.jpg": "2025-12-11",
+    "swiggy-2025-12-20-19-53-05.jpg": "2025-12-20",
+    "swiggy-2026-01-21-22-52-20.jpg": "2026-01-21",
+    "swiggy-2026-01-21-22-52-35.jpg": "2026-01-21",
+    # Received on WhatsApp 2025-09-16 (screenshot clock 13:58), "placed yesterday".
+    "whatsapp-20250916.jpg": "2025-09-15",
+}
+for r in R:
+    r["document"]["date"] = DATES[r["file"]]
+
 out = {
     "schema_version": 1,
     "source": "Personal Blinkit / Swiggy app screenshots (images git-ignored).",

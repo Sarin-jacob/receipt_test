@@ -12,11 +12,13 @@ const $ = id => document.getElementById(id);
 let source = null;         // canvas holding the (rotated) photo
 let quad = null;           // [tl, tr, br, bl] in source pixels
 let ocrReady = null;
+let hints = {};           // file name / time: screenshots' date and app (solver.js withApp)
 
 // ---------- loading ----------
 $('file').addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file) return;
+  hints = { fileName: file.name, fileTime: file.lastModified };
   status('Opening photo…');
   const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
   const s = Math.min(1, MAX_SOURCE / Math.max(bmp.width, bmp.height));
@@ -127,7 +129,7 @@ $('scan').onclick = async () => {
     $('rTotal').textContent = 'Reading…';
     const t0 = performance.now();
     const boxes = await ocrPhoto(flat, { ocrModel: 'v6-small', crop: true, contrast: false });
-    const { _lines, _debug, ...raw } = solveReceipt(boxes);
+    const { _lines, _debug, ...raw } = solveReceipt(boxes, hints);
     const r = normalize(raw), check = audit(r);
     renderResult(r, check, _lines, performance.now() - t0);
   } catch (err) {

@@ -56,7 +56,8 @@ function evaluate(ds) {
   for (const [i, g] of gtOf(ds).entries()) {
     const boxes = boxesOf(ds, g.file);
     if (!boxes) continue;
-    const { _lines, _debug, ...raw } = solveReceipt(boxes);
+    // The file name stands in for the picked file (screenshots: date from it, app from the package).
+    const { _lines, _debug, ...raw } = solveReceipt(boxes, { fileName: g.file });
     const p = normalize(raw);
     out.push({ i, file: g.file, g, p, lines: _lines, sc: score(g, p), a: audit(p) });
   }

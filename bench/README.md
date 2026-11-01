@@ -51,6 +51,9 @@ node scripts/score.mjs apps --rows   # one line per receipt
 node scripts/score.mjs --show apps:3 # OCR lines, ground truth vs. output
 ```
 
+`score.mjs` passes each image's file name as the solver's `hints` (`{ fileName, fileTime }`),
+like the scanner does with the picked file: screenshots get their date and app from it.
+
 `--fixtures <dir>` scores another OCR run (e.g. before a preprocessing change),
 `--baseline <file>` compares with another baseline. Check `--diff` on all
 datasets before committing a solver change, and never tune on `final`.
@@ -78,6 +81,8 @@ bench/
   lib/ocr.js             PaddleOCR (v6 small/tiny, v5), deskew, row grouping, layout text
   lib/preprocess.js      crop-to-content second pass, adaptive contrast
   lib/solver.js          OCR lines → tags → items/totals, chosen by arithmetic
+  lib/apps.js            app screenshots (Blinkit, Swiggy…): app / page, order dates completed from the
+                         screenshot's file name and status-bar clock, order ids, glued prices split by the bill
   lib/rows.js            item rows: name vs. numbers, qty / rate / amount from qty × rate = amount or the column headings
   lib/datetime.js        receipt date + time (labels, OCR glue, day/month order)
   lib/meta.js            invoice no., GSTIN/VAT/PAN/FSSAI, phones, address, table, staff, payment, printed counts
