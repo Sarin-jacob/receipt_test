@@ -1,7 +1,7 @@
-/*! Receipt Scan (beta) v1.0.0+3.71b8e01 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+5.46e67d0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Photo → flattened, cleaned-up receipt image, ready for OCR. Shared by the scanner page
 // (scan.js) and the OCR fixture runner (bench/fixtures.html), so both see the same pixels.
-import { enhance } from './lib/preprocess.js?v=71b8e01';
+import { enhance } from './lib/preprocess.js?v=46e67d0';
 
 export const MAX_SOURCE = 3000;   // working copy of the photo
 export const MAX_OUTPUT = 2400;   // flattened receipt sent to OCR

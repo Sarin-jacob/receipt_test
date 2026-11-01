@@ -1,4 +1,4 @@
-/*! Receipt Scan (beta) v1.0.0+3.71b8e01 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+5.46e67d0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Engine-agnostic arithmetic checks on a normalized result. These need no
 // ground truth, so the same checks can gate results in the real app.
 const close = (a, b, tol = 0.02) => a != null && b != null && Math.abs(a - b) <= tol;

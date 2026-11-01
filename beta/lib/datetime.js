@@ -1,4 +1,4 @@
-/*! Receipt Scan (beta) v1.0.0+3.71b8e01 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+5.46e67d0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Date and time of a receipt from its OCR lines.
 //
 // Every date/time-looking string becomes a candidate; candidates are scored by

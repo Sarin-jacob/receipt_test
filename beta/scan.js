@@ -1,23 +1,25 @@
-/*! Receipt Scan (beta) v1.0.0+3.71b8e01 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+5.46e67d0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Receipt scan: photo → user-adjustable crop (4 corners, perspective-corrected)
 // → optional brightness / contrast / B&W → PaddleOCR → line solver.
-import { getOcr } from './lib/ocr.js?v=71b8e01';
-import { ocrPhoto } from './lib/preprocess.js?v=71b8e01';
-import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE } from './pipeline.js?v=71b8e01';
-import { solveReceipt } from './lib/solver.js?v=71b8e01';
-import { normalize } from './lib/schema.js?v=71b8e01';
-import { audit } from './lib/audit.js?v=71b8e01';
+import { getOcr } from './lib/ocr.js?v=46e67d0';
+import { ocrPhoto } from './lib/preprocess.js?v=46e67d0';
+import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE } from './pipeline.js?v=46e67d0';
+import { solveReceipt } from './lib/solver.js?v=46e67d0';
+import { normalize } from './lib/schema.js?v=46e67d0';
+import { audit } from './lib/audit.js?v=46e67d0';
 
 const $ = id => document.getElementById(id);
 
 let source = null;         // canvas holding the (rotated) photo
 let quad = null;           // [tl, tr, br, bl] in source pixels
 let ocrReady = null;
+let hints = {};           // file name / time: screenshots' date and app (solver.js withApp)
 
 // ---------- loading ----------
 $('file').addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file) return;
+  hints = { fileName: file.name, fileTime: file.lastModified };
   status('Opening photo…');
   const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
   const s = Math.min(1, MAX_SOURCE / Math.max(bmp.width, bmp.height));
@@ -128,7 +130,7 @@ $('scan').onclick = async () => {
     $('rTotal').textContent = 'Reading…';
     const t0 = performance.now();
     const boxes = await ocrPhoto(flat, { ocrModel: 'v6-small', crop: true, contrast: false });
-    const { _lines, _debug, ...raw } = solveReceipt(boxes);
+    const { _lines, _debug, ...raw } = solveReceipt(boxes, hints);
     const r = normalize(raw), check = audit(r);
     renderResult(r, check, _lines, performance.now() - t0);
   } catch (err) {

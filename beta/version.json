@@ -1,7 +1,7 @@
 {
   "name": "Receipt Scan (beta)",
-  "version": "1.0.0+3.71b8e01",
+  "version": "1.0.0+5.46e67d0",
   "channel": "beta",
-  "commit": "71b8e01",
-  "date": "2026-10-18T22:33:40+05:30"
+  "commit": "46e67d0",
+  "date": "2026-11-01T23:08:17+05:30"
 }
