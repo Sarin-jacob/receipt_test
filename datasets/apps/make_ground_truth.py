@@ -134,6 +134,28 @@ R = [
         item("Saffola Classic-Masala Oats - Pack of 4", 68),
     ], subtotal=1159, charges=[("Handling charge", 7), ("Delivery charges", 0)], total=1166, time="22:09", difficulty=3,
         notes=["Downscaled by WhatsApp to 270x1276: tiny text.", "'200 ml x 6' = qty 6 for ₹102.", "Arrived at 10:09 pm; placed 'yesterday, 9:50 PM'."]),
+    receipt("blinkit-scroll.jpg", "app_order_summary_long", [
+        item("Amul Fresh Cream", 75),
+        item("Tata Sampann Paneer Masala Powder with Natural Oils", 101),
+        item("Amul Fresh Malai Paneer", 285, 3),
+        item("Desi Tomato", 26),
+        item("Coriander Bunch", 45),
+        item("Catch Ginger Garlic Paste", 36),
+        item("Green Chilli", 17),
+        item("Peeled Garlic", 48),
+        item("Whole Farm Premium Kasuri Methi", 24),
+        item("Onion", 76),
+        item("Ginger", 44),
+        item("Freedom Refined Sunflower Oil", 183),
+        item("India Gate Everyday Basmati Rice (Medium Grain)", 100),
+        item("Pragati Pouch Curd", 45),
+        item("McCain Veggie Fingers", 126),
+        item("Tata Sampann Unpolished Kali Urad (Sabut)", 105),
+        item("Mirinda Soft Drink", 40),
+        item("Pepsi Soft Drink", 40),
+        item("Haldiram's Prabhuji Bhujia", 119),
+    ], subtotal=1535, discounts=[], charges=[("Handling charge", 9), ("Delivery charges", 0)], total=1544, time="20:13", difficulty=3,
+        notes=["Scrolling screenshot, sent downscaled to 270x1461 (5.4:1).", "Prices sit beside the name, the size row ('250 ml x 1') under it.", "No date in the file name."]),
 ]
 
 # Order dates. Screens print no year (or no date): carts are dated the day the screenshot was taken
@@ -157,7 +179,7 @@ DATES = {
     "whatsapp-20250916.jpg": "2025-09-15",
 }
 for r in R:
-    r["document"]["date"] = DATES[r["file"]]
+    r["document"]["date"] = DATES.get(r["file"])
 
 out = {
     "schema_version": 1,

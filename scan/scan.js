@@ -2,7 +2,7 @@
 // → optional brightness / contrast / B&W → PaddleOCR → line solver.
 import { getOcr } from '../bench/lib/ocr.js';
 import { ocrPhoto } from '../bench/lib/preprocess.js';
-import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE } from './pipeline.js';
+import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE, fitScale } from './pipeline.js';
 import { solveReceipt } from '../bench/lib/solver.js';
 import { normalize } from '../bench/lib/schema.js';
 import { audit } from '../bench/lib/audit.js';
@@ -21,7 +21,7 @@ $('file').addEventListener('change', async e => {
   hints = { fileName: file.name, fileTime: file.lastModified };
   status('Opening photo…');
   const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
-  const s = Math.min(1, MAX_SOURCE / Math.max(bmp.width, bmp.height));
+  const s = fitScale(bmp.width, bmp.height, MAX_SOURCE);
   source = canvasOf(Math.round(bmp.width * s), Math.round(bmp.height * s));
   source.getContext('2d').drawImage(bmp, 0, 0, source.width, source.height);
   quad = autoQuad(source);

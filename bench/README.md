@@ -67,6 +67,8 @@ The **Preprocess** selector controls what happens before OCR (`lib/preprocess.js
   phone photos get far more pixels per character.
 - **+ contrast**: stretch levels and lift dark photos, only when the photo is
   dark or washed out (already well-exposed scans are left alone).
+- **Long scrolling screenshots** (height over 2.6 × width) are kept at a readable width and
+  read in overlapping slices (`ocrSlices`), which can also report each word's text colour.
 - **Deskew** is always on (`lib/ocr.js`): boxes are rotated by the dominant
   text angle before rows are formed, and rows follow local slope for curled paper.
 

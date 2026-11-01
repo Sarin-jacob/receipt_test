@@ -925,6 +925,196 @@
     "'200 ml x 6' = qty 6 for ₹102.",
     "Arrived at 10:09 pm; placed 'yesterday, 9:50 PM'."
    ]
+  },
+  {
+   "file": "blinkit-scroll.jpg",
+   "source_type": "app_order_summary_long",
+   "difficulty": 3,
+   "merchant": {
+    "name": null
+   },
+   "document": {
+    "number": null,
+    "date": null,
+    "time": "20:13",
+    "currency": "INR"
+   },
+   "items": [
+    {
+     "name": "Amul Fresh Cream",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 75
+    },
+    {
+     "name": "Tata Sampann Paneer Masala Powder with Natural Oils",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 101
+    },
+    {
+     "name": "Amul Fresh Malai Paneer",
+     "qty": 3,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 285
+    },
+    {
+     "name": "Desi Tomato",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 26
+    },
+    {
+     "name": "Coriander Bunch",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 45
+    },
+    {
+     "name": "Catch Ginger Garlic Paste",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 36
+    },
+    {
+     "name": "Green Chilli",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 17
+    },
+    {
+     "name": "Peeled Garlic",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 48
+    },
+    {
+     "name": "Whole Farm Premium Kasuri Methi",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 24
+    },
+    {
+     "name": "Onion",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 76
+    },
+    {
+     "name": "Ginger",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 44
+    },
+    {
+     "name": "Freedom Refined Sunflower Oil",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 183
+    },
+    {
+     "name": "India Gate Everyday Basmati Rice (Medium Grain)",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 100
+    },
+    {
+     "name": "Pragati Pouch Curd",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 45
+    },
+    {
+     "name": "McCain Veggie Fingers",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 126
+    },
+    {
+     "name": "Tata Sampann Unpolished Kali Urad (Sabut)",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 105
+    },
+    {
+     "name": "Mirinda Soft Drink",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 40
+    },
+    {
+     "name": "Pepsi Soft Drink",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 40
+    },
+    {
+     "name": "Haldiram's Prabhuji Bhujia",
+     "qty": 1,
+     "unit": null,
+     "unit_price": null,
+     "discount": null,
+     "total": 119
+    }
+   ],
+   "subtotal": 1535,
+   "discounts": [],
+   "charges": [
+    {
+     "label": "Handling charge",
+     "amount": 9
+    },
+    {
+     "label": "Delivery charges",
+     "amount": 0
+    }
+   ],
+   "taxes": [],
+   "total": 1544,
+   "payment": {
+    "method": null
+   },
+   "notes": [
+    "Scrolling screenshot, sent downscaled to 270x1461 (5.4:1).",
+    "Prices sit beside the name, the size row ('250 ml x 1') under it.",
+    "No date in the file name."
+   ]
   }
  ]
 }

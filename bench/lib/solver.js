@@ -9,7 +9,7 @@
 // specific test receipt.
 import { toLines } from './ocr.js';
 import { extractDateTime } from './datetime.js';
-import { appDetails, decodeOrderRows } from './apps.js';
+import { appDetails, decodeOrderRows, reconcileBill } from './apps.js';
 import { extractMeta } from './meta.js';
 import { parseRow, headerRoles, splitRow } from './rows.js';
 
@@ -392,6 +392,11 @@ function withApp(out, lines, hints) {
   if (!r.time && a.time) r.time = a.time;
   if (!r.invoice_number && a.orderId) r.invoice_number = a.orderId;
   if (a.printedItems != null && details.counts?.printed_items == null) details.counts = { ...details.counts, printed_items: a.printedItems };
+  // Bill figures with a misread ₹ ("Item total 71,535"): the readings that add up to the total.
+  if (a.page) {
+    const fixed = reconcileBill(r);
+    if (fixed) Object.assign(r, fixed);
+  }
   // Order rows whose prices OCR glued together ("79064"): split them so they add up to the item total.
   if (a.page === 'order' && r.subtotal > 0 && !close(sum(r.items.map(i => i.total)), r.subtotal, 0.02)) {
     const rows = decodeOrderRows(lines, r.subtotal);
