@@ -145,6 +145,9 @@ export function appDetails(lines, hints = {}) {
     dateFrom = 'file';
   }
 
+  // A cart is ordered as it's screenshotted: its time is the screenshot's.
+  if (!time && page === 'cart' && refTime && dateFrom) time = `${pad(refTime.h)}:${pad(refTime.mi)}`;
+
   // "Order id" / "Order ID:" with the id on the next line.
   let orderId = null;
   const idAt = lines.findIndex((l) => /^\W*order\s*(id|no\.?|number|#)\s*:?\s*$/i.test(l.text));
