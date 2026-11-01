@@ -1,4 +1,4 @@
-/*! Receipt Scan (beta) v1.0.0+7.00cd50e | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+8.f245818 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Receipt structure from OCR boxes without a generative model.
 // 1. group boxes into lines, pull money values out of each line
 // 2. tag lines (total / subtotal / tax / discount / charge / payment / item)
@@ -8,11 +8,11 @@
 //
 // Keep vocabulary generic (multi-language receipt words), never tuned to a
 // specific test receipt.
-import { toLines } from './ocr.js?v=00cd50e';
-import { extractDateTime } from './datetime.js?v=00cd50e';
-import { appDetails, decodeOrderRows, reconcileBill } from './apps.js?v=00cd50e';
-import { extractMeta } from './meta.js?v=00cd50e';
-import { parseRow, headerRoles, splitRow } from './rows.js?v=00cd50e';
+import { toLines } from './ocr.js?v=f245818';
+import { extractDateTime } from './datetime.js?v=f245818';
+import { appDetails, decodeOrderRows, reconcileBill } from './apps.js?v=f245818';
+import { extractMeta } from './meta.js?v=f245818';
+import { parseRow, headerRoles, splitRow } from './rows.js?v=f245818';
 
 // Word boundaries that still work when digits touch the word ("SGST2.5", "MwSt:").
 const kw = src => new RegExp(String.raw`(?<![a-z])(?:${src})(?![a-z])`, 'i');

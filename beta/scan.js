@@ -1,12 +1,12 @@
-/*! Receipt Scan (beta) v1.0.0+7.00cd50e | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.0.0+8.f245818 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Receipt scan: photo → user-adjustable crop (4 corners, perspective-corrected)
 // → optional brightness / contrast / B&W → PaddleOCR → line solver.
-import { getOcr } from './lib/ocr.js?v=00cd50e';
-import { ocrPhoto } from './lib/preprocess.js?v=00cd50e';
-import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE, fitScale } from './pipeline.js?v=00cd50e';
-import { solveReceipt } from './lib/solver.js?v=00cd50e';
-import { normalize } from './lib/schema.js?v=00cd50e';
-import { audit } from './lib/audit.js?v=00cd50e';
+import { getOcr } from './lib/ocr.js?v=f245818';
+import { ocrPhoto } from './lib/preprocess.js?v=f245818';
+import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE, fitScale } from './pipeline.js?v=f245818';
+import { solveReceipt } from './lib/solver.js?v=f245818';
+import { normalize } from './lib/schema.js?v=f245818';
+import { audit } from './lib/audit.js?v=f245818';
 
 const $ = id => document.getElementById(id);
 
@@ -16,7 +16,9 @@ let ocrReady = null;
 let hints = {};           // file name / time: screenshots' date and app (solver.js withApp)
 
 // ---------- loading ----------
-$('file').addEventListener('change', async e => {
+// Camera (capture) and gallery / files: same handling.
+['camera', 'file'].forEach(id => $(id).addEventListener('change', onPick));
+async function onPick(e) {
   const file = e.target.files[0];
   if (!file) return;
   hints = { fileName: file.name, fileTime: file.lastModified };
@@ -31,7 +33,7 @@ $('file').addEventListener('change', async e => {
   status('');
   ocrReady ??= getOcr('v6-small'); // start the model download while the user adjusts
   e.target.value = '';
-});
+}
 
 
 function show(which) {
@@ -105,7 +107,7 @@ $('autoCrop').onclick = () => { quad = autoQuad(source); draw(); };
 $('fullCrop').onclick = () => { quad = [[0, 0], [source.width, 0], [source.width, source.height], [0, source.height]]; draw(); };
 ['bright', 'contrast', 'gray'].forEach(id => $(id).addEventListener('input', draw));
 $('reset').onclick = () => { show('pick'); $('edit').hidden = true; };
-$('again').onclick = () => { show('pick'); $('file').click(); };
+$('again').onclick = () => show('pick'); // take another photo or choose one
 $('adjust').onclick = () => show('edit');
 
 

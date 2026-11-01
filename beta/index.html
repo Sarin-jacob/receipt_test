@@ -62,7 +62,10 @@
 
     <section class="panel" id="pick">
       <div class="row">
-        <label class="file primary">Take / choose photo<input type="file" id="file" accept="image/*" capture="environment" /></label>
+        <!-- Two inputs: "capture" makes phones open the camera straight away, with no way to pick a
+             saved photo or screenshot, so the gallery gets its own. -->
+        <label class="file primary">Take photo<input type="file" id="camera" accept="image/*" capture="environment" /></label>
+        <label class="file">Choose photo or screenshot<input type="file" id="file" accept="image/*" /></label>
         <span class="muted" id="status">Runs fully on this device. First scan downloads the OCR model (~31 MB).</span>
       </div>
     </section>
@@ -120,9 +123,9 @@
       <span id="appVersion">Dev build.</span> <a id="appChannel" hidden></a>
     </footer>
   </main>
-  <script type="module" src="scan.js?v=00cd50e"></script>
+  <script type="module" src="scan.js?v=f245818"></script>
   <script>
-    window.APP = {"name":"Receipt Scan (beta)","version":"1.0.0+7.00cd50e","channel":"beta","commit":"00cd50e","date":"2026-11-02T00:41:09+05:30"};
+    window.APP = {"name":"Receipt Scan (beta)","version":"1.0.0+8.f245818","channel":"beta","commit":"f245818","date":"2026-11-02T01:43:29+05:30"};
     (function () {
       var v = document.getElementById('appVersion'), o = document.getElementById('appChannel');
       if (v) v.textContent = 'v' + APP.version + (APP.channel === 'stable' ? '' : ' (' + APP.channel + ')');
