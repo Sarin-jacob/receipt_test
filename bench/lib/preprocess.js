@@ -70,18 +70,18 @@ export const TALL = 2.6; // (phone screens are up to ~21:9 = 2.33)
 export function inkColor(data) {
   const n = data.length / 4;
   if (n < 16) return null;
-  const lum = new Float32Array(n);
-  for (let i = 0; i < n; i++) lum[i] = data[i * 4] * 0.3 + data[i * 4 + 1] * 0.59 + data[i * 4 + 2] * 0.11;
-  const bg = [...lum].sort((a, b) => a - b)[Math.floor(n / 2)]; // text covers less than half a box
-  let r = 0, g = 0, b = 0, k = 0;
-  for (let i = 0; i < n; i++) {
-    if (Math.abs(lum[i] - bg) < 50) continue;
-    r += data[i * 4]; g += data[i * 4 + 1]; b += data[i * 4 + 2]; k++;
-  }
-  if (k < 8) return null;
-  r /= k; g /= k; b /= k;
-  if (g > r + 35 && g > b + 15) return 'green';
-  if (r > g + 50 && r > b + 30) return 'red';
+  const px = [];
+  for (let i = 0; i < n; i++) px.push([data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4] * 0.3 + data[i * 4 + 1] * 0.59 + data[i * 4 + 2] * 0.11]);
+  const chroma = (p) => Math.max(p[0], p[1], p[2]) - Math.min(p[0], p[1], p[2]);
+  const bg = [...px].sort((a, b) => a[3] - b[3])[n >> 1]; // text covers less than half a box
+  if (chroma(bg) > 40) return null; // white text on a coloured button / chip, not coloured text
+  // The strokes: the tenth of the pixels furthest from the background (dark text on a light page,
+  // light text on a dark one). Thin or downscaled text is faint, so compare channels, not levels.
+  const far = [...px].sort((a, b) => Math.abs(b[3] - bg[3]) - Math.abs(a[3] - bg[3])).slice(0, Math.max(4, Math.ceil(n * 0.1)));
+  const [r, g, b, l] = [0, 1, 2, 3].map((k) => far.reduce((s, p) => s + p[k], 0) / far.length);
+  if (Math.abs(l - bg[3]) < 30) return null; // a blank box
+  if (g - Math.max(r, b) >= 12 && chroma([r, g, b]) >= 25) return 'green';
+  if (r - Math.max(g, b) >= 25 && chroma([r, g, b]) >= 40) return 'red';
   return null;
 }
 
