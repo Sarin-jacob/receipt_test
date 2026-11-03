@@ -1,6 +1,6 @@
 {
   "name": "receipt-scan",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "type": "module",
   "description": "Scan receipts in the browser: items, totals, taxes, date and GST details, parsed on-device.",

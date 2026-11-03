@@ -3,7 +3,7 @@
 Stable releases of the receipt scanner. `npm run release` adds a section here
 from the commit subjects; edit it before confirming.
 
-## v1.1.1
+## v1.1.1 (2026-11-03)
 
 - The installed app has its own identity (stable and beta separately), so it no
   longer replaces, or gets replaced by, other apps installed from
