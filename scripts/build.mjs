@@ -23,6 +23,12 @@ export const CHANNELS = {
   beta: { path: 'beta/', name: 'Receipt Scan (beta)', shortName: 'Receipts β', link: { href: '../', text: 'Back to stable' }, redirects: [] },
 };
 
+// Where the site lives: https://<owner>.github.io/<repo>/ (package.json "repository"). Each channel's
+// web-app id is its own path there. Browsers resolve a manifest id against the origin, not the
+// manifest, so "./" meant the github.io root: every app on that domain (this one's two channels,
+// other projects' apps) claimed the same id and installs replaced each other.
+const REPO_PATH = `/${String(JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).repository || '').split('/').pop() || ''}/`.replace(/\/+/g, '/');
+
 // Cross-origin files the service worker keeps after first use: the OCR library
 // and ONNX runtime (version-pinned jsDelivr URLs) and the PaddleOCR models.
 const RUNTIME_HOSTS = ['cdn.jsdelivr.net', 'paddle-model-ecology.bj.bcebos.com'];
@@ -129,7 +135,7 @@ export function build({ channel = 'beta', out = join(ROOT, 'dist') } = {}) {
   write('index.html', html);
 
   write('manifest.webmanifest', JSON.stringify({
-    id: './', name: cfg.name, short_name: cfg.shortName, description: DESCRIPTION,
+    id: `${REPO_PATH}${cfg.path}`, name: cfg.name, short_name: cfg.shortName, description: DESCRIPTION,
     start_url: './', scope: './', display: 'standalone', background_color: BACKGROUND, theme_color: THEME,
     icons: [
       { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
