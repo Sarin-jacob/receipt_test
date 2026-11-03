@@ -3,6 +3,12 @@
 Stable releases of the receipt scanner. `npm run release` adds a section here
 from the commit subjects; edit it before confirming.
 
+## v1.1.1
+
+- The installed app has its own identity (stable and beta separately), so it no
+  longer replaces, or gets replaced by, other apps installed from
+  sarin-jacob.github.io. Reinstall it once to pick this up.
+
 ## v1.1.0 (2026-11-02)
 
 Reads food and grocery app screenshots, and long scrolling ones.
