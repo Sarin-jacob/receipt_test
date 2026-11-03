@@ -1,8 +1,8 @@
-/*! stable v1.1.0 */
-const SHELL = "scan-stable-87e3ad5";
+/*! stable v1.1.1 */
+const SHELL = "scan-stable-b26abbc";
 const OWN = "scan-stable-";
 const RUNTIME = 'scan-runtime-1';
-const FILES = ["./","scan.js?v=87e3ad5","lib/ocr.js?v=87e3ad5","lib/preprocess.js?v=87e3ad5","pipeline.js?v=87e3ad5","lib/solver.js?v=87e3ad5","lib/schema.js?v=87e3ad5","lib/audit.js?v=87e3ad5","lib/datetime.js?v=87e3ad5","lib/apps.js?v=87e3ad5","lib/meta.js?v=87e3ad5","lib/rows.js?v=87e3ad5","index.html","manifest.webmanifest","icon.svg","icon-192.png","icon-512.png","icon-maskable-512.png","LICENSE.txt","version.json"];
+const FILES = ["./","scan.js?v=b26abbc","lib/ocr.js?v=b26abbc","lib/preprocess.js?v=b26abbc","pipeline.js?v=b26abbc","lib/solver.js?v=b26abbc","lib/schema.js?v=b26abbc","lib/audit.js?v=b26abbc","lib/datetime.js?v=b26abbc","lib/apps.js?v=b26abbc","lib/meta.js?v=b26abbc","lib/rows.js?v=b26abbc","index.html","manifest.webmanifest","icon.svg","icon-192.png","icon-512.png","icon-maskable-512.png","LICENSE.txt","version.json"];
 const RUNTIME_HOSTS = ["cdn.jsdelivr.net","paddle-model-ecology.bj.bcebos.com"];
 const SKIP = ["beta/"];
 

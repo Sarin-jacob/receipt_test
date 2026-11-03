@@ -1,5 +1,5 @@
 {
-  "id": "./",
+  "id": "/receipt_test/",
   "name": "Receipt Scan",
   "short_name": "Receipts",
   "description": "Scan a receipt and get its items, totals, taxes, date and GST details. Runs on your device; photos are never uploaded.",
