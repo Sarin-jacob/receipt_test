@@ -1,12 +1,12 @@
-/*! Receipt Scan (beta) v1.1.0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.1.1 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Receipt scan: photo → user-adjustable crop (4 corners, perspective-corrected)
 // → optional brightness / contrast / B&W → PaddleOCR → line solver.
-import { getOcr } from './lib/ocr.js?v=87e3ad5';
-import { ocrPhoto } from './lib/preprocess.js?v=87e3ad5';
-import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE, fitScale } from './pipeline.js?v=87e3ad5';
-import { solveReceipt } from './lib/solver.js?v=87e3ad5';
-import { normalize } from './lib/schema.js?v=87e3ad5';
-import { audit } from './lib/audit.js?v=87e3ad5';
+import { getOcr } from './lib/ocr.js?v=b26abbc';
+import { ocrPhoto } from './lib/preprocess.js?v=b26abbc';
+import { canvasOf, autoQuad, warp, applyAdjustments, MAX_SOURCE, fitScale } from './pipeline.js?v=b26abbc';
+import { solveReceipt } from './lib/solver.js?v=b26abbc';
+import { normalize } from './lib/schema.js?v=b26abbc';
+import { audit } from './lib/audit.js?v=b26abbc';
 
 const $ = id => document.getElementById(id);
 

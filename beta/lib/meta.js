@@ -1,4 +1,4 @@
-/*! Receipt Scan (beta) v1.1.0 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
+/*! Receipt Scan (beta) v1.1.1 | PolyForm Noncommercial 1.0.0, see LICENSE.txt | Required Notice: Copyright (c) 2026 Sarin Jacob (https://github.com/Sarin-jacob/receipt_test) */
 // Everything else a receipt prints about itself: merchant contact details and
 // registration numbers, the document number, table / cashier / terminal,
 // payment details, and the printed item / quantity counts.
